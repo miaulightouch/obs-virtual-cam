@@ -9,7 +9,8 @@ param(
     [switch] $SkipAll,
     [switch] $SkipBuild,
     [switch] $SkipDeps,
-    [switch] $SkipUnpack
+    [switch] $SkipUnpack,
+    [switch] $SkipSetupOBS
 )
 
 $ErrorActionPreference = 'Stop'
@@ -61,7 +62,9 @@ function Build {
         -replace "project\((.*) VERSION (.*)\)", "project(${ProductName} VERSION ${ProductVersion})" `
         | Out-File -Path ${ProjectRoot}/CMakeLists.txt -NoNewline
 
-    Setup-Obs
+    if ( ! $SkipSetupOBS ) {
+        Setup-Obs
+    }
 
     Push-Location -Stack BuildTemp
     if ( ! ( ( $SkipAll ) -or ( $SkipBuild ) ) ) {
