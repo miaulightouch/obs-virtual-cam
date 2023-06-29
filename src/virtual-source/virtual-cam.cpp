@@ -248,7 +248,7 @@ HRESULT CVCamStream::GetMediaType(int iPosition, CMediaType *pmt)
 	if (format_list.size() == 0)
 		ListSupportFormat();
 
-	if (iPosition < 0 || iPosition > format_list.size() - 1)
+	if (iPosition < 0 || (uint16_t)iPosition > format_list.size() - 1)
 		return E_INVALIDARG;
 
 	DECLARE_PTR(VIDEOINFOHEADER, pvi, pmt->AllocFormatBuffer(sizeof(VIDEOINFOHEADER)));
@@ -405,7 +405,7 @@ HRESULT STDMETHODCALLTYPE CVCamStream::GetStreamCaps(int iIndex, AM_MEDIA_TYPE *
 	if (format_list.size() == 0)
 		ListSupportFormat();
 
-	if (iIndex < 0 || iIndex > format_list.size() - 1)
+	if (iIndex < 0 || (uint16_t)iIndex > format_list.size() - 1)
 		return E_INVALIDARG;
 
 	*pmt = CreateMediaType(&m_mt);

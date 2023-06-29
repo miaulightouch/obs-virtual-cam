@@ -5,4 +5,8 @@ configure_file(src/plugin-macros.h.in ${CMAKE_SOURCE_DIR}/src/plugin-macros.gene
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 add_subdirectory(src/virtual-source)
+
+# Build virtual-output only on 64-bit systems
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 add_subdirectory(src/virtual-output)
+endif()
