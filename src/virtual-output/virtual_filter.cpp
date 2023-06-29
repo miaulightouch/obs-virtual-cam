@@ -4,27 +4,27 @@
 #include "../queue/share_queue_write.h"
 #include "../plugin-macros.generated.h"
 
-#define S_DELAY             "delay"
-#define S_START             "start"
-#define S_STOP              "stop"
-#define S_TARGET            "target"
-#define S_FLIP              "flip"
-#define S_RATIO             "keep-ratio"
+#define S_DELAY "delay"
+#define S_START "start"
+#define S_STOP "stop"
+#define S_TARGET "target"
+#define S_FLIP "flip"
+#define S_RATIO "keep-ratio"
 
-#define T_(v)               obs_module_text(v)
-#define T_DELAY             T_("DelayFrame")
-#define T_START             T_("StartOutput")
-#define T_STOP              T_("StopOutput")
-#define T_TARGET            T_("Target")
-#define T_FLIP              T_("HorizontalFlip")
-#define T_RATIO             T_("KeepAspectRatio")
+#define T_(v) obs_module_text(v)
+#define T_DELAY T_("DelayFrame")
+#define T_START T_("StartOutput")
+#define T_STOP T_("StopOutput")
+#define T_TARGET T_("Target")
+#define T_FLIP T_("HorizontalFlip")
+#define T_RATIO T_("KeepAspectRatio")
 
 struct virtual_filter_data {
-	obs_source_t* context = nullptr;
+	obs_source_t *context = nullptr;
 	bool active = false;
 	bool flip = false;
-	gs_texrender_t* texrender = nullptr;
-	gs_stagesurf_t* stagesurface = nullptr;
+	gs_texrender_t *texrender = nullptr;
+	gs_stagesurf_t *stagesurface = nullptr;
 	share_queue video_queue = {};
 	uint32_t width = 0;
 	uint32_t height = 0;
@@ -55,9 +55,9 @@ static void *virtual_filter_create(obs_data_t *settings, obs_source_t *context)
 
 static void virtual_filter_video(void *param, float seconds)
 {
-	virtual_filter_data* filter = (virtual_filter_data*)param;
-	obs_source_t* target = obs_filter_get_target(filter->context);
-	uint8_t* video_data;
+	virtual_filter_data *filter = (virtual_filter_data *)param;
+	obs_source_t *target = obs_filter_get_target(filter->context);
+	uint8_t *video_data;
 	uint32_t linesize;
 	uint32_t width = obs_source_get_width(target);
 	uint32_t height = obs_source_get_height(target);
@@ -88,7 +88,7 @@ static void virtual_filter_video(void *param, float seconds)
 	gs_clear(GS_CLEAR_COLOR, &background, 0.0f, 0);
 	gs_ortho(0.0f, (float)width, 0.0f, (float)height, -100.0f, 100.0f);
 
-	if(filter->flip) {
+	if (filter->flip) {
 		gs_matrix_scale3f(-1.0f, 1.0f, 1.0f);
 		gs_matrix_translate3f(-(float)width, 0.0f, 0.0f);
 	}
@@ -104,23 +104,19 @@ static void virtual_filter_video(void *param, float seconds)
 		filter->stagesurface = gs_stagesurface_create(width, height, GS_BGRA);
 		filter->width = width;
 		filter->height = height;
-		shared_queue_set_recommended_format(&filter->video_queue, width,
-			height);
+		shared_queue_set_recommended_format(&filter->video_queue, width, height);
 	}
 
-	gs_stage_texture(filter->stagesurface, gs_texrender_get_texture(
-		filter->texrender));
+	gs_stage_texture(filter->stagesurface, gs_texrender_get_texture(filter->texrender));
 
 	gs_stagesurface_map(filter->stagesurface, &video_data, &linesize);
-	shared_queue_push_video(&filter->video_queue, &linesize, width, height,
-		&video_data, time);
+	shared_queue_push_video(&filter->video_queue, &linesize, width, height, &video_data, time);
 	gs_stagesurface_unmap(filter->stagesurface);
 
 	obs_leave_graphics();
 
 	UNUSED_PARAMETER(seconds);
 }
-
 
 static void virtual_filter_destroy(void *data)
 {
@@ -136,7 +132,7 @@ static void virtual_filter_destroy(void *data)
 	}
 }
 
-static void virtual_filter_update(void* data, obs_data_t* settings)
+static void virtual_filter_update(void *data, obs_data_t *settings)
 {
 	virtual_filter_data *filter = (virtual_filter_data *)data;
 	bool keep_ratio = obs_data_get_bool(settings, S_RATIO);
@@ -146,19 +142,18 @@ static void virtual_filter_update(void* data, obs_data_t* settings)
 	shared_queue_set_keep_ratio(&filter->video_queue, keep_ratio);
 }
 
-static void virtual_filter_render(void* data, gs_effect_t* effect)
+static void virtual_filter_render(void *data, gs_effect_t *effect)
 {
 	virtual_filter_data *filter = (virtual_filter_data *)data;
 	obs_source_skip_video_filter(filter->context);
 	UNUSED_PARAMETER(effect);
 }
 
-static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p,
-	void *data)
+static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p, void *data)
 {
-	virtual_filter_data* filter = (virtual_filter_data*)data;
-	obs_source_t* target = obs_filter_get_target(filter->context);
-	struct obs_video_info ovi = { 0 };
+	virtual_filter_data *filter = (virtual_filter_data *)data;
+	obs_source_t *target = obs_filter_get_target(filter->context);
+	struct obs_video_info ovi = {0};
 	uint32_t base_width, base_height;
 	uint64_t interval;
 
@@ -173,8 +168,9 @@ static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p,
 		filter->height = 0;
 		interval = (uint64_t)ovi.fps_den * 1000000000ULL / (uint64_t)ovi.fps_num;
 		filter->active = shared_queue_create(&filter->video_queue, filter->mode,
-			AV_PIX_FMT_BGRA, filter->base_width, filter->base_height, interval,
-			filter->delay + 10);
+						     AV_PIX_FMT_BGRA, filter->base_width,
+						     filter->base_height, interval,
+						     filter->delay + 10);
 	} else {
 		blog(LOG_WARNING, "virtual-filter target size error");
 		filter->active = false;
@@ -186,20 +182,18 @@ static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p,
 		obs_property_set_visible(stop, true);
 		shared_queue_set_delay(&filter->video_queue, filter->delay);
 		obs_add_tick_callback(virtual_filter_video, data);
-		blog(LOG_INFO, "starting virtual-filter on VirtualCam'%d'",
-			filter->mode + 1);
+		blog(LOG_INFO, "starting virtual-filter on VirtualCam'%d'", filter->mode + 1);
 	} else {
 		blog(LOG_WARNING, "starting virtual-filter failed on VirtualCam'%d'",
-			filter->mode + 1);
+		     filter->mode + 1);
 	}
 
 	return filter->active;
 }
 
-static bool virtual_filter_stop(obs_properties_t *props, obs_property_t *p,
-	void *data)
+static bool virtual_filter_stop(obs_properties_t *props, obs_property_t *p, void *data)
 {
-	virtual_filter_data* filter = (virtual_filter_data*)data;
+	virtual_filter_data *filter = (virtual_filter_data *)data;
 	obs_remove_tick_callback(virtual_filter_video, data);
 	shared_queue_write_close(&filter->video_queue);
 	obs_property_t *start = obs_properties_get(props, S_START);
@@ -212,12 +206,12 @@ static bool virtual_filter_stop(obs_properties_t *props, obs_property_t *p,
 
 static obs_properties_t *virtual_filter_properties(void *data)
 {
-	virtual_filter_data *filter = (virtual_filter_data*)data;
+	virtual_filter_data *filter = (virtual_filter_data *)data;
 	obs_properties_t *props = obs_properties_create();
 	obs_property *start, *stop, *cb;
 	obs_properties_add_int_slider(props, S_DELAY, T_DELAY, 0, 30, 1);
-	cb = obs_properties_add_list(props, S_TARGET, T_TARGET,
-		OBS_COMBO_TYPE_LIST, OBS_COMBO_FORMAT_INT);
+	cb = obs_properties_add_list(props, S_TARGET, T_TARGET, OBS_COMBO_TYPE_LIST,
+				     OBS_COMBO_FORMAT_INT);
 
 	obs_property_list_add_int(cb, "OBS-Camera", ModeVideo);
 	obs_property_list_add_int(cb, "OBS-Camera2", ModeVideo2);
@@ -227,10 +221,8 @@ static obs_properties_t *virtual_filter_properties(void *data)
 	obs_properties_add_bool(props, S_FLIP, T_FLIP);
 	obs_properties_add_bool(props, S_RATIO, T_RATIO);
 
-	start = obs_properties_add_button(props, S_START, T_START,
-		virtual_filter_start);
-	stop = obs_properties_add_button(props, S_STOP, T_STOP,
-		virtual_filter_stop);
+	start = obs_properties_add_button(props, S_START, T_START, virtual_filter_start);
+	stop = obs_properties_add_button(props, S_STOP, T_STOP, virtual_filter_stop);
 
 	obs_property_set_visible(start, !filter->active);
 	obs_property_set_visible(stop, filter->active);

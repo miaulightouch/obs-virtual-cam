@@ -2,7 +2,7 @@
 
 #include "../queue/share_queue_read.h"
 
-#define DECLARE_PTR(type, ptr, expr) type* ptr = (type*)(expr);
+#define DECLARE_PTR(type, ptr, expr) type *ptr = (type *)(expr);
 
 #define AUDIO_BUFFER_SIZE 4096
 #define SAMPLE_RATE 44100
@@ -11,14 +11,13 @@
 EXTERN_C const GUID CLSID_OBS_VirtualA;
 
 class CVAudioStream;
-class CVAudio : public CSource, public  IAMFilterMiscFlags
-{
+class CVAudio : public CSource, public IAMFilterMiscFlags {
 public:
 	DECLARE_IUNKNOWN;
 	//////////////////////////////////////////////////////////////////////////
 	//  IUnknown
 	//////////////////////////////////////////////////////////////////////////
-	static CUnknown * WINAPI CreateInstance(LPUNKNOWN lpunk, HRESULT *phr);
+	static CUnknown *WINAPI CreateInstance(LPUNKNOWN lpunk, HRESULT *phr);
 	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void **ppv);
 	//////////////////////////////////////////////////////////////////////////
 	//  IAMFilterMiscFlags
@@ -33,12 +32,11 @@ public:
 	CVAudio(LPUNKNOWN lpunk, HRESULT *phr);
 };
 
-
-class CVAudioStream : public CSourceStream, public IAMStreamConfig,
-	public IKsPropertySet, public IAMBufferNegotiation
-{
+class CVAudioStream : public CSourceStream,
+		      public IAMStreamConfig,
+		      public IKsPropertySet,
+		      public IAMBufferNegotiation {
 public:
-
 	//////////////////////////////////////////////////////////////////////////
 	//  IUnknown
 	//////////////////////////////////////////////////////////////////////////
@@ -49,7 +47,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//  IQualityControl
 	//////////////////////////////////////////////////////////////////////////
-	STDMETHODIMP Notify(IBaseFilter * pSender, Quality q);
+	STDMETHODIMP Notify(IBaseFilter *pSender, Quality q);
 
 	//////////////////////////////////////////////////////////////////////////
 	//  IAMStreamConfig
@@ -57,27 +55,24 @@ public:
 	HRESULT STDMETHODCALLTYPE SetFormat(AM_MEDIA_TYPE *pmt);
 	HRESULT STDMETHODCALLTYPE GetFormat(AM_MEDIA_TYPE **ppmt);
 	HRESULT STDMETHODCALLTYPE GetNumberOfCapabilities(int *piCount, int *piSize);
-	HRESULT STDMETHODCALLTYPE GetStreamCaps(int iIndex,
-		AM_MEDIA_TYPE **pmt, BYTE *pSCC);
+	HRESULT STDMETHODCALLTYPE GetStreamCaps(int iIndex, AM_MEDIA_TYPE **pmt, BYTE *pSCC);
 
 	//////////////////////////////////////////////////////////////////////////
 	//  IKsPropertySet
 	//////////////////////////////////////////////////////////////////////////
-	HRESULT STDMETHODCALLTYPE Set(REFGUID guidPropSet, DWORD dwID,
-		void *pInstanceData, DWORD cbInstanceData, void *pPropData,
-		DWORD cbPropData);
-	HRESULT STDMETHODCALLTYPE Get(REFGUID guidPropSet, DWORD dwPropID,
-		void *pInstanceData, DWORD cbInstanceData, void *pPropData,
-		DWORD cbPropData, DWORD *pcbReturned);
-	HRESULT STDMETHODCALLTYPE QuerySupported(REFGUID guidPropSet,
-		DWORD dwPropID, DWORD *pTypeSupport);
+	HRESULT STDMETHODCALLTYPE Set(REFGUID guidPropSet, DWORD dwID, void *pInstanceData,
+				      DWORD cbInstanceData, void *pPropData, DWORD cbPropData);
+	HRESULT STDMETHODCALLTYPE Get(REFGUID guidPropSet, DWORD dwPropID, void *pInstanceData,
+				      DWORD cbInstanceData, void *pPropData, DWORD cbPropData,
+				      DWORD *pcbReturned);
+	HRESULT STDMETHODCALLTYPE QuerySupported(REFGUID guidPropSet, DWORD dwPropID,
+						 DWORD *pTypeSupport);
 
 	//////////////////////////////////////////////////////////////////////////
 	// IAMBufferNegotiation interface
 	//////////////////////////////////////////////////////////////////////////
-	STDMETHODIMP SuggestAllocatorProperties(const ALLOCATOR_PROPERTIES* pprop);
-	STDMETHODIMP GetAllocatorProperties(ALLOCATOR_PROPERTIES* pprop);
-
+	STDMETHODIMP SuggestAllocatorProperties(const ALLOCATOR_PROPERTIES *pprop);
+	STDMETHODIMP GetAllocatorProperties(ALLOCATOR_PROPERTIES *pprop);
 
 	//////////////////////////////////////////////////////////////////////////
 	//  CSourceStream
@@ -96,7 +91,6 @@ public:
 	HRESULT Stop(void);
 	HRESULT Pause(void);
 
-
 private:
 	void SetTimeout();
 
@@ -106,7 +100,6 @@ private:
 	uint64_t dshow_start_ts = 0;
 	uint64_t sync_timeout = 0;
 	uint64_t system_start_time = 0;
-	REFERENCE_TIME  prev_end_ts = 0;
+	REFERENCE_TIME prev_end_ts = 0;
 	ALLOCATOR_PROPERTIES alloc_prop;
-
 };

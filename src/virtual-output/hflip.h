@@ -1,5 +1,4 @@
-extern "C"
-{
+extern "C" {
 #include "stdint.h"
 #include "libavfilter/buffersink.h"
 #include "libavfilter/buffersrc.h"
@@ -18,7 +17,7 @@ struct FlipContext {
 	AVFilterContext *buffersrc_ctx = 0;
 };
 
-bool init_flip_filter(FlipContext* ctx, int width, int height, int format);
-bool release_flip_filter(FlipContext* ctx);
-void flip_frame(FlipContext* ctx, uint8_t** src, uint32_t* linesize);
-void unref_flip_frame(FlipContext* ctx);
+bool init_flip_filter(FlipContext *ctx, int width, int height, int format);
+bool release_flip_filter(FlipContext *ctx);
+void flip_frame(FlipContext *ctx, uint8_t **src, uint32_t *linesize);
+void unref_flip_frame(FlipContext *ctx);

@@ -1,7 +1,7 @@
 #include "share_queue_write.h"
 
-bool shared_queue_create(share_queue* q, int mode, int format,
-	int width, int height, uint64_t frame_time, int qlength)
+bool shared_queue_create(share_queue *q, int mode, int format, int width, int height,
+			 uint64_t frame_time, int qlength)
 {
 	if (!q)
 		return false;
@@ -11,27 +11,25 @@ bool shared_queue_create(share_queue* q, int mode, int format,
 
 	int frame_size = 0;
 	int buffer_size = 0;
-	const char* name = get_mapping_name(mode);
+	const char *name = get_mapping_name(mode);
 
 	if (mode < ModeAudio) {
 		frame_size = cal_video_buffer_size(format, width, height);
-		buffer_size = sizeof(queue_header) + (sizeof(frame_header)
-			+ frame_size) * qlength;
-		q->hwnd = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL,
-			PAGE_READWRITE, 0, buffer_size, name);
+		buffer_size = sizeof(queue_header) + (sizeof(frame_header) + frame_size) * qlength;
+		q->hwnd = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0,
+					     buffer_size, name);
 	} else {
 		frame_size = AUDIO_SIZE;
-		buffer_size = sizeof(queue_header) + (sizeof(frame_header) +
-			frame_size) * qlength;
-		q->hwnd = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL,
-			PAGE_READWRITE, 0, buffer_size, name);
+		buffer_size = sizeof(queue_header) + (sizeof(frame_header) + frame_size) * qlength;
+		q->hwnd = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0,
+					     buffer_size, name);
 	}
 
 	if (q->hwnd) {
-		q->header = (queue_header*)MapViewOfFile(q->hwnd, FILE_MAP_ALL_ACCESS,
-			0, 0, buffer_size);
+		q->header = (queue_header *)MapViewOfFile(q->hwnd, FILE_MAP_ALL_ACCESS, 0, 0,
+							  buffer_size);
 	}
-	queue_header* q_head = q->header;
+	queue_header *q_head = q->header;
 
 	if (q_head) {
 		q_head->header_size = sizeof(queue_header);
@@ -52,7 +50,7 @@ bool shared_queue_create(share_queue* q, int mode, int format,
 	return (q->hwnd != NULL && q->header != NULL);
 }
 
-void shared_queue_write_close(share_queue* q)
+void shared_queue_write_close(share_queue *q)
 {
 	if (q && q->header) {
 		q->header->state = OutputStop;
@@ -64,14 +62,14 @@ void shared_queue_write_close(share_queue* q)
 	}
 }
 
-bool shared_queue_push_video(share_queue* q, uint32_t* linesize,
-	uint32_t width, uint32_t height, uint8_t** data, uint64_t timestamp)
+bool shared_queue_push_video(share_queue *q, uint32_t *linesize, uint32_t width, uint32_t height,
+			     uint8_t **data, uint64_t timestamp)
 {
 	if (!q || !q->header)
 		return false;
 
-	frame_header* frame = get_frame_header(q->header, q->index);
-	uint8_t* dst = (uint8_t*)frame + q->header->element_header_size;
+	frame_header *frame = get_frame_header(q->header, q->index);
+	uint8_t *dst = (uint8_t *)frame + q->header->element_header_size;
 	int planes = 0;
 
 	switch (q->header->format) {
@@ -131,21 +129,20 @@ bool shared_queue_push_video(share_queue* q, uint32_t* linesize,
 	return true;
 }
 
-bool shared_queue_push_audio(share_queue* q, uint32_t size,
-	uint8_t* src, uint64_t timestamp, uint64_t video_ts)
+bool shared_queue_push_audio(share_queue *q, uint32_t size, uint8_t *src, uint64_t timestamp,
+			     uint64_t video_ts)
 {
 	if (!q || !q->header)
 		return false;
 
-	int offset = q->header->header_size +
-		(q->header->element_size) * q->index;
+	int offset = q->header->header_size + (q->header->element_size) * q->index;
 
 	q->header->write_index = q->index;
 	q->header->last_ts = video_ts;
 
-	uint8_t* buff = (uint8_t*)q->header + offset;
-	frame_header* head = (frame_header*)buff;
-	uint8_t* data = (uint8_t*)buff + q->header->element_header_size;
+	uint8_t *buff = (uint8_t *)q->header + offset;
+	frame_header *head = (frame_header *)buff;
+	uint8_t *data = (uint8_t *)buff + q->header->element_header_size;
 	memcpy(data, src, size);
 	head->linesize[0] = size;
 	head->timestamp = timestamp;
@@ -174,7 +171,7 @@ bool shared_queue_check(int mode)
 		return true;
 }
 
-bool shared_queue_set_delay(share_queue* q, int delay_video_frame)
+bool shared_queue_set_delay(share_queue *q, int delay_video_frame)
 {
 	if (!q || !q->header)
 		return false;
@@ -183,7 +180,7 @@ bool shared_queue_set_delay(share_queue* q, int delay_video_frame)
 	return true;
 }
 
-bool shared_queue_set_keep_ratio(share_queue* q, bool keep_ratio)
+bool shared_queue_set_keep_ratio(share_queue *q, bool keep_ratio)
 {
 	if (!q || !q->header)
 		return false;
@@ -195,7 +192,7 @@ bool shared_queue_set_keep_ratio(share_queue* q, bool keep_ratio)
 	return true;
 }
 
-bool shared_queue_set_recommended_format(share_queue* q, int width, int height)
+bool shared_queue_set_recommended_format(share_queue *q, int width, int height)
 {
 	if (!q || !q->header)
 		return false;

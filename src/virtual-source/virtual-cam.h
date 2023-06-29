@@ -1,14 +1,13 @@
 #pragma once
 
-extern "C"
-{
+extern "C" {
 #include "libswscale/swscale.h"
 };
 
 #include "../queue/share_queue_read.h"
 #include <deque>
 
-#define DECLARE_PTR(type, ptr, expr) type* ptr = (type*)(expr);
+#define DECLARE_PTR(type, ptr, expr) type *ptr = (type *)(expr);
 
 EXTERN_C const GUID CLSID_OBS_VirtualV;
 EXTERN_C const GUID CLSID_OBS_VirtualV2;
@@ -17,9 +16,9 @@ EXTERN_C const GUID CLSID_OBS_VirtualV4;
 
 class CVCamStream;
 
-struct format
-{
-	format(int width_, int height_, int64_t time_per_frame_) {
+struct format {
+	format(int width_, int height_, int64_t time_per_frame_)
+	{
 		width = width_;
 		height = height_;
 		time_per_frame = time_per_frame_;
@@ -29,13 +28,12 @@ struct format
 	int64_t time_per_frame;
 };
 
-extern CUnknown * WINAPI CreateInstance(LPUNKNOWN lpunk, HRESULT *phr);
-extern CUnknown * WINAPI CreateInstance2(LPUNKNOWN lpunk, HRESULT *phr);
-extern CUnknown * WINAPI CreateInstance3(LPUNKNOWN lpunk, HRESULT *phr);
-extern CUnknown * WINAPI CreateInstance4(LPUNKNOWN lpunk, HRESULT *phr);
+extern CUnknown *WINAPI CreateInstance(LPUNKNOWN lpunk, HRESULT *phr);
+extern CUnknown *WINAPI CreateInstance2(LPUNKNOWN lpunk, HRESULT *phr);
+extern CUnknown *WINAPI CreateInstance3(LPUNKNOWN lpunk, HRESULT *phr);
+extern CUnknown *WINAPI CreateInstance4(LPUNKNOWN lpunk, HRESULT *phr);
 
-class CVCam : public CSource
-{
+class CVCam : public CSource {
 public:
 	DECLARE_IUNKNOWN;
 	//////////////////////////////////////////////////////////////////////////
@@ -44,17 +42,15 @@ public:
 
 	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void **ppv);
 	IFilterGraph *GetGraph() { return m_pGraph; }
-	FILTER_STATE GetState(){ return m_State; }
+	FILTER_STATE GetState() { return m_State; }
 	CVCam(LPUNKNOWN lpunk, HRESULT *phr, const GUID id, int mode);
+
 protected:
 	CVCamStream *stream = nullptr;
-
 };
 
-class CVCamStream : public CSourceStream, public IAMStreamConfig, public IKsPropertySet
-{
+class CVCamStream : public CSourceStream, public IAMStreamConfig, public IKsPropertySet {
 public:
-
 	//////////////////////////////////////////////////////////////////////////
 	//  IUnknown
 	//////////////////////////////////////////////////////////////////////////
@@ -65,7 +61,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	//  IQualityControl
 	//////////////////////////////////////////////////////////////////////////
-	STDMETHODIMP Notify(IBaseFilter * pSender, Quality q);
+	STDMETHODIMP Notify(IBaseFilter *pSender, Quality q);
 
 	//////////////////////////////////////////////////////////////////////////
 	//  IAMStreamConfig
@@ -73,21 +69,20 @@ public:
 	HRESULT STDMETHODCALLTYPE SetFormat(AM_MEDIA_TYPE *pmt);
 	HRESULT STDMETHODCALLTYPE GetFormat(AM_MEDIA_TYPE **ppmt);
 	HRESULT STDMETHODCALLTYPE GetNumberOfCapabilities(int *piCount, int *piSize);
-	HRESULT STDMETHODCALLTYPE GetStreamCaps(int iIndex, AM_MEDIA_TYPE **pmt,
-		BYTE *pSCC);
+	HRESULT STDMETHODCALLTYPE GetStreamCaps(int iIndex, AM_MEDIA_TYPE **pmt, BYTE *pSCC);
 
 	//////////////////////////////////////////////////////////////////////////
 	//  IKsPropertySet
 	//////////////////////////////////////////////////////////////////////////
-	HRESULT STDMETHODCALLTYPE Set(REFGUID guidPropSet, DWORD dwID,
-		void *pInstanceData, DWORD cbInstanceData, void *pPropData, DWORD cbPropData);
+	HRESULT STDMETHODCALLTYPE Set(REFGUID guidPropSet, DWORD dwID, void *pInstanceData,
+				      DWORD cbInstanceData, void *pPropData, DWORD cbPropData);
 
-	HRESULT STDMETHODCALLTYPE Get(REFGUID guidPropSet, DWORD dwPropID,
-		void *pInstanceData, DWORD cbInstanceData, void *pPropData,
-		DWORD cbPropData, DWORD *pcbReturned);
+	HRESULT STDMETHODCALLTYPE Get(REFGUID guidPropSet, DWORD dwPropID, void *pInstanceData,
+				      DWORD cbInstanceData, void *pPropData, DWORD cbPropData,
+				      DWORD *pcbReturned);
 
-	HRESULT STDMETHODCALLTYPE QuerySupported(REFGUID guidPropSet,
-		DWORD dwPropID, DWORD *pTypeSupport);
+	HRESULT STDMETHODCALLTYPE QuerySupported(REFGUID guidPropSet, DWORD dwPropID,
+						 DWORD *pTypeSupport);
 
 	//////////////////////////////////////////////////////////////////////////
 	//  CSourceStream
@@ -98,13 +93,12 @@ public:
 	HRESULT FillBuffer(IMediaSample *pms);
 	HRESULT DecideBufferSize(IMemAllocator *pIMemAlloc, ALLOCATOR_PROPERTIES *pProperties);
 	HRESULT CheckMediaType(const CMediaType *pMediaType);
-	HRESULT GetMediaType(int iPosition,CMediaType *pmt);
+	HRESULT GetMediaType(int iPosition, CMediaType *pmt);
 	HRESULT SetMediaType(const CMediaType *pmt);
 	HRESULT OnThreadCreate(void);
 	HRESULT OnThreadDestroy(void);
 
 private:
-
 	bool ListSupportFormat(void);
 	bool CheckObsSetting(void);
 	bool ValidateResolution(long width, long height);
@@ -121,7 +115,7 @@ private:
 	int queue_mode = 0;
 	int format = 0;
 	int get_timeout = 20;
-	uint8_t* dst;
+	uint8_t *dst;
 	uint32_t frame_width = 0;
 	uint32_t frame_height = 0;
 	uint64_t obs_start_ts = 0;
@@ -129,7 +123,7 @@ private:
 	uint64_t time_perframe = 0;
 	uint64_t system_start_time = 0;
 	uint64_t sync_timeout = 0;
-	REFERENCE_TIME  prev_end_ts = 0;
+	REFERENCE_TIME prev_end_ts = 0;
 
 	//obs format related
 	bool use_obs_format_init = false;
@@ -138,5 +132,4 @@ private:
 	uint32_t obs_height = 1080;
 	uint64_t obs_frame_time = 333333;
 	dst_scale_context scale_info;
-
 };

@@ -5,24 +5,20 @@
 #include <obs-frontend-api.h>
 #include <util/config-file.h>
 
-VirtualProperties::VirtualProperties(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::VirtualProperties)
+VirtualProperties::VirtualProperties(QWidget *parent)
+	: QDialog(parent), ui(new Ui::VirtualProperties)
 {
-    ui->setupUi(this);
-	connect(ui->pushButtonStart, SIGNAL(clicked()),
-		this, SLOT(onStart()));
+	ui->setupUi(this);
+	connect(ui->pushButtonStart, SIGNAL(clicked()), this, SLOT(onStart()));
 	connect(ui->pushButtonStop, SIGNAL(clicked()), this, SLOT(onStop()));
-	connect(ui->spinBox, SIGNAL(valueChanged(int)),
-		ui->horizontalSlider, SLOT(setValue(int)));
-	connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), ui->spinBox,
-		SLOT(setValue(int)));
+	connect(ui->spinBox, SIGNAL(valueChanged(int)), ui->horizontalSlider, SLOT(setValue(int)));
+	connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), ui->spinBox, SLOT(setValue(int)));
 	connect(ui->checkBox_horiflip, SIGNAL(stateChanged(int)), this,
 		SLOT(onClickHorizontalFlip()));
 	connect(ui->checkBox_keepratio, SIGNAL(stateChanged(int)), this,
 		SLOT(onClickKeepAspectRatio()));
 
-	config_t* config = obs_frontend_get_global_config();
+	config_t *config = obs_frontend_get_global_config();
 	config_set_default_bool(config, "VirtualOutput", "AutoStart", false);
 	config_set_default_bool(config, "VirtualOutput", "HoriFlip", false);
 	config_set_default_bool(config, "VirtualOutput", "KeepRatio", false);
@@ -34,7 +30,6 @@ VirtualProperties::VirtualProperties(QWidget *parent) :
 	int delay = config_get_int(config, "VirtualOutput", "OutDelay");
 	int target = config_get_int(config, "VirtualOutput", "Target");
 
-
 	ui->checkBox_auto->setChecked(autostart);
 	ui->checkBox_horiflip->setChecked(hori_flip);
 	ui->checkBox_keepratio->setChecked(keep_ratio);
@@ -42,8 +37,7 @@ VirtualProperties::VirtualProperties(QWidget *parent) :
 	ui->comboBox_target->addItem("OBS-Camera2", ModeVideo2);
 	ui->comboBox_target->addItem("OBS-Camera3", ModeVideo3);
 	ui->comboBox_target->addItem("OBS-Camera4", ModeVideo4);
-	ui->comboBox_target->setCurrentIndex(
-		ui->comboBox_target->findData(target));
+	ui->comboBox_target->setCurrentIndex(ui->comboBox_target->findData(target));
 	ui->spinBox->setValue(delay);
 	ui->horizontalSlider->setValue(delay);
 	ui->label->setStyleSheet("QLabel { color : red; }");
@@ -63,7 +57,7 @@ VirtualProperties::~VirtualProperties()
 	virtual_output_disable();
 	virtual_output_terminate();
 	SaveSetting();
-    delete ui;
+	delete ui;
 }
 
 void VirtualProperties::SetVisable()
@@ -101,7 +95,7 @@ void VirtualProperties::onStop()
 
 void VirtualProperties::onStopSignal(void *data, calldata_t *cd)
 {
-	auto page = (VirtualProperties*)data;
+	auto page = (VirtualProperties *)data;
 	bool start_fail = calldata_bool(cd, "start_fail");
 	if (start_fail)
 		page->ShowWarning(true);
@@ -142,7 +136,7 @@ void VirtualProperties::closeEvent(QCloseEvent *event)
 
 void VirtualProperties::SaveSetting()
 {
-	config_t* config = obs_frontend_get_global_config();
+	config_t *config = obs_frontend_get_global_config();
 	if (config) {
 		bool autostart = ui->checkBox_auto->isChecked();
 		bool hori_flip = ui->checkBox_horiflip->isChecked();
