@@ -76,7 +76,7 @@ function Package {
         Log-Information 'Creating NSIS installer...'
         Push-Location -Stack BuildTemp
         Ensure-Location -Path "${ProjectRoot}/release"
-        Invoke-External makensis /DOutFile="${ProjectRoot}/release/${OutputName}-Installer" ${NsisFile}
+        Invoke-External makensis "/XOutFile ${ProjectRoot}/release/${OutputName}-Installer.exe" ${NsisFile}
         Pop-Location -Stack BuildTemp
     }
 

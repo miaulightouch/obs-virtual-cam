@@ -4,7 +4,6 @@ Unicode true
 Name "OBS Virtualcam @CMAKE_PROJECT_VERSION@"
 InstallDir "$PROGRAMFILES64\obs-studio"
 InstallDirRegKey HKLM "Software\OBS Studio" ""
-OutFile "..\release\@CMAKE_PROJECT_NAME@-@CMAKE_PROJECT_VERSION@-Windows-installer.exe"
 
 ; Use compression
 SetCompressor LZMA
@@ -90,19 +89,6 @@ Section "@CMAKE_PROJECT_NAME@" Section1
 	; Set Section Files and Shortcuts
 	SetOutPath $INSTDIR
 	File /r "..\release\*.*"
-	; SetOutPath "$INSTDIR\data\obs-plugins\obs-virtualoutput\"
-	; File "..\release\bin\32bit\obs-virtualsource.dll"
-	; File "..\release\bin\32bit\obs-virtualsource.pdb"
-	; File "..\release\bin\32bit\avutil-56.dll"
-	; File "..\release\bin\32bit\swscale-5.dll"
-	; SetOutPath "$INSTDIR\data\obs-plugins\obs-virtualoutput\locale\"
-	; File /r "..\release\data\obs-plugins\obs-virtualoutput\locale\"
-	; SetOutPath "$INSTDIR\obs-plugins\64bit\"
-	; File "..\release\obs-plugins\64bit\obs-virtualoutput.dll"
-	; File "..\release\obs-plugins\64bit\obs-virtualoutput.pdb"
-	; SetOutPath "$INSTDIR\bin\64bit\"
-	; File "..\release\bin\64bit\obs-virtualsource.dll"
-	; File "..\release\bin\64bit\obs-virtualsource.pdb"
 
 SectionEnd
 
