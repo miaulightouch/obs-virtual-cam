@@ -1,59 +1,63 @@
-# OBS Plugin Template
+# OBS-VirtualCam
 
-## Introduction
+![CI Windows Release](https://github.com/miaulightouch/obs-virtual-cam/actions/workflows/main.yml/badge.svg?event=release) ![CI Windows On-Push](https://github.com/miaulightouch/obs-virtual-cam/actions/workflows/main.yml/badge.svg?event=push)
 
-This plugin is meant to make it easy to quickstart development of new OBS plugins. It includes:
+obs-virutalcam is a plugin for obs-studio , transforming the output video to a virtual directshow device.
 
-- The CMake project file
-- Boilerplate plugin source code
-- GitHub Actions workflows and repository actions
-- Build scripts for Windows, macOS, and Linux
+**Supported Platforms** : Windows 10
 
-## Configuring
+**Supported OBS Studio version** : 29.0.0+
 
-Open `buildspec.json` and change the name and version of the plugin accordingly. This is also where the obs-studio version as well as the pre-built dependencies for Windows and macOS are defined. Use a release version (with associated checksums) from a recent [obs-deps release](https://github.com/obsproject/obs-deps/releases).
+## Features
 
-Next, open `CMakeLists.txt` and edit the following lines at the beginning:
+* **virtual output** : A output plugin sink raw video & audio to directshow interface.
+* **virtual filter output** : A filter plugin sink obs source video to directshow interface.
+* **virtual source** : Four directshow Interfaces which can use in 3rd party software.
 
-```cmake
-project(obs-plugintemplate VERSION 1.0.0)
+## Install
 
-set(PLUGIN_AUTHOR "Your Name Here")
+The installer and compressed file can be found in [Release Page](https://github.com/miaulightouch/obs-virtual-cam/releases). Using installer is recommended, but if you want to use compressed file to install manually , please follow these instructions.
 
-set(LINUX_MAINTAINER_EMAIL "me@contoso.com")
+1. Unzip OBS-VirtualCam.zip and put it to your obs-studio install folder.
+2. Run CMD as Administrator and register 32bit directshow source
+
+```batch
+regsvr32 "C:\Program Files\obs-studio\bin\32bit\obs-virtualsource.dll"
 ```
 
-The build scripts (contained in the `.github/scripts` directory) will update the `project` line automatically based on values from the `buildspec.json` file. If the scripts are not used, these changes need to be done manually.
+3. Do it again to register 64bit directshow source
 
-## GitHub Actions & CI
+```batch
+regsvr32 "C:\Program Files\obs-studio\bin\64bit\obs-virtualsource.dll"
+```
 
-The scripts contained in `github/scripts` can be used to build and package the plugin and take care of setting up obs-studio as well as its own dependencies. A default workflow for GitHub Actions is also provided and will use these scripts.
+- If you want to Remove the directshow filter , you can also use regsvr32 to do this
 
-### Retrieving build artifacts
+```batch
+regsvr32 /u "C:\Program Files\obs-studio\bin\32bit\obs-virtualsource.dll"
+```
 
-Each build produces installers and packages that you can use for testing and releases. These artifacts can be found on the action result page via the "Actions" tab in your GitHub repository.
+## Register specific number of virtual cameras
 
-#### Building a Release
+Unregister then register 2 directshow camera (up to 4)
 
-Simply create and push a tag and GitHub Actions will run the pipeline in Release Mode. This mode uses the tag as its version number instead of the git ref in normal mode.
+```batch
+regsvr32 /u "C:\Program Files\obs-studio\bin\64bit\obs-virtualsource.dll"
+regsvr32 /n /i:"2" "C:\Program Files\obs-studio\bin\64bit\obs-virtualsource.dll"
+```
 
-### Packaging on Linux
+## Build
 
-The install step results in different directory structures depending on the value of `LINUX_PORTABLE` - "OFF" will organize outputs to be placed in the system root, such as `/usr/`, and "ON" will organize outputs for portable installations in the user's home directory. If you are packaging for a Linux distribution, you probably want to set `-DLINUX_PORTABLE=OFF`.
+You need to install cmake , visual studio 2017 ,and build OBS project first.
+Set following Cmake variables:
 
-### Signing and Notarizing on macOS
+* **QTDIR** (path): QT folder
+* **DepsPath** (path): FFmpeg folder in OBS dependencies package
+* **LIBOBS_INCLUDE_DIR** (path) : Libobs  include folder
+* **LIBOBS_LIB** (filepath) : obs.lib path
+* **OBS_FRONTEND_LIB** (filepath): obs-frontend-api.lib path
+* **PTHREAD_LIB** (filepath): w32-pthread.lib path
 
-On macOS, Release Mode builds can be signed and sent to Apple for notarization if the necessary codesigning credentials are added as secrets to your repository. **You'll need a paid Apple Developer Account for this.**
+## Donate
 
-- On your Apple Developer dashboard, go to "Certificates, IDs & Profiles" and create two signing certificates:
-    - One of the "Developer ID Application" type. It will be used to sign the plugin's binaries
-    - One of the "Developer ID Installer" type. It will be used to sign the plugin's installer
-- Using the Keychain app on macOS, export these two certificates and keys into a .p12 file **protected with a strong password**
-- Encode the .p12 file into its base64 representation by running `base64 YOUR_P12_FILE`
-- Add the following secrets in your Github repository settings:
-    - `MACOS_SIGNING_APPLICATION_IDENTITY`: Name of the "Developer ID Application" signing certificate generated earlier
-    - `MACOS_SIGNING_INSTALLER_IDENTITY`: Name of "Developer ID Installer" signing certificate generated earlier
-    - `MACOS_SIGNING_CERT`: Base64-encoded string generated above
-    - `MACOS_SIGNING_CERT_PASSWORD`: Password used to generate the .p12 certificate
-    - `MACOS_NOTARIZATION_USERNAME`: Your Apple Developer account's username
-    - `MACOS_NOTARIZATION_PASSWORD`: Your Apple Developer account's password (use a generated "app password" for this)
+If you like my work on this plugin , you can donate via [Paypal.me](https://www.paypal.me/obsvirtualcam)
