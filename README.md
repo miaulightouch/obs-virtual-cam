@@ -54,4 +54,4 @@ this repo is updated to the latest OBS Plugin Template, please follow [the guide
 
 ## Donate
 
-If you like this plugin , you can donate to original author via [Paypal.me](https://www.paypal.me/obsvirtualcam)
+If you like this plugin, you can donate to original author via [Paypal.me](https://www.paypal.me/obsvirtualcam)
