@@ -25,13 +25,8 @@ set(PLUGIN_WEBSITE "https://www.example.com")
 
 # Add your custom source files here - header files are optional and only required for visibility
 # e.g. in Xcode or Visual Studio
-set(virtualsource_SOURCES
-    dllmain.cpp
-    virtual-cam.cpp
-    virtual-audio.cpp
-    clock.cpp
-    virtual-source.def
-    ../queue/share_queue_read.cpp)
+set(virtualsource_SOURCES dllmain.cpp virtual-cam.cpp virtual-audio.cpp clock.cpp
+                          virtual-source.def ../queue/share_queue_read.cpp)
 
 set(virtualsource_HEADERS virtual-cam.h virtual-audio.h clock.h ../queue/share_queue_read.h
                           ../queue/share_queue.h)
@@ -95,7 +90,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE OBS::libobs)
 
 # --- Windows-specific build settings and tasks ---
 if(OS_WINDOWS)
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/bundle/windows/resource.rc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.rc)
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/bundle/windows/resource.rc.in
+                 ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.rc)
   target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.rc)
 
   if(MSVC)
@@ -119,15 +115,15 @@ function(setup_library_target_for_testing target)
     COMPONENT obs_testing
     OPTIONAL EXCLUDE_FROM_ALL)
 
-	add_custom_command(
-        TARGET ${target}
-        POST_BUILD
-        COMMAND
-          "${CMAKE_COMMAND}" -DCMAKE_INSTALL_PREFIX=${OBS_BUILD_DIR}/rundir
-          -DCMAKE_INSTALL_COMPONENT=obs_testing -DCMAKE_INSTALL_CONFIG_NAME=$<CONFIG> -P
-          ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmake
-        COMMENT "Installing to OBS test directory"
-        VERBATIM)
+  add_custom_command(
+    TARGET ${target}
+    POST_BUILD
+    COMMAND
+      "${CMAKE_COMMAND}" -DCMAKE_INSTALL_PREFIX=${OBS_BUILD_DIR}/rundir
+      -DCMAKE_INSTALL_COMPONENT=obs_testing -DCMAKE_INSTALL_CONFIG_NAME=$<CONFIG> -P
+      ${CMAKE_CURRENT_BINARY_DIR}/cmake_install.cmake
+    COMMENT "Installing to OBS test directory"
+    VERBATIM)
 
 endfunction()
 

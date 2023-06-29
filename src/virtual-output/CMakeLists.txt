@@ -26,13 +26,8 @@ set(PLUGIN_WEBSITE "https://www.example.com")
 
 # Add your custom source files here - header files are optional and only required for visibility
 # e.g. in Xcode or Visual Studio
-set(virtualoutput_SOURCES
-    virtual_main.cpp
-    virtual_output.cpp
-    virtual_properties.cpp
-    virtual_filter.cpp
-    hflip.cpp
-    ../queue/share_queue_write.cpp)
+set(virtualoutput_SOURCES virtual_main.cpp virtual_output.cpp virtual_properties.cpp
+                          virtual_filter.cpp hflip.cpp ../queue/share_queue_write.cpp)
 
 set(virtualoutput_HEADERS
     get_format.h
@@ -85,7 +80,8 @@ if(OS_WINDOWS)
   configure_file(${CMAKE_SOURCE_DIR}/cmake/bundle/windows/installer-Windows.nsi.in
                  ${CMAKE_BINARY_DIR}/installer-Windows.generated.nsi @ONLY)
 
-  configure_file(${CMAKE_SOURCE_DIR}/cmake/bundle/windows/resource.rc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.rc)
+  configure_file(${CMAKE_SOURCE_DIR}/cmake/bundle/windows/resource.rc.in
+                 ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.rc)
   target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.rc)
 
   if(MSVC)

@@ -8,5 +8,5 @@ add_subdirectory(src/virtual-source)
 
 # Build virtual-output only on 64-bit systems
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-add_subdirectory(src/virtual-output)
+  add_subdirectory(src/virtual-output)
 endif()
