@@ -38,7 +38,7 @@ inline ULONGLONG _RDTSC(void)
 
 #endif // 0
 
-#else  // unsupported platform
+#else  // unsupported platform \
 	// not implemented on non x86/IA64 platforms
 	return 0;
 #endif // _X86_/_IA64_
