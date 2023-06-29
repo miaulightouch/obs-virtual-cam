@@ -36,7 +36,6 @@ runs:
           Target = 'x86'
           Configuration = '${{ inputs.config }}'
           CMakeGenerator = '${{ inputs.visualStudio }}'
-          SkipSetupOBS = $true
         }
 
         ${{ inputs.workingDirectory }}/.github/scripts/Build-Windows.ps1 @Build32Args
