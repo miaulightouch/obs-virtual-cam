@@ -50,16 +50,8 @@ regsvr32 /n /i:"2" "C:\Program Files\obs-studio\bin\64bit\obs-virtualsource.dll"
 
 ## Build
 
-You need to install cmake , visual studio 2017 ,and build OBS project first.
-Set following Cmake variables:
-
-* **QTDIR** (path): QT folder
-* **DepsPath** (path): FFmpeg folder in OBS dependencies package
-* **LIBOBS_INCLUDE_DIR** (path) : Libobs  include folder
-* **LIBOBS_LIB** (filepath) : obs.lib path
-* **OBS_FRONTEND_LIB** (filepath): obs-frontend-api.lib path
-* **PTHREAD_LIB** (filepath): w32-pthread.lib path
+this repo is updated to the latest OBS Plugin Template, please follow [the guide](https://github.com/obsproject/obs-plugintemplate).
 
 ## Donate
 
-If you like my work on this plugin , you can donate via [Paypal.me](https://www.paypal.me/obsvirtualcam)
+If you like this plugin , you can donate to original author via [Paypal.me](https://www.paypal.me/obsvirtualcam)
