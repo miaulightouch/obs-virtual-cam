@@ -58,25 +58,25 @@ function Package {
 
     if ( ( $BuildInstaller ) ) {
         if ( $Target -eq 'x86+x64' ) {
-            $IsccCandidates = Get-ChildItem -Recurse -Path '*.iss'
+            $NsisCandidates = Get-ChildItem -Recurse -Path '*.nsi'
 
-            if ( $IsccCandidates.length -gt 0 ) {
-                $IsccFile = $IsccCandidates[0].FullName
+            if ( $NsisCandidates.length -gt 0 ) {
+                $NsisFile = $NsisCandidates[0].FullName
             } else {
-                $IsccFile = ''
+                $NsisFile = ''
             }
         } else {
-            $IsccFile = "${ProjectRoot}/build_${Target}/installer-Windows.generated.iss"
+            $NsisFile = "${ProjectRoot}/build_${Target}/installer-Windows.generated.nsi"
         }
 
-        if ( ! ( Test-Path -Path $IsccFile ) ) {
-            throw 'InnoSetup install script not found. Run the build script or the CMake build and install procedures first.'
+        if ( ! ( Test-Path -Path $NsisFile ) ) {
+            throw 'Nullsoft install script not found. Run the build script or the CMake build and install procedures first.'
         }
 
-        Log-Information 'Creating InnoSetup installer...'
+        Log-Information 'Creating NSIS installer...'
         Push-Location -Stack BuildTemp
         Ensure-Location -Path "${ProjectRoot}/release"
-        Invoke-External iscc ${IsccFile} /O. /F"${OutputName}-Installer"
+        Invoke-External makensis /DOutFile="${ProjectRoot}/release/${OutputName}-Installer" ${NsisFile}
         Pop-Location -Stack BuildTemp
     }
 

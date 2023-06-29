@@ -17,7 +17,7 @@ function Install-BuildDependencies {
     if ( ! ( Test-Path function:Log-Warning ) ) {
         . $PSScriptRoot/Logger.ps1
     }
-    
+
     $Host64Bit = [System.Environment]::Is64BitOperatingSystem
 
     $Paths = $Env:Path -split [System.IO.Path]::PathSeparator

@@ -33,7 +33,7 @@ inputs:
     required: false
     default: ''
   createInstaller:
-    description: 'Create InnoSetup installer (Windows only)'
+    description: 'Create NSIS installer (Windows only)'
     required: false
     default: 'false'
   workingDirectory:

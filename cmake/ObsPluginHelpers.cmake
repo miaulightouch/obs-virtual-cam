@@ -172,7 +172,7 @@ if(OS_POSIX)
   # * C++, GCC ONLY - Warning about implicit conversion of NULL to another type
   # * Enable color diagnostics on Clang (CMAKE_COLOR_DIAGNOSTICS available in CMake 3.24)
   target_compile_options(
-    ${CMAKE_PROJECT_NAME}
+    ${PROJECT_NAME}
     PRIVATE
       -Werror
       -Wextra
@@ -193,7 +193,7 @@ if(OS_POSIX)
   # GCC 12.1.0 has a regression bug which trigger maybe-uninitialized warnings where there is not.
   # (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105562)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "12.1.0")
-    target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wno-error=maybe-uninitialized)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wno-error=maybe-uninitialized)
   endif()
 
   if(NOT CCACHE_SET)
@@ -252,7 +252,7 @@ elseif(_HOST_ARCH MATCHES "arm64|arm64e|aarch64")
     check_c_compiler_flag("-fopenmp-simd" C_COMPILER_SUPPORTS_OPENMP_SIMD)
     check_cxx_compiler_flag("-fopenmp-simd" CXX_COMPILER_SUPPORTS_OPENMP_SIMD)
     target_compile_options(
-      ${CMAKE_PROJECT_NAME}
+      ${PROJECT_NAME}
       PRIVATE
         -DSIMDE_ENABLE_OPENMP
         "$<$<AND:$<COMPILE_LANGUAGE:C>,$<BOOL:C_COMPILER_SUPPORTS_OPENMP_SIMD>>:-fopenmp-simd>"
@@ -264,7 +264,7 @@ endif()
 if(OS_MACOS)
   # Set macOS-specific C++ standard library
   target_compile_options(
-    ${CMAKE_PROJECT_NAME}
+    ${PROJECT_NAME}
     PRIVATE "$<$<COMPILE_LANG_AND_ID:OBJC,AppleClang,Clang>:-fcolor-diagnostics>" -stdlib=libc++)
 
   # Set build architecture to host architecture by default
@@ -498,7 +498,7 @@ else()
 
     # Setup Linux-specific CPack values for "deb" package generation
     if(OS_LINUX)
-      set(CPACK_PACKAGE_NAME "${CMAKE_PROJECT_NAME}")
+      set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
       set(CPACK_DEBIAN_PACKAGE_MAINTAINER "${LINUX_MAINTAINER_EMAIL}")
       set(CPACK_PACKAGE_VERSION "${CMAKE_PROJECT_VERSION}")
       set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-linux-x86_64")
@@ -547,7 +547,7 @@ else()
       # * DISABLE warnings about nonstandard nameless structs/unions,
       #   https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-4-c4201?view=msvc-170
       target_compile_options(
-        ${CMAKE_PROJECT_NAME}
+        ${PROJECT_NAME}
         PRIVATE /MP
                 /W3
                 /WX
@@ -572,7 +572,7 @@ else()
       # * RelWithDebInfo ONLY - Disable incremental linking, but enable COMDAT folding,
       #   https://docs.microsoft.com/en-us/cpp/build/reference/opt-optimizations?view=msvc-170
       target_link_options(
-        ${CMAKE_PROJECT_NAME}
+        ${PROJECT_NAME}
         PRIVATE
         "LINKER:/OPT:REF"
         "LINKER:/WX"
@@ -643,15 +643,15 @@ else()
 
   # Helper function to add resources from "data" directory
   function(setup_target_resources target destination)
-    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/data)
+    if(EXISTS ${CMAKE_SOURCE_DIR}/data)
       install(
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/
+        DIRECTORY ${CMAKE_SOURCE_DIR}/data/
         DESTINATION ${OBS_DATA_DESTINATION}/${destination}
         USE_SOURCE_PERMISSIONS
         COMPONENT obs_plugins)
 
       install(
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
+        DIRECTORY ${CMAKE_SOURCE_DIR}/data
         DESTINATION $<CONFIG>/${OBS_DATA_DESTINATION}/${destination}
         USE_SOURCE_PERMISSIONS
         COMPONENT obs_rundir
@@ -679,7 +679,7 @@ else()
         OPTIONAL EXCLUDE_FROM_ALL)
 
       install(
-        DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/
+        DIRECTORY ${CMAKE_SOURCE_DIR}/data/
         DESTINATION $<CONFIG>/${OBS_DATA_DESTINATION}/${destination}
         USE_SOURCE_PERMISSIONS
         COMPONENT obs_testing

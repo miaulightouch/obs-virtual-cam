@@ -11,3 +11,5 @@
 # ignore generated files
 *.generated.*
 **/.Brewfile.lock.json
+virtualsource.rc
+virtualoutput.rc
