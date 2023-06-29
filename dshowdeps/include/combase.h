@@ -267,14 +267,8 @@ public:
 	{                                                                \
 		return GetOwner()->QueryInterface(riid, ppv);            \
 	};                                                               \
-	STDMETHODIMP_(ULONG) AddRef()                                    \
-	{                                                                \
-		return GetOwner()->AddRef();                             \
-	};                                                               \
-	STDMETHODIMP_(ULONG) Release()                                   \
-	{                                                                \
-		return GetOwner()->Release();                            \
-	};
+	STDMETHODIMP_(ULONG) AddRef() { return GetOwner()->AddRef(); };  \
+	STDMETHODIMP_(ULONG) Release() { return GetOwner()->Release(); };
 
 HINSTANCE LoadOLEAut32();
 

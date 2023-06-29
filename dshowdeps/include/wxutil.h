@@ -352,7 +352,7 @@ inline void *__cdecl memchrInternal(const void *buf, int chr, size_t cnt)
         repne   scasb // look for the byte in the byte stream
         jnz     exit_memchr // Z flag set if byte found
         dec     edi // scasb always increments edi even when it
-					       // finds the required byte
+						// finds the required byte
         mov     pRet, edi
 exit_memchr:
 	}
