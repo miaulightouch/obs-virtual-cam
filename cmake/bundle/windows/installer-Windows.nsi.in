@@ -95,10 +95,10 @@ SectionEnd
 Section -FinishSection
 
 	WriteRegStr HKLM "Software\@CMAKE_PROJECT_NAME@" "" "$INSTDIR"
-	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\@CMAKE_PROJECT_NAME@" "DisplayName" "@CMAKE_PROJECT_NAME@"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\@CMAKE_PROJECT_NAME@" "DisplayName" "@CMAKE_PROJECT_NAME@ @CMAKE_PROJECT_VERSION@"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\@CMAKE_PROJECT_NAME@" "UninstallString" "$INSTDIR\uninstall_@CMAKE_PROJECT_NAME@.exe"
 	WriteUninstaller "$INSTDIR\uninstall_@CMAKE_PROJECT_NAME@.exe"
-	Exec '$WinDir\Sysnative\regsvr32.exe /s /n /i:$Devices $\"$INSTDIR\data\obs-plugins\obs-virtualoutput\obs-virtualsource.dll$\"'
+	Exec '$WinDir\Sysnative\regsvr32.exe /s /n /i:$Devices $\"$INSTDIR\bin\32bit\obs-virtualsource.dll$\"'
 	Exec '$SYSDIR\regsvr32.exe /s /n /i:$Devices $\"$INSTDIR\bin\64bit\obs-virtualsource.dll$\"'
 
 SectionEnd
@@ -114,7 +114,7 @@ Section Uninstall
 	Delete "$INSTDIR\uninstall_@CMAKE_PROJECT_NAME@.exe"
 
 	; Unregister DLLs
-	!insertmacro UnInstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED "$INSTDIR\data\obs-plugins\obs-virtualoutput\obs-virtualsource.dll"
+	!insertmacro UnInstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED "$INSTDIR\bin\32bit\obs-virtualsource.dll"
 	!define LIBRARY_X64
 	!insertmacro UnInstallLib REGDLL NOTSHARED NOREBOOT_PROTECTED "$INSTDIR\bin\64bit\obs-virtualsource.dll"
 

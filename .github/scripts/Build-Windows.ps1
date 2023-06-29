@@ -81,6 +81,13 @@ function Build {
         Log-Information "Configuring ${ProductName}..."
         Invoke-External cmake -S . -B build_${script:Target} @CmakeArgs
 
+        if ( $Target -eq "x86" ) {
+            $X86Path = "${ProjectRoot}/release/bin/32bit"
+            Ensure-Location "${X86Path}"
+            Copy-Item -Path "${ProjectRoot}/../obs-build-dependencies/${DepsPath}/bin/avutil-*.dll" -Destination "${X86Path}"
+            Copy-Item -Path "${ProjectRoot}/../obs-build-dependencies/${DepsPath}/bin/swscale-*.dll" -Destination "${X86Path}"
+        }
+
         $CmakeArgs = @(
             '--config', "${Configuration}"
         )
@@ -90,6 +97,7 @@ function Build {
         }
 
         Log-Information "Building ${ProductName}..."
+        Ensure-Location $ProjectRoot
         Invoke-External cmake --build "build_${script:Target}" @CmakeArgs
     }
     Log-Information "Install ${ProductName}..."
