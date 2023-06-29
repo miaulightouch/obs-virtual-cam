@@ -65,8 +65,7 @@ public:
 	int FindPinNumber(__in IPin *iPin);
 
 protected:
-	int m_iPins;                 // The number of pins on this filter. Updated by CSourceStream
-				     // constructors & destructors.
+	int m_iPins; // The number of pins on this filter. Updated by CSourceStream constructors & destructors.
 	CSourceStream **m_paStreams; // the pins on this filter.
 
 	CCritSec m_cStateLock; // Lock this to serialize function accesses to the filter state

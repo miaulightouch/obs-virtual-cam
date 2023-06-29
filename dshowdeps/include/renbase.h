@@ -361,8 +361,7 @@ protected:
 	// These member variables hold these counts.
 
 	int m_cFramesDropped; // cumulative frames dropped IN THE RENDERER
-	int m_cFramesDrawn;   // Frames since streaming started seen BY THE
-			      // RENDERER (some may be dropped upstream)
+	int m_cFramesDrawn; // Frames since streaming started seen BY THE RENDERER (some may be dropped upstream)
 
 	// Next two support average sync offset and standard deviation of sync offset.
 	LONGLONG m_iTotAcc;   // Sum of accuracies in mSec

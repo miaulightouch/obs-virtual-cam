@@ -528,9 +528,8 @@ class CEnumPins : public IEnumPins // The interface we support
 
 	typedef CGenericList<CBasePin> CPinList;
 
-	CPinList m_PinCache; // These pointers have not been AddRef'ed and
-		// so they should not be dereferenced.  They are
-		// merely kept to ID which pins have been enumerated.
+	CPinList m_PinCache;
+	// These pointers have not been AddRef'ed and so they should not be dereferenced.  They are merely kept to ID which pins have been enumerated.
 
 #ifdef DEBUG
 	DWORD m_dwCookie;
