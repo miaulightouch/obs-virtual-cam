@@ -1,16 +1,16 @@
 # OBS-VirtualCam
 
-Release: ![CI Windows Release](https://github.com/miaulightouch/obs-virtual-cam/actions/workflows/main.yml/badge.svg?event=release), CI: ![CI Windows On-Push](https://github.com/miaulightouch/obs-virtual-cam/actions/workflows/main.yml/badge.svg?event=push)
+![CI Windows On-Push](https://github.com/miaulightouch/obs-virtual-cam/actions/workflows/main.yml/badge.svg)
 
 obs-virutalcam is a plugin for obs-studio , transforming the output video to a virtual directshow device.
 
 source from [Fenrirthviti/obs-virtual-cam](https://github.com/Fenrirthviti/obs-virtual-cam)
 
-**Supported Platforms** : Windows 10
+**Supported Platforms** : Windows 10, Windows 11
 
 **Supported OBS Studio version** : 29.0.0+
 
-**Note: 32bit is not tested, but it should work.**
+**Note: output to 32bit application is not tested.**
 
 ## Features
 
@@ -22,7 +22,7 @@ source from [Fenrirthviti/obs-virtual-cam](https://github.com/Fenrirthviti/obs-v
 
 The installer and compressed file can be found in [Release Page](https://github.com/miaulightouch/obs-virtual-cam/releases). Using installer is recommended, but if you want to use compressed file to install manually , please follow these instructions.
 
-1. Unzip OBS-VirtualCam.zip and put it to your obs-studio install folder.
+1. Unzip obs-virtualcam-*-windows-x64.zip and put it to your obs-studio install folder.
 2. Run CMD as Administrator and register 32bit directshow source
 
 ```batch
@@ -56,4 +56,4 @@ this repo is updated to the latest OBS Plugin Template, please follow [the guide
 
 ## Donate
 
-If you like this plugin, you can donate to original author via [Paypal.me](https://www.paypal.me/obsvirtualcam)
+Please consider donating to CatxFish, the original author of this plugin. [Paypal.me](https://www.paypal.me/obsvirtualcam)
