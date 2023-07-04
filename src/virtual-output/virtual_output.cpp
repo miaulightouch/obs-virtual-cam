@@ -4,7 +4,7 @@
 #include "virtual_properties.h"
 #include "get_format.h"
 #include "hflip.h"
-#include "../plugin-macros.generated.h"
+#include "../plugin-support.h"
 
 struct virtual_out_data {
 	obs_output_t *output = nullptr;
@@ -104,7 +104,7 @@ static bool virtual_output_start(void *data)
 
 		if (!init_flip_filter(&out_data->flip_ctx, out_data->width, out_data->height,
 				      fmt)) {
-			blog(LOG_WARNING, "avfilter hflip init failed");
+			obs_log(LOG_WARNING, "avfilter hflip init failed");
 		}
 
 		output_running = true;
@@ -121,7 +121,7 @@ static bool virtual_output_start(void *data)
 
 		start = obs_output_begin_data_capture(out_data->output, 0);
 
-		blog(LOG_INFO, "starting virtual-output on VirtualCam'%d'",
+		obs_log(LOG_INFO, "starting virtual-output on VirtualCam'%d'",
 		     out_data->video_mode + 1);
 
 	} else {
@@ -130,7 +130,7 @@ static bool virtual_output_start(void *data)
 		shared_queue_write_close(&out_data->video_queue);
 		shared_queue_write_close(&out_data->audio_queue);
 
-		blog(LOG_WARNING, "starting virtual-output failed on VirtualCam'%d'",
+		obs_log(LOG_WARNING, "starting virtual-output failed on VirtualCam'%d'",
 		     out_data->video_mode + 1);
 	}
 
@@ -150,7 +150,7 @@ static void virtual_output_stop(void *data, uint64_t ts)
 	output_running = false;
 	audio_running = false;
 
-	blog(LOG_INFO, "virtual-output stop");
+	obs_log(LOG_INFO, "virtual-output stop");
 	UNUSED_PARAMETER(ts);
 }
 

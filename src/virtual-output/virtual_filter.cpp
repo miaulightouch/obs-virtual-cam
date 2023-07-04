@@ -2,7 +2,7 @@
 #include <media-io/video-io.h>
 #include <util/platform.h>
 #include "../queue/share_queue_write.h"
-#include "../plugin-macros.generated.h"
+#include "../plugin-support.h"
 
 #define S_DELAY "delay"
 #define S_START "start"
@@ -172,7 +172,7 @@ static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p, voi
 						     filter->base_height, interval,
 						     filter->delay + 10);
 	} else {
-		blog(LOG_WARNING, "virtual-filter target size error");
+		obs_log(LOG_WARNING, "virtual-filter target size error");
 		filter->active = false;
 	}
 
@@ -182,9 +182,9 @@ static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p, voi
 		obs_property_set_visible(stop, true);
 		shared_queue_set_delay(&filter->video_queue, filter->delay);
 		obs_add_tick_callback(virtual_filter_video, data);
-		blog(LOG_INFO, "starting virtual-filter on VirtualCam'%d'", filter->mode + 1);
+		obs_log(LOG_INFO, "starting virtual-filter on VirtualCam'%d'", filter->mode + 1);
 	} else {
-		blog(LOG_WARNING, "starting virtual-filter failed on VirtualCam'%d'",
+		obs_log(LOG_WARNING, "starting virtual-filter failed on VirtualCam'%d'",
 		     filter->mode + 1);
 	}
 
@@ -200,7 +200,7 @@ static bool virtual_filter_stop(obs_properties_t *props, obs_property_t *p, void
 	filter->active = false;
 	obs_property_set_visible(p, false);
 	obs_property_set_visible(start, true);
-	blog(LOG_INFO, "virtual-filter stop");
+	obs_log(LOG_INFO, "virtual-filter stop");
 	return true;
 }
 
