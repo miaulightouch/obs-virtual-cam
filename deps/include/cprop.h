@@ -38,7 +38,8 @@ protected:
 	int m_TitleId;                  // Resource identifier for title
 	int m_DialogId;                 // Dialog resource identifier
 
-	static INT_PTR CALLBACK DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	static INT_PTR CALLBACK DialogProc(HWND hwnd, UINT uMsg, WPARAM wParam,
+					   LPARAM lParam);
 
 private:
 	BOOL m_bObjectSet; // SetObject has been called or not.
@@ -49,8 +50,8 @@ public:
 			  int TitleId);               // To get tital
 
 #ifdef UNICODE
-	CBasePropertyPage(__in_opt LPCSTR pName, __inout_opt LPUNKNOWN pUnk, int DialogId,
-			  int TitleId);
+	CBasePropertyPage(__in_opt LPCSTR pName, __inout_opt LPUNKNOWN pUnk,
+			  int DialogId, int TitleId);
 #endif
 	virtual ~CBasePropertyPage(){};
 	DECLARE_IUNKNOWN
@@ -62,24 +63,30 @@ public:
 	virtual HRESULT OnActivate() { return NOERROR; };
 	virtual HRESULT OnDeactivate() { return NOERROR; };
 	virtual HRESULT OnApplyChanges() { return NOERROR; };
-	virtual INT_PTR OnReceiveMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	virtual INT_PTR OnReceiveMessage(HWND hwnd, UINT uMsg, WPARAM wParam,
+					 LPARAM lParam);
 
 	// These implement an IPropertyPage interface
 
-	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv);
+	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid,
+						 __deref_out void **ppv);
 	STDMETHODIMP_(ULONG) NonDelegatingRelease();
 	STDMETHODIMP_(ULONG) NonDelegatingAddRef();
 	STDMETHODIMP SetPageSite(__in_opt LPPROPERTYPAGESITE pPageSite);
 	STDMETHODIMP Activate(HWND hwndParent, LPCRECT prect, BOOL fModal);
 	STDMETHODIMP Deactivate(void);
 	STDMETHODIMP GetPageInfo(__out LPPROPPAGEINFO pPageInfo);
-	STDMETHODIMP SetObjects(ULONG cObjects, __in_ecount_opt(cObjects) LPUNKNOWN *ppUnk);
+	STDMETHODIMP SetObjects(ULONG cObjects,
+				__in_ecount_opt(cObjects) LPUNKNOWN *ppUnk);
 	STDMETHODIMP Show(UINT nCmdShow);
 	STDMETHODIMP Move(LPCRECT prect);
 	STDMETHODIMP IsPageDirty(void) { return m_bDirty ? S_OK : S_FALSE; }
 	STDMETHODIMP Apply(void);
 	STDMETHODIMP Help(LPCWSTR lpszHelpDir) { return E_NOTIMPL; }
-	STDMETHODIMP TranslateAccelerator(__inout LPMSG lpMsg) { return E_NOTIMPL; }
+	STDMETHODIMP TranslateAccelerator(__inout LPMSG lpMsg)
+	{
+		return E_NOTIMPL;
+	}
 };
 
 #endif // __CPROP__

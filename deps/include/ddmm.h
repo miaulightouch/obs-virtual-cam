@@ -20,7 +20,8 @@ typedef HRESULT (*PDRAWCREATE)(IID *, LPDIRECTDRAW *, LPUNKNOWN);
 typedef HRESULT (*PDRAWENUM)(LPDDENUMCALLBACKA, LPVOID);
 
 IDirectDraw *DirectDrawCreateFromDevice(__in_opt LPSTR, PDRAWCREATE, PDRAWENUM);
-IDirectDraw *DirectDrawCreateFromDeviceEx(__in_opt LPSTR, PDRAWCREATE, LPDIRECTDRAWENUMERATEEXA);
+IDirectDraw *DirectDrawCreateFromDeviceEx(__in_opt LPSTR, PDRAWCREATE,
+					  LPDIRECTDRAWENUMERATEEXA);
 
 #ifdef __cplusplus
 }

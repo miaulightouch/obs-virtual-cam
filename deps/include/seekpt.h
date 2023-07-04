@@ -11,12 +11,15 @@
 
 class CSeekingPassThru : public ISeekingPassThru, public CUnknown {
 public:
-	static CUnknown *CreateInstance(__inout_opt LPUNKNOWN pUnk, __inout HRESULT *phr);
-	CSeekingPassThru(__in_opt LPCTSTR pName, __inout_opt LPUNKNOWN pUnk, __inout HRESULT *phr);
+	static CUnknown *CreateInstance(__inout_opt LPUNKNOWN pUnk,
+					__inout HRESULT *phr);
+	CSeekingPassThru(__in_opt LPCTSTR pName, __inout_opt LPUNKNOWN pUnk,
+			 __inout HRESULT *phr);
 	~CSeekingPassThru();
 
 	DECLARE_IUNKNOWN;
-	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv);
+	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid,
+						 __deref_out void **ppv);
 
 	STDMETHODIMP Init(BOOL bSupportRendering, IPin *pPin);
 

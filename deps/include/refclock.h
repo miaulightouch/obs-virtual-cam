@@ -78,9 +78,11 @@ protected:
 	virtual ~CBaseReferenceClock(); // Don't let me be created on the stack!
 public:
 	CBaseReferenceClock(__in_opt LPCTSTR pName, __inout_opt LPUNKNOWN pUnk,
-			    __inout HRESULT *phr, __inout_opt CAMSchedule *pSched = 0);
+			    __inout HRESULT *phr,
+			    __inout_opt CAMSchedule *pSched = 0);
 
-	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, __deref_out void **ppv);
+	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid,
+						 __deref_out void **ppv);
 
 	DECLARE_IUNKNOWN
 
@@ -97,17 +99,19 @@ public:
 	/* Provide standard mechanisms for scheduling events */
 
 	/* Ask for an async notification that a time has elapsed */
-	STDMETHODIMP AdviseTime(REFERENCE_TIME baseTime,         // base reference time
-				REFERENCE_TIME streamTime,       // stream offset time
-				HEVENT hEvent,                   // advise via this event
-				__out DWORD_PTR *pdwAdviseCookie // where your cookie goes
+	STDMETHODIMP
+	AdviseTime(REFERENCE_TIME baseTime,         // base reference time
+		   REFERENCE_TIME streamTime,       // stream offset time
+		   HEVENT hEvent,                   // advise via this event
+		   __out DWORD_PTR *pdwAdviseCookie // where your cookie goes
 	);
 
 	/* Ask for an asynchronous periodic notification that a time has elapsed */
-	STDMETHODIMP AdvisePeriodic(REFERENCE_TIME StartTime,        // starting at this time
-				    REFERENCE_TIME PeriodTime,       // time between notifications
-				    HSEMAPHORE hSemaphore,           // advise via a semaphore
-				    __out DWORD_PTR *pdwAdviseCookie // where your cookie goes
+	STDMETHODIMP AdvisePeriodic(
+		REFERENCE_TIME StartTime,        // starting at this time
+		REFERENCE_TIME PeriodTime,       // time between notifications
+		HSEMAPHORE hSemaphore,           // advise via a semaphore
+		__out DWORD_PTR *pdwAdviseCookie // where your cookie goes
 	);
 
 	/* Cancel a request for notification(s) - if the notification was
@@ -137,9 +141,11 @@ public:
 	// IReferenceClockTimerControl methods
 	//
 	// Setting a default of 0 disables the default of 1ms
-	STDMETHODIMP SetDefaultTimerResolution(REFERENCE_TIME timerResolution // in 100ns
+	STDMETHODIMP
+	SetDefaultTimerResolution(REFERENCE_TIME timerResolution // in 100ns
 	);
-	STDMETHODIMP GetDefaultTimerResolution(__out REFERENCE_TIME *pTimerResolution // in 100ns
+	STDMETHODIMP GetDefaultTimerResolution(
+		__out REFERENCE_TIME *pTimerResolution // in 100ns
 	);
 
 private:
@@ -165,7 +171,8 @@ private:
 	HANDLE m_hThread; // Thread handle
 
 	HRESULT AdviseThread(); // Method in which the advise thread runs
-	static DWORD __stdcall AdviseThreadFunction(__in LPVOID); // Function used to get there
+	static DWORD __stdcall AdviseThreadFunction(
+		__in LPVOID); // Function used to get there
 
 protected:
 	CAMSchedule *m_pSchedule;

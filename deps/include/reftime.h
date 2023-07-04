@@ -39,7 +39,8 @@ const LONGLONG UNITS = (NANOSECONDS / 100); // 10 ^ 7
 /*  Unfortunately an inline function here generates a call to __allmul
     - even for constants!
 */
-#define MILLISECONDS_TO_100NS_UNITS(lMs) Int32x32To64((lMs), (UNITS / MILLISECONDS))
+#define MILLISECONDS_TO_100NS_UNITS(lMs) \
+	Int32x32To64((lMs), (UNITS / MILLISECONDS))
 
 class CRefTime {
 public:
@@ -55,7 +56,10 @@ public:
 		m_time = 0;
 	};
 
-	inline CRefTime(LONG msecs) { m_time = MILLISECONDS_TO_100NS_UNITS(msecs); };
+	inline CRefTime(LONG msecs)
+	{
+		m_time = MILLISECONDS_TO_100NS_UNITS(msecs);
+	};
 
 	inline CRefTime(REFERENCE_TIME rt) { m_time = rt; };
 
@@ -73,11 +77,20 @@ public:
 		return *this;
 	};
 
-	inline CRefTime &operator+=(const CRefTime &rt) { return (*this = *this + rt); };
+	inline CRefTime &operator+=(const CRefTime &rt)
+	{
+		return (*this = *this + rt);
+	};
 
-	inline CRefTime &operator-=(const CRefTime &rt) { return (*this = *this - rt); };
+	inline CRefTime &operator-=(const CRefTime &rt)
+	{
+		return (*this = *this - rt);
+	};
 
-	inline LONG Millisecs(void) { return (LONG)(m_time / (UNITS / MILLISECONDS)); };
+	inline LONG Millisecs(void)
+	{
+		return (LONG)(m_time / (UNITS / MILLISECONDS));
+	};
 
 	inline LONGLONG GetUnits(void) { return m_time; };
 };

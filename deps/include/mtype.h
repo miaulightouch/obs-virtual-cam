@@ -72,11 +72,13 @@ public:
 
 void WINAPI DeleteMediaType(__inout_opt AM_MEDIA_TYPE *pmt);
 AM_MEDIA_TYPE *WINAPI CreateMediaType(AM_MEDIA_TYPE const *pSrc);
-HRESULT WINAPI CopyMediaType(__out AM_MEDIA_TYPE *pmtTarget, const AM_MEDIA_TYPE *pmtSource);
+HRESULT WINAPI CopyMediaType(__out AM_MEDIA_TYPE *pmtTarget,
+			     const AM_MEDIA_TYPE *pmtSource);
 void WINAPI FreeMediaType(__inout AM_MEDIA_TYPE &mt);
 
 //  Initialize a media type from a WAVEFORMATEX
 
-STDAPI CreateAudioMediaType(const WAVEFORMATEX *pwfx, __out AM_MEDIA_TYPE *pmt, BOOL bSetFormat);
+STDAPI CreateAudioMediaType(const WAVEFORMATEX *pwfx, __out AM_MEDIA_TYPE *pmt,
+			    BOOL bSetFormat);
 
 #endif /* __MTYPE__ */

@@ -106,9 +106,11 @@ inheritance and some via nested classes
 
 // Filter Setup data structures no defined in axextend.idl
 
-typedef REGPINTYPES AMOVIESETUP_MEDIATYPE, *PAMOVIESETUP_MEDIATYPE, *FAR LPAMOVIESETUP_MEDIATYPE;
+typedef REGPINTYPES AMOVIESETUP_MEDIATYPE, *PAMOVIESETUP_MEDIATYPE,
+	*FAR LPAMOVIESETUP_MEDIATYPE;
 
-typedef REGFILTERPINS AMOVIESETUP_PIN, *PAMOVIESETUP_PIN, *FAR LPAMOVIESETUP_PIN;
+typedef REGFILTERPINS AMOVIESETUP_PIN, *PAMOVIESETUP_PIN,
+	*FAR LPAMOVIESETUP_PIN;
 
 typedef struct _AMOVIESETUP_FILTER {
 	const CLSID *clsID;
@@ -197,10 +199,12 @@ public:
 
 	// This is redundant, just use the other constructor
 	//   as we never touch the HRESULT in this anyway
-	CUnknown(__in_opt LPCTSTR Name, __in_opt LPUNKNOWN pUnk, __inout_opt HRESULT *phr);
+	CUnknown(__in_opt LPCTSTR Name, __in_opt LPUNKNOWN pUnk,
+		 __inout_opt HRESULT *phr);
 #ifdef UNICODE
 	CUnknown(__in_opt LPCSTR pName, __in_opt LPUNKNOWN pUnk);
-	CUnknown(__in_opt LPCSTR pName, __in_opt LPUNKNOWN pUnk, __inout_opt HRESULT *phr);
+	CUnknown(__in_opt LPCSTR pName, __in_opt LPUNKNOWN pUnk,
+		 __inout_opt HRESULT *phr);
 #endif
 
 	/* Return the owner of this object */
@@ -249,9 +253,13 @@ public:
 	LPFNInitRoutine m_lpfnInit;
 	const AMOVIESETUP_FILTER *m_pAMovieSetup_Filter;
 
-	BOOL IsClassID(REFCLSID rclsid) const { return (IsEqualCLSID(*m_ClsID, rclsid)); };
+	BOOL IsClassID(REFCLSID rclsid) const
+	{
+		return (IsEqualCLSID(*m_ClsID, rclsid));
+	};
 
-	CUnknown *CreateInstance(__inout_opt LPUNKNOWN pUnk, __inout_opt HRESULT *phr) const
+	CUnknown *CreateInstance(__inout_opt LPUNKNOWN pUnk,
+				 __inout_opt HRESULT *phr) const
 	{
 		CheckPointer(phr, NULL);
 		return m_lpfnNew(pUnk, phr);

@@ -17,7 +17,7 @@ public:
 private:
 	enum StreamControlState m_StreamState;       // Current stream state
 	enum StreamControlState m_StreamStateOnStop; // State after next stop
-						     // (i.e.Blocking or Discarding)
+		// (i.e.Blocking or Discarding)
 
 	REFERENCE_TIME m_tStartTime;    // MAX_TIME implies none
 	REFERENCE_TIME m_tStopTime;     // MAX_TIME implies none
@@ -66,8 +66,9 @@ private:
 	//				expires, throw the sample away.  If the event
 	//				fires, call me back - I've changed my mind.
 	//
-	enum StreamControlState CheckSampleTimes(__in const REFERENCE_TIME *pSampleStart,
-						 __in const REFERENCE_TIME *pSampleStop);
+	enum StreamControlState
+	CheckSampleTimes(__in const REFERENCE_TIME *pSampleStart,
+			 __in const REFERENCE_TIME *pSampleStop);
 
 public:
 	// You don't have to tell us much when we're created, but there are other
@@ -111,7 +112,8 @@ public:
 	// state of our owning filter.
 	// The app should call this ever state change
 	//
-	void NotifyFilterState(FILTER_STATE new_state, REFERENCE_TIME tStart = 0);
+	void NotifyFilterState(FILTER_STATE new_state,
+			       REFERENCE_TIME tStart = 0);
 
 	// Filter should call Flushing(TRUE) in BeginFlush,
 	// and Flushing(FALSE) in EndFlush.
@@ -123,9 +125,10 @@ public:
 	// Class adds default values suitable for immediate
 	// muting and unmuting of the stream.
 
-	STDMETHODIMP StopAt(const REFERENCE_TIME *ptStop = NULL, BOOL bSendExtra = FALSE,
-			    DWORD dwCookie = 0);
-	STDMETHODIMP StartAt(const REFERENCE_TIME *ptStart = NULL, DWORD dwCookie = 0);
+	STDMETHODIMP StopAt(const REFERENCE_TIME *ptStop = NULL,
+			    BOOL bSendExtra = FALSE, DWORD dwCookie = 0);
+	STDMETHODIMP StartAt(const REFERENCE_TIME *ptStart = NULL,
+			     DWORD dwCookie = 0);
 	STDMETHODIMP GetInfo(__out AM_STREAM_INFO *pInfo);
 
 	// Helper function for pin's receive method.  Call this with

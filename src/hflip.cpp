@@ -14,18 +14,20 @@ bool init_flip_filter(FlipContext *ctx, int width, int height, int format)
 	AVFilterInOut *inputs = avfilter_inout_alloc();
 
 	ctx->filter_graph = avfilter_graph_alloc();
-	sprintf(args, "video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:pixel_aspect=%d/%d", width,
-		height, format, 1, 30, 1, 1);
+	sprintf(args,
+		"video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:pixel_aspect=%d/%d",
+		width, height, format, 1, 30, 1, 1);
 
-	ret = avfilter_graph_create_filter(&ctx->buffersrc_ctx, buffersrc, "in", args, NULL,
-					   ctx->filter_graph);
+	ret = avfilter_graph_create_filter(&ctx->buffersrc_ctx, buffersrc, "in",
+					   args, NULL, ctx->filter_graph);
 
 	if (ret < 0) {
 		avfilter_graph_free(&ctx->filter_graph);
 		return false;
 	}
 
-	ret = avfilter_graph_create_filter(&ctx->buffersink_ctx, buffersink, "out", NULL, NULL,
+	ret = avfilter_graph_create_filter(&ctx->buffersink_ctx, buffersink,
+					   "out", NULL, NULL,
 					   ctx->filter_graph);
 
 	if (ret < 0) {
@@ -43,8 +45,8 @@ bool init_flip_filter(FlipContext *ctx, int width, int height, int format)
 	inputs->pad_idx = 0;
 	inputs->next = NULL;
 
-	if ((ret = avfilter_graph_parse_ptr(ctx->filter_graph, "hflip", &inputs, &outputs, NULL)) <
-	    0)
+	if ((ret = avfilter_graph_parse_ptr(ctx->filter_graph, "hflip", &inputs,
+					    &outputs, NULL)) < 0)
 		return false;
 
 	if ((ret = avfilter_graph_config(ctx->filter_graph, NULL)) < 0)
@@ -53,9 +55,11 @@ bool init_flip_filter(FlipContext *ctx, int width, int height, int format)
 	ctx->frame_in = av_frame_alloc();
 	ctx->frame_out = av_frame_alloc();
 	ctx->frame_buffer_out = (unsigned char *)av_malloc(
-		av_image_get_buffer_size((AVPixelFormat)format, width, height, 1));
-	av_image_fill_arrays(ctx->frame_out->data, ctx->frame_out->linesize, ctx->frame_buffer_out,
-			     (AVPixelFormat)format, width, height, 1);
+		av_image_get_buffer_size((AVPixelFormat)format, width, height,
+					 1));
+	av_image_fill_arrays(ctx->frame_out->data, ctx->frame_out->linesize,
+			     ctx->frame_buffer_out, (AVPixelFormat)format,
+			     width, height, 1);
 	ctx->frame_in->width = width;
 	ctx->frame_in->height = height;
 	ctx->frame_in->format = format;

@@ -79,13 +79,17 @@ public:
 
 	int GetThreadPriority() { return ::GetThreadPriority(m_hThread); }
 
-	BOOL SetThreadPriority(int nPriority) { return ::SetThreadPriority(m_hThread, nPriority); }
+	BOOL SetThreadPriority(int nPriority)
+	{
+		return ::SetThreadPriority(m_hThread, nPriority);
+	}
 
 	HANDLE GetThreadHandle() { return m_hThread; }
 
 	DWORD GetThreadId() { return m_ThreadId; }
 
-	void PutThreadMsg(UINT uMsg, DWORD dwMsgFlags, __in_opt LPVOID lpMsgParam,
+	void PutThreadMsg(UINT uMsg, DWORD dwMsgFlags,
+			  __in_opt LPVOID lpMsgParam,
 			  __in_opt CAMEvent *pEvent = NULL)
 	{
 		CAutoLock lck(&m_Lock);
@@ -101,6 +105,7 @@ public:
 	// supplies.  It is always called on the created thread, never on
 	// the creator thread.
 	//
-	virtual LRESULT ThreadMessageProc(UINT uMsg, DWORD dwFlags, __inout_opt LPVOID lpParam,
+	virtual LRESULT ThreadMessageProc(UINT uMsg, DWORD dwFlags,
+					  __inout_opt LPVOID lpParam,
 					  __in_opt CAMEvent *pEvent) = 0;
 };

@@ -8,7 +8,8 @@ extern "C" {
 #endif
 
 //  Helper
-__inline BOOL MultiplyCheckOverflow(DWORD a, DWORD b, __deref_out_range(==, a *b) DWORD *pab)
+__inline BOOL MultiplyCheckOverflow(DWORD a, DWORD b,
+				    __deref_out_range(==, a *b) DWORD *pab)
 {
 	*pab = a * b;
 	if ((a == 0) || (((*pab) / a) == b)) {
@@ -29,11 +30,11 @@ __inline BOOL MultiplyCheckOverflow(DWORD a, DWORD b, __deref_out_range(==, a *b
 //        5.  Total structure size exceeding know size of data
 //
 
-__success(return != 0) __inline BOOL
-	ValidateBitmapInfoHeader(const BITMAPINFOHEADER *pbmi, // pointer to structure to check
-				 __out_range(>=, sizeof(BITMAPINFOHEADER))
-					 DWORD cbSize // size of memory block containing structure
-	)
+__success(return != 0) __inline BOOL ValidateBitmapInfoHeader(
+	const BITMAPINFOHEADER *pbmi, // pointer to structure to check
+	__out_range(>=, sizeof(BITMAPINFOHEADER))
+		DWORD cbSize // size of memory block containing structure
+)
 {
 	DWORD dwWidthInBytes;
 	DWORD dwBpp;
@@ -43,8 +44,8 @@ __success(return != 0) __inline BOOL
 	DWORD dwClrUsed;
 
 	// Reject bad parameters - do the size check first to avoid reading bad memory
-	if (cbSize < sizeof(BITMAPINFOHEADER) || pbmi->biSize < sizeof(BITMAPINFOHEADER) ||
-	    pbmi->biSize > 4096) {
+	if (cbSize < sizeof(BITMAPINFOHEADER) ||
+	    pbmi->biSize < sizeof(BITMAPINFOHEADER) || pbmi->biSize > 4096) {
 		return FALSE;
 	}
 
@@ -63,7 +64,8 @@ __success(return != 0) __inline BOOL
 	// Strictly speaking abs can overflow so cast explicitly to DWORD
 	dwHeight = (DWORD)abs(pbmi->biHeight);
 
-	if (!MultiplyCheckOverflow(dwBpp, (DWORD)pbmi->biWidth, &dwWidthInBits)) {
+	if (!MultiplyCheckOverflow(dwBpp, (DWORD)pbmi->biWidth,
+				   &dwWidthInBits)) {
 		return FALSE;
 	}
 
@@ -86,7 +88,8 @@ __success(return != 0) __inline BOOL
 		return FALSE;
 	}
 
-	if (pbmi->biClrUsed == 0 && pbmi->biBitCount <= 8 && pbmi->biBitCount > 0) {
+	if (pbmi->biClrUsed == 0 && pbmi->biBitCount <= 8 &&
+	    pbmi->biBitCount > 0) {
 		dwClrUsed = (1 << pbmi->biBitCount);
 	} else {
 		dwClrUsed = pbmi->biClrUsed;
@@ -94,16 +97,22 @@ __success(return != 0) __inline BOOL
 
 	//  Check total size
 	if (cbSize < pbmi->biSize + dwClrUsed * sizeof(RGBQUAD) +
-			     (pbmi->biCompression == BI_BITFIELDS ? 3 * sizeof(DWORD) : 0)) {
+			     (pbmi->biCompression == BI_BITFIELDS
+				      ? 3 * sizeof(DWORD)
+				      : 0)) {
 		return FALSE;
 	}
 
 	//  If it is RGB validate biSizeImage - lots of code assumes the size is correct
-	if (pbmi->biCompression == BI_RGB || pbmi->biCompression == BI_BITFIELDS) {
+	if (pbmi->biCompression == BI_RGB ||
+	    pbmi->biCompression == BI_BITFIELDS) {
 		if (pbmi->biSizeImage != 0) {
-			DWORD dwBits = (DWORD)pbmi->biWidth * (DWORD)pbmi->biBitCount;
-			DWORD dwWidthInBytes = ((DWORD)((dwBits + 31) & (~31)) / 8);
-			DWORD dwTotalSize = (DWORD)abs(pbmi->biHeight) * dwWidthInBytes;
+			DWORD dwBits =
+				(DWORD)pbmi->biWidth * (DWORD)pbmi->biBitCount;
+			DWORD dwWidthInBytes =
+				((DWORD)((dwBits + 31) & (~31)) / 8);
+			DWORD dwTotalSize =
+				(DWORD)abs(pbmi->biHeight) * dwWidthInBytes;
 			if (dwTotalSize > pbmi->biSizeImage) {
 				return FALSE;
 			}

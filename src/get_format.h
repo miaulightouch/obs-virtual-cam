@@ -3,7 +3,8 @@
 
 #define AV_SAMPLE_FMT_S16 1
 
-static inline enum AVPixelFormat obs_to_ffmpeg_video_format(enum video_format format)
+static inline enum AVPixelFormat
+obs_to_ffmpeg_video_format(enum video_format format)
 {
 	switch (format) {
 	case VIDEO_FORMAT_NONE:

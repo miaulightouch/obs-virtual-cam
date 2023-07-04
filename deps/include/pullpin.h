@@ -54,12 +54,13 @@ class CPullPin : public CAMThread {
 	HRESULT StopThread();
 
 	// called from ProcessAsync to queue and collect requests
-	HRESULT QueueSample(__inout REFERENCE_TIME &tCurrent, REFERENCE_TIME tAlignStop,
-			    BOOL bDiscontinuity);
+	HRESULT QueueSample(__inout REFERENCE_TIME &tCurrent,
+			    REFERENCE_TIME tAlignStop, BOOL bDiscontinuity);
 
 	HRESULT CollectAndDeliver(REFERENCE_TIME tStart, REFERENCE_TIME tStop);
 
-	HRESULT DeliverSample(IMediaSample *pSample, REFERENCE_TIME tStart, REFERENCE_TIME tStop);
+	HRESULT DeliverSample(IMediaSample *pSample, REFERENCE_TIME tStart,
+			      REFERENCE_TIME tStop);
 
 protected:
 	IMemAllocator *m_pAlloc;
@@ -84,8 +85,9 @@ public:
 	// returns an error code if fail to match requirements.
 	// optional IMemAllocator interface is offered as a preferred allocator
 	// but no error occurs if it can't be met.
-	virtual HRESULT DecideAllocator(IMemAllocator *pAlloc,
-					__inout_opt ALLOCATOR_PROPERTIES *pProps);
+	virtual HRESULT
+	DecideAllocator(IMemAllocator *pAlloc,
+			__inout_opt ALLOCATOR_PROPERTIES *pProps);
 
 	// set start and stop position. if active, will start immediately at
 	// the new position. Default is 0 to duration

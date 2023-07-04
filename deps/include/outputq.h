@@ -13,12 +13,12 @@ typedef CGenericList<IMediaSample> CSampleList;
 class COutputQueue : public CCritSec {
 public:
 	//  Constructor
-	COutputQueue(IPin *pInputPin,          //  Pin to send stuff to
-		     __inout HRESULT *phr,     //  'Return code'
-		     BOOL bAuto = TRUE,        //  Ask pin if blocks
-		     BOOL bQueue = TRUE,       //  Send through queue (ignored if
-					       //  bAuto set)
-		     LONG lBatchSize = 1,      //  Batch
+	COutputQueue(IPin *pInputPin,      //  Pin to send stuff to
+		     __inout HRESULT *phr, //  'Return code'
+		     BOOL bAuto = TRUE,    //  Ask pin if blocks
+		     BOOL bQueue = TRUE,   //  Send through queue (ignored if
+					   //  bAuto set)
+		     LONG lBatchSize = 1,  //  Batch
 		     BOOL bBatchExact = FALSE, //  Batch exactly to BatchSize
 		     LONG lListSize =          //  Likely number in the list
 		     DEFAULTCACHE,
@@ -39,13 +39,14 @@ public:
 
 	void SendAnyway(); // Send batched samples anyway (if bBatchExact set)
 
-	void NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop, double dRate);
+	void NewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop,
+			double dRate);
 
 	HRESULT Receive(IMediaSample *pSample);
 
 	// do something with these media samples
-	HRESULT ReceiveMultiple(__in_ecount(nSamples) IMediaSample **pSamples, long nSamples,
-				__out long *nSamplesProcessed);
+	HRESULT ReceiveMultiple(__in_ecount(nSamples) IMediaSample **pSamples,
+				long nSamples, __out long *nSamplesProcessed);
 
 	void Reset(); // Reset m_hr ready for more data
 

@@ -82,7 +82,8 @@ void WINAPI DbgInitKeyLevels(HKEY hKey, bool fTakeMax);
 void WINAPI DbgInitGlobalSettings(bool fTakeMax);
 void WINAPI DbgInitModuleSettings(bool fTakeMax);
 void WINAPI DbgInitModuleName();
-DWORD WINAPI DbgRegisterObjectCreation(LPCSTR szObjectName, LPCWSTR wszObjectName);
+DWORD WINAPI DbgRegisterObjectCreation(LPCSTR szObjectName,
+				       LPCWSTR wszObjectName);
 
 BOOL WINAPI DbgRegisterObjectDestruction(DWORD dwCookie);
 
@@ -103,13 +104,15 @@ void WINAPI DbgDumpObjectRegister();
 
 void WINAPI DbgAssert(LPCTSTR pCondition, LPCTSTR pFileName, INT iLine);
 void WINAPI DbgBreakPoint(LPCTSTR pCondition, LPCTSTR pFileName, INT iLine);
-void WINAPI DbgBreakPoint(LPCTSTR pFileName, INT iLine, __format_string LPCTSTR szFormatString,
-			  ...);
+void WINAPI DbgBreakPoint(LPCTSTR pFileName, INT iLine,
+			  __format_string LPCTSTR szFormatString, ...);
 
 void WINAPI DbgKernelAssert(LPCTSTR pCondition, LPCTSTR pFileName, INT iLine);
-void WINAPI DbgLogInfo(DWORD Type, DWORD Level, __format_string LPCTSTR pFormat, ...);
+void WINAPI DbgLogInfo(DWORD Type, DWORD Level, __format_string LPCTSTR pFormat,
+		       ...);
 #ifdef UNICODE
-void WINAPI DbgLogInfo(DWORD Type, DWORD Level, __format_string LPCSTR pFormat, ...);
+void WINAPI DbgLogInfo(DWORD Type, DWORD Level, __format_string LPCSTR pFormat,
+		       ...);
 void WINAPI DbgAssert(LPCSTR pCondition, LPCSTR pFileName, INT iLine);
 void WINAPI DbgBreakPoint(LPCSTR pCondition, LPCSTR pFileName, INT iLine);
 void WINAPI DbgKernelAssert(LPCSTR pCondition, LPCSTR pFileName, INT iLine);
@@ -118,7 +121,9 @@ void WINAPI DbgOutString(LPCTSTR psz);
 
 //  Debug infinite wait stuff
 DWORD WINAPI DbgWaitForSingleObject(HANDLE h);
-DWORD WINAPI DbgWaitForMultipleObjects(DWORD nCount, __in_ecount(nCount) CONST HANDLE *lpHandles,
+DWORD WINAPI DbgWaitForMultipleObjects(DWORD nCount,
+				       __in_ecount(nCount)
+					       CONST HANDLE *lpHandles,
 				       BOOL bWaitAll);
 void WINAPI DbgSetWaitTimeout(DWORD dwTimeout);
 
@@ -149,7 +154,8 @@ void WINAPI DumpGraph(IFilterGraph *pGraph, DWORD dwLevel);
 	DbgAssert(TEXT(#_x_), TEXT(__FILE__), __LINE__)
 #endif
 
-#define DbgAssertAligned(_ptr_, _alignment_) ASSERT(((DWORD_PTR)(_ptr_)) % (_alignment_) == 0)
+#define DbgAssertAligned(_ptr_, _alignment_) \
+	ASSERT(((DWORD_PTR)(_ptr_)) % (_alignment_) == 0)
 
 //  Put up a message box informing the user of a halt
 //  condition in the program
@@ -165,7 +171,8 @@ void WINAPI DumpGraph(IFilterGraph *pGraph, DWORD dwLevel);
 #define NOTE2(_x_, a, b) DbgLog((LOG_TRACE, 5, TEXT(_x_), a, b))
 #define NOTE3(_x_, a, b, c) DbgLog((LOG_TRACE, 5, TEXT(_x_), a, b, c))
 #define NOTE4(_x_, a, b, c, d) DbgLog((LOG_TRACE, 5, TEXT(_x_), a, b, c, d))
-#define NOTE5(_x_, a, b, c, d, e) DbgLog((LOG_TRACE, 5, TEXT(_x_), a, b, c, d, e))
+#define NOTE5(_x_, a, b, c, d, e) \
+	DbgLog((LOG_TRACE, 5, TEXT(_x_), a, b, c, d, e))
 
 #else
 
@@ -296,9 +303,10 @@ protected:
 class CDisp : public CDispBasic {
 public:
 	CDisp(LONGLONG ll,
-	      int Format = CDISP_HEX); // Display a LONGLONG in CDISP_HEX or CDISP_DEC form
-	CDisp(REFCLSID clsid);         // Display a GUID
-	CDisp(double d);               // Display a floating point number
+	      int Format =
+		      CDISP_HEX); // Display a LONGLONG in CDISP_HEX or CDISP_DEC form
+	CDisp(REFCLSID clsid); // Display a GUID
+	CDisp(double d);       // Display a floating point number
 #ifdef __strmif_h__
 #ifdef __STREAMS__
 	CDisp(CRefTime t); // Display a Reference Time
@@ -321,7 +329,8 @@ private:
 	static const TCHAR _szLeaving[];
 
 public:
-	CAutoTrace(LPCTSTR szBlkName, const int level = 15) : _szBlkName(szBlkName), _level(level)
+	CAutoTrace(LPCTSTR szBlkName, const int level = 15)
+		: _szBlkName(szBlkName), _level(level)
 	{
 		DbgLog((LOG_TRACE, _level, _szEntering, _szBlkName));
 	}

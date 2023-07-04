@@ -102,7 +102,10 @@ public:
 	void LockPaletteLock();
 	void UnlockPaletteLock();
 
-	virtual BOOL PossiblyEatMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) { return FALSE; };
+	virtual BOOL PossiblyEatMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		return FALSE;
+	};
 
 	// Access our window information
 
@@ -126,9 +129,10 @@ public:
 
 	// Must be overriden to return class and window styles
 
-	virtual LPTSTR GetClassWindowStyles(__out DWORD *pClassStyles,          // Class styles
-					    __out DWORD *pWindowStyles,         // Window styles
-					    __out DWORD *pWindowStylesEx) PURE; // Extended styles
+	virtual LPTSTR GetClassWindowStyles(
+		__out DWORD *pClassStyles,          // Class styles
+		__out DWORD *pWindowStyles,         // Window styles
+		__out DWORD *pWindowStylesEx) PURE; // Extended styles
 };
 
 // This helper class is entirely subservient to the owning CBaseWindow object
@@ -176,8 +180,8 @@ public:
 
 	CDrawImage(__inout CBaseWindow *pBaseWindow);
 	BOOL DrawImage(IMediaSample *pMediaSample);
-	BOOL DrawVideoImageHere(HDC hdc, IMediaSample *pMediaSample, __in LPRECT lprcSrc,
-				__in LPRECT lprcDst);
+	BOOL DrawVideoImageHere(HDC hdc, IMediaSample *pMediaSample,
+				__in LPRECT lprcSrc, __in LPRECT lprcDst);
 	void SetDrawContext();
 	void SetTargetRect(__in RECT *pTargetRect);
 	void SetSourceRect(__in RECT *pSourceRect);
@@ -235,7 +239,8 @@ public:
 	// Constructor
 
 	CImageSample(__inout CBaseAllocator *pAllocator, __in_opt LPCTSTR pName,
-		     __inout HRESULT *phr, __in_bcount(length) LPBYTE pBuffer, LONG length);
+		     __inout HRESULT *phr, __in_bcount(length) LPBYTE pBuffer,
+		     LONG length);
 
 	// Maintain the DIB/DirectDraw state
 
@@ -264,12 +269,14 @@ protected:
 
 	HRESULT CreateDIB(LONG InSize, DIBDATA &DibData);
 	STDMETHODIMP CheckSizes(__in ALLOCATOR_PROPERTIES *pRequest);
-	virtual CImageSample *CreateImageSample(__in_bcount(Length) LPBYTE pData, LONG Length);
+	virtual CImageSample *
+	CreateImageSample(__in_bcount(Length) LPBYTE pData, LONG Length);
 
 public:
 	// Constructor and destructor
 
-	CImageAllocator(__inout CBaseFilter *pFilter, __in_opt LPCTSTR pName, __inout HRESULT *phr);
+	CImageAllocator(__inout CBaseFilter *pFilter, __in_opt LPCTSTR pName,
+			__inout HRESULT *phr);
 #ifdef DEBUG
 	~CImageAllocator();
 #endif
@@ -301,26 +308,31 @@ protected:
 	HPALETTE m_hPalette;        // The palette handle we own
 
 public:
-	CImagePalette(__inout CBaseFilter *pBaseFilter, __inout CBaseWindow *pBaseWindow,
+	CImagePalette(__inout CBaseFilter *pBaseFilter,
+		      __inout CBaseWindow *pBaseWindow,
 		      __inout CDrawImage *pDrawImage);
 
 #ifdef DEBUG
 	virtual ~CImagePalette();
 #endif
 
-	static HPALETTE MakePalette(const VIDEOINFOHEADER *pVideoInfo, __in LPSTR szDevice);
+	static HPALETTE MakePalette(const VIDEOINFOHEADER *pVideoInfo,
+				    __in LPSTR szDevice);
 	HRESULT RemovePalette();
-	static HRESULT MakeIdentityPalette(__inout_ecount_full(iColours) PALETTEENTRY *pEntry,
+	static HRESULT MakeIdentityPalette(__inout_ecount_full(iColours)
+						   PALETTEENTRY *pEntry,
 					   INT iColours, __in LPSTR szDevice);
 	HRESULT CopyPalette(const CMediaType *pSrc, __out CMediaType *pDest);
-	BOOL ShouldUpdate(const VIDEOINFOHEADER *pNewInfo, const VIDEOINFOHEADER *pOldInfo);
-	HRESULT PreparePalette(const CMediaType *pmtNew, const CMediaType *pmtOld,
-			       __in LPSTR szDevice);
+	BOOL ShouldUpdate(const VIDEOINFOHEADER *pNewInfo,
+			  const VIDEOINFOHEADER *pOldInfo);
+	HRESULT PreparePalette(const CMediaType *pmtNew,
+			       const CMediaType *pmtOld, __in LPSTR szDevice);
 
-	BOOL DrawVideoImageHere(HDC hdc, IMediaSample *pMediaSample, __in LPRECT lprcSrc,
-				__in LPRECT lprcDst)
+	BOOL DrawVideoImageHere(HDC hdc, IMediaSample *pMediaSample,
+				__in LPRECT lprcSrc, __in LPRECT lprcDst)
 	{
-		return m_pDrawImage->DrawVideoImageHere(hdc, pMediaSample, lprcSrc, lprcDst);
+		return m_pDrawImage->DrawVideoImageHere(hdc, pMediaSample,
+							lprcSrc, lprcDst);
 	}
 };
 
@@ -365,7 +377,8 @@ public:
 	HRESULT UpdateFormat(__inout VIDEOINFO *pVideoInfo);
 	const DWORD *GetBitMasks(const VIDEOINFO *pVideoInfo);
 
-	BOOL GetColourMask(__out DWORD *pMaskRed, __out DWORD *pMaskGreen, __out DWORD *pMaskBlue);
+	BOOL GetColourMask(__out DWORD *pMaskRed, __out DWORD *pMaskGreen,
+			   __out DWORD *pMaskBlue);
 };
 
 //  Convert a FORMAT_VideoInfo to FORMAT_VideoInfo2

@@ -82,7 +82,8 @@ inline ULONGLONG _RDTSC(void)
         } \
     }*/
 
-#define PERFLOG_AUDIOREND(clocktime, sampletime, psample, bytetime, cbytes) /*{ \
+#define PERFLOG_AUDIOREND(clocktime, sampletime, psample, bytetime, \
+			  cbytes) /*{ \
     PERFINFO_WMI_AVREND    perfData; \
     if (NULL != g_pTraceEvent) { \
         memset( &perfData, 0, sizeof( perfData ) ); \
@@ -97,49 +98,51 @@ inline ULONGLONG _RDTSC(void)
         } \
     }*/
 
-#define PERFLOG_AUDIORECV(StreamTime, SampleStart, SampleStop, Discontinuity, Duration) \
-	if (PerflogEnableFlags & DXMPERF_AUDIORECV) {                                   \
-		PERFINFO_WMI_AUDIORECV perfData;                                        \
-		memset(&perfData, 0, sizeof(perfData));                                 \
-		perfData.header.Size = sizeof(perfData);                                \
-		perfData.header.Flags = WNODE_FLAG_TRACED_GUID;                         \
-		perfData.header.Guid = GUID_AUDIORECV;                                  \
-		perfData.data.streamTime = StreamTime;                                  \
-		perfData.data.sampleStart = SampleStart;                                \
-		perfData.data.sampleStop = SampleStop;                                  \
-		perfData.data.discontinuity = Discontinuity;                            \
-		perfData.data.hwduration = Duration;                                    \
-		PerflogTraceEvent((PEVENT_TRACE_HEADER)&perfData);                      \
+#define PERFLOG_AUDIORECV(StreamTime, SampleStart, SampleStop, Discontinuity, \
+			  Duration)                                           \
+	if (PerflogEnableFlags & DXMPERF_AUDIORECV) {                         \
+		PERFINFO_WMI_AUDIORECV perfData;                              \
+		memset(&perfData, 0, sizeof(perfData));                       \
+		perfData.header.Size = sizeof(perfData);                      \
+		perfData.header.Flags = WNODE_FLAG_TRACED_GUID;               \
+		perfData.header.Guid = GUID_AUDIORECV;                        \
+		perfData.data.streamTime = StreamTime;                        \
+		perfData.data.sampleStart = SampleStart;                      \
+		perfData.data.sampleStop = SampleStop;                        \
+		perfData.data.discontinuity = Discontinuity;                  \
+		perfData.data.hwduration = Duration;                          \
+		PerflogTraceEvent((PEVENT_TRACE_HEADER)&perfData);            \
 	}
 
-#define PERFLOG_AUDIOSLAVE(MasterClock, SlaveClock, ErrorAccum, LastHighErrorSeen, \
-			   LastLowErrorSeen)                                       \
-	if (PerflogEnableFlags & DXMPERF_AUDIOSLAVE) {                             \
-		PERFINFO_WMI_AUDIOSLAVE perfData;                                  \
-		memset(&perfData, 0, sizeof(perfData));                            \
-		perfData.header.Size = sizeof(perfData);                           \
-		perfData.header.Flags = WNODE_FLAG_TRACED_GUID;                    \
-		perfData.header.Guid = GUID_AUDIOSLAVE;                            \
-		perfData.data.masterClock = MasterClock;                           \
-		perfData.data.slaveClock = SlaveClock;                             \
-		perfData.data.errorAccum = ErrorAccum;                             \
-		perfData.data.lastHighErrorSeen = LastHighErrorSeen;               \
-		perfData.data.lastLowErrorSeen = LastLowErrorSeen;                 \
-		PerflogTraceEvent((PEVENT_TRACE_HEADER)&perfData);                 \
+#define PERFLOG_AUDIOSLAVE(MasterClock, SlaveClock, ErrorAccum,      \
+			   LastHighErrorSeen, LastLowErrorSeen)      \
+	if (PerflogEnableFlags & DXMPERF_AUDIOSLAVE) {               \
+		PERFINFO_WMI_AUDIOSLAVE perfData;                    \
+		memset(&perfData, 0, sizeof(perfData));              \
+		perfData.header.Size = sizeof(perfData);             \
+		perfData.header.Flags = WNODE_FLAG_TRACED_GUID;      \
+		perfData.header.Guid = GUID_AUDIOSLAVE;              \
+		perfData.data.masterClock = MasterClock;             \
+		perfData.data.slaveClock = SlaveClock;               \
+		perfData.data.errorAccum = ErrorAccum;               \
+		perfData.data.lastHighErrorSeen = LastHighErrorSeen; \
+		perfData.data.lastLowErrorSeen = LastLowErrorSeen;   \
+		PerflogTraceEvent((PEVENT_TRACE_HEADER)&perfData);   \
 	}
 
-#define PERFLOG_AUDIOADDBREAK(IterNextWrite, OffsetNextWrite, IterWrite, OffsetWrite) \
-	if (PerflogEnableFlags & DXMPERF_AUDIOBREAK) {                                \
-		PERFINFO_WMI_AUDIOADDBREAK perfData;                                  \
-		memset(&perfData, 0, sizeof(perfData));                               \
-		perfData.header.Size = sizeof(perfData);                              \
-		perfData.header.Flags = WNODE_FLAG_TRACED_GUID;                       \
-		perfData.header.Guid = GUID_AUDIOADDBREAK;                            \
-		perfData.data.iterNextWrite = IterNextWrite;                          \
-		perfData.data.offsetNextWrite = OffsetNextWrite;                      \
-		perfData.data.iterWrite = IterWrite;                                  \
-		perfData.data.offsetWrite = OffsetWrite;                              \
-		PerflogTraceEvent((PEVENT_TRACE_HEADER)&perfData);                    \
+#define PERFLOG_AUDIOADDBREAK(IterNextWrite, OffsetNextWrite, IterWrite, \
+			      OffsetWrite)                               \
+	if (PerflogEnableFlags & DXMPERF_AUDIOBREAK) {                   \
+		PERFINFO_WMI_AUDIOADDBREAK perfData;                     \
+		memset(&perfData, 0, sizeof(perfData));                  \
+		perfData.header.Size = sizeof(perfData);                 \
+		perfData.header.Flags = WNODE_FLAG_TRACED_GUID;          \
+		perfData.header.Guid = GUID_AUDIOADDBREAK;               \
+		perfData.data.iterNextWrite = IterNextWrite;             \
+		perfData.data.offsetNextWrite = OffsetNextWrite;         \
+		perfData.data.iterWrite = IterWrite;                     \
+		perfData.data.offsetWrite = OffsetWrite;                 \
+		PerflogTraceEvent((PEVENT_TRACE_HEADER)&perfData);       \
 	}
 
 #define PERFLOG_VIDEOREND(sampletime, clocktime, psample)          \
@@ -217,8 +220,9 @@ inline ULONGLONG _RDTSC(void)
 		PerflogTraceEvent((PEVENT_TRACE_HEADER)&perfData); \
 	}
 
-inline VOID PERFLOG_STREAMTRACE(ULONG Level, ULONG Id, ULONGLONG DShowClock, ULONGLONG Data1,
-				ULONGLONG Data2, ULONGLONG Data3, ULONGLONG Data4)
+inline VOID PERFLOG_STREAMTRACE(ULONG Level, ULONG Id, ULONGLONG DShowClock,
+				ULONGLONG Data1, ULONGLONG Data2,
+				ULONGLONG Data3, ULONGLONG Data4)
 {
 	if (Level <= PerflogModuleLevel) {
 		PERFINFO_WMI_STREAMTRACE perfData;

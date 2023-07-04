@@ -11,8 +11,10 @@ VirtualProperties::VirtualProperties(QWidget *parent)
 	ui->setupUi(this);
 	connect(ui->pushButtonStart, SIGNAL(clicked()), this, SLOT(onStart()));
 	connect(ui->pushButtonStop, SIGNAL(clicked()), this, SLOT(onStop()));
-	connect(ui->spinBox, SIGNAL(valueChanged(int)), ui->horizontalSlider, SLOT(setValue(int)));
-	connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), ui->spinBox, SLOT(setValue(int)));
+	connect(ui->spinBox, SIGNAL(valueChanged(int)), ui->horizontalSlider,
+		SLOT(setValue(int)));
+	connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), ui->spinBox,
+		SLOT(setValue(int)));
 	connect(ui->checkBox_horiflip, SIGNAL(stateChanged(int)), this,
 		SLOT(onClickHorizontalFlip()));
 	connect(ui->checkBox_keepratio, SIGNAL(stateChanged(int)), this,
@@ -37,7 +39,8 @@ VirtualProperties::VirtualProperties(QWidget *parent)
 	ui->comboBox_target->addItem("OBS-Camera2", ModeVideo2);
 	ui->comboBox_target->addItem("OBS-Camera3", ModeVideo3);
 	ui->comboBox_target->addItem("OBS-Camera4", ModeVideo4);
-	ui->comboBox_target->setCurrentIndex(ui->comboBox_target->findData(target));
+	ui->comboBox_target->setCurrentIndex(
+		ui->comboBox_target->findData(target));
 	ui->spinBox->setValue(delay);
 	ui->horizontalSlider->setValue(delay);
 	ui->label->setStyleSheet("QLabel { color : red; }");
@@ -142,9 +145,11 @@ void VirtualProperties::SaveSetting()
 		bool hori_flip = ui->checkBox_horiflip->isChecked();
 		bool keep_ratio = ui->checkBox_keepratio->isChecked();
 		int delay = ui->horizontalSlider->value();
-		config_set_bool(config, "VirtualOutput", "AutoStart", autostart);
+		config_set_bool(config, "VirtualOutput", "AutoStart",
+				autostart);
 		config_set_bool(config, "VirtualOutput", "HoriFlip", hori_flip);
-		config_set_bool(config, "VirtualOutput", "KeepRatio", keep_ratio);
+		config_set_bool(config, "VirtualOutput", "KeepRatio",
+				keep_ratio);
 		config_set_int(config, "VirtualOutput", "OutDelay", delay);
 	}
 }

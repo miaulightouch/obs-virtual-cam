@@ -112,7 +112,8 @@ public:
 
 	class CNodeCache {
 	public:
-		CNodeCache(INT iCacheSize) : m_iCacheSize(iCacheSize), m_pHead(NULL), m_iUsed(0){};
+		CNodeCache(INT iCacheSize)
+			: m_iCacheSize(iCacheSize), m_pHead(NULL), m_iUsed(0){};
 		~CNodeCache()
 		{
 			CNode *pNode = m_pHead;
@@ -445,20 +446,23 @@ public:
 	void Reverse();
 
 /* set cursor to the position of each element of list in turn  */
-#define TRAVERSELIST(list, cursor) \
-	for (cursor = (list).GetHeadPosition(); cursor != NULL; cursor = (list).Next(cursor))
+#define TRAVERSELIST(list, cursor)                              \
+	for (cursor = (list).GetHeadPosition(); cursor != NULL; \
+	     cursor = (list).Next(cursor))
 
 /* set cursor to the position of each element of list in turn
        in reverse order
     */
-#define REVERSETRAVERSELIST(list, cursor) \
-	for (cursor = (list).GetTailPosition(); cursor != NULL; cursor = (list).Prev(cursor))
+#define REVERSETRAVERSELIST(list, cursor)                       \
+	for (cursor = (list).GetTailPosition(); cursor != NULL; \
+	     cursor = (list).Prev(cursor))
 
 }; // end of class declaration
 
 template<class OBJECT> class CGenericList : public CBaseList {
 public:
-	CGenericList(__in_opt LPCTSTR pName, INT iItems, BOOL bLock = TRUE, BOOL bAlert = FALSE)
+	CGenericList(__in_opt LPCTSTR pName, INT iItems, BOOL bLock = TRUE,
+		     BOOL bAlert = FALSE)
 		: CBaseList(pName, iItems)
 	{
 		UNREFERENCED_PARAMETER(bAlert);
@@ -466,21 +470,36 @@ public:
 	};
 	CGenericList(__in_opt LPCTSTR pName) : CBaseList(pName){};
 
-	__out_opt POSITION GetHeadPosition() const { return (POSITION)m_pFirst; }
+	__out_opt POSITION GetHeadPosition() const
+	{
+		return (POSITION)m_pFirst;
+	}
 	__out_opt POSITION GetTailPosition() const { return (POSITION)m_pLast; }
 	int GetCount() const { return m_Count; }
 
-	__out OBJECT *GetNext(__inout POSITION &rp) const { return (OBJECT *)GetNextI(rp); }
+	__out OBJECT *GetNext(__inout POSITION &rp) const
+	{
+		return (OBJECT *)GetNextI(rp);
+	}
 
-	__out_opt OBJECT *Get(__in_opt POSITION p) const { return (OBJECT *)GetI(p); }
-	__out OBJECT *GetValid(__in POSITION p) const { return (OBJECT *)GetValidI(p); }
+	__out_opt OBJECT *Get(__in_opt POSITION p) const
+	{
+		return (OBJECT *)GetI(p);
+	}
+	__out OBJECT *GetValid(__in POSITION p) const
+	{
+		return (OBJECT *)GetValidI(p);
+	}
 	__out_opt OBJECT *GetHead() const { return Get(GetHeadPosition()); }
 
 	__out_opt OBJECT *RemoveHead() { return (OBJECT *)RemoveHeadI(); }
 
 	__out_opt OBJECT *RemoveTail() { return (OBJECT *)RemoveTailI(); }
 
-	__out_opt OBJECT *Remove(__in_opt POSITION p) { return (OBJECT *)RemoveI(p); }
+	__out_opt OBJECT *Remove(__in_opt POSITION p)
+	{
+		return (OBJECT *)RemoveI(p);
+	}
 	__out_opt POSITION AddBefore(__in_opt POSITION p, __in OBJECT *pObj)
 	{
 		return AddBeforeI(p, pObj);

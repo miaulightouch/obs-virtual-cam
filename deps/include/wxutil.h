@@ -112,7 +112,8 @@ public:
 	void Set() { EXECUTE_ASSERT(SetEvent(m_hEvent)); };
 	BOOL Wait(DWORD dwTimeout = INFINITE)
 	{
-		return (WaitForSingleObject(m_hEvent, dwTimeout) == WAIT_OBJECT_0);
+		return (WaitForSingleObject(m_hEvent, dwTimeout) ==
+			WAIT_OBJECT_0);
 	};
 	void Reset() { ResetEvent(m_hEvent); };
 	BOOL Check() { return Wait(0); };
@@ -185,7 +186,8 @@ public:
 		// Disable warning: Conversion from LONG to PVOID of greater size
 #pragma warning(push)
 #pragma warning(disable : 4312)
-		HANDLE hThread = (HANDLE)InterlockedExchangePointer(&m_hThread, 0);
+		HANDLE hThread =
+			(HANDLE)InterlockedExchangePointer(&m_hThread, 0);
 #pragma warning(pop)
 
 		if (hThread) {
@@ -333,9 +335,11 @@ public:
 // Returns:
 //    S_OK          - no error
 //    E_INVALIDARG  - values passed would lead to overrun
-HRESULT AMSafeMemMoveOffset(__in_bcount(dst_size) void *dst, __in size_t dst_size,
-			    __in DWORD cb_dst_offset, __in_bcount(src_size) const void *src,
-			    __in size_t src_size, __in DWORD cb_src_offset, __in size_t count);
+HRESULT AMSafeMemMoveOffset(__in_bcount(dst_size) void *dst,
+			    __in size_t dst_size, __in DWORD cb_dst_offset,
+			    __in_bcount(src_size) const void *src,
+			    __in size_t src_size, __in DWORD cb_src_offset,
+			    __in size_t count);
 
 extern "C" void *__stdcall memmoveInternal(void *, const void *, size_t);
 
@@ -432,7 +436,8 @@ STDAPI FreeBSTR(__deref_in BSTR *pstr);
 STDAPI AMGetWideString(LPCWSTR pszString, __deref_out LPWSTR *ppszReturn);
 
 // Special wait for objects owning windows
-DWORD WINAPI WaitDispatchingMessages(HANDLE hObject, DWORD dwWait, HWND hwnd = NULL, UINT uMsg = 0,
+DWORD WINAPI WaitDispatchingMessages(HANDLE hObject, DWORD dwWait,
+				     HWND hwnd = NULL, UINT uMsg = 0,
 				     HANDLE hEvent = NULL);
 
 // HRESULT_FROM_WIN32 converts ERROR_SUCCESS to a success code, but in
@@ -447,7 +452,8 @@ HRESULT AmGetLastErrorToHResult(void);
 
 // duplicate of ATL's CComPtr to avoid linker conflicts.
 
-IUnknown *QzAtlComPtrAssign(__deref_inout_opt IUnknown **pp, __in_opt IUnknown *lp);
+IUnknown *QzAtlComPtrAssign(__deref_inout_opt IUnknown **pp,
+			    __in_opt IUnknown *lp);
 
 template<class T> class QzCComPtr {
 public:
@@ -492,7 +498,10 @@ public:
 		ASSERT(p != NULL);
 		return p;
 	}
-	T *operator=(T *lp) { return (T *)QzAtlComPtrAssign((IUnknown **)&p, lp); }
+	T *operator=(T *lp)
+	{
+		return (T *)QzAtlComPtrAssign((IUnknown **)&p, lp);
+	}
 	T *operator=(const QzCComPtr<T> &lp)
 	{
 		return (T *)QzAtlComPtrAssign((IUnknown **)&p, lp.p);
@@ -505,18 +514,23 @@ public:
 	T *p;
 };
 
-MMRESULT CompatibleTimeSetEvent(UINT uDelay, UINT uResolution, __in LPTIMECALLBACK lpTimeProc,
+MMRESULT CompatibleTimeSetEvent(UINT uDelay, UINT uResolution,
+				__in LPTIMECALLBACK lpTimeProc,
 				DWORD_PTR dwUser, UINT fuEvent);
 bool TimeKillSynchronousFlagAvailable(void);
 
 //  Helper to replace lstrcpmi
 __inline int lstrcmpiLocaleIndependentW(LPCWSTR lpsz1, LPCWSTR lpsz2)
 {
-	return CompareStringW(LOCALE_INVARIANT, NORM_IGNORECASE, lpsz1, -1, lpsz2, -1) - CSTR_EQUAL;
+	return CompareStringW(LOCALE_INVARIANT, NORM_IGNORECASE, lpsz1, -1,
+			      lpsz2, -1) -
+	       CSTR_EQUAL;
 }
 __inline int lstrcmpiLocaleIndependentA(LPCSTR lpsz1, LPCSTR lpsz2)
 {
-	return CompareStringA(LOCALE_INVARIANT, NORM_IGNORECASE, lpsz1, -1, lpsz2, -1) - CSTR_EQUAL;
+	return CompareStringA(LOCALE_INVARIANT, NORM_IGNORECASE, lpsz1, -1,
+			      lpsz2, -1) -
+	       CSTR_EQUAL;
 }
 
 #endif /* __WXUTIL__ */

@@ -12,7 +12,8 @@
 
 class CVideoTransformFilter : public CTransformFilter {
 public:
-	CVideoTransformFilter(__in_opt LPCTSTR, __inout_opt LPUNKNOWN, REFCLSID clsid);
+	CVideoTransformFilter(__in_opt LPCTSTR, __inout_opt LPUNKNOWN,
+			      REFCLSID clsid);
 	~CVideoTransformFilter();
 	HRESULT EndFlush();
 
@@ -53,9 +54,11 @@ public:
 	virtual void RegisterPerfId()
 	{
 		m_idSkip = MSR_REGISTER(TEXT("Video Transform Skip frame"));
-		m_idFrameType = MSR_REGISTER(TEXT("Video transform frame type"));
+		m_idFrameType =
+			MSR_REGISTER(TEXT("Video transform frame type"));
 		m_idLate = MSR_REGISTER(TEXT("Video Transform Lateness"));
-		m_idTimeTillKey = MSR_REGISTER(TEXT("Video Transform Estd. time to next key"));
+		m_idTimeTillKey = MSR_REGISTER(
+			TEXT("Video Transform Estd. time to next key"));
 		CTransformFilter::RegisterPerfId();
 	}
 #endif
@@ -98,10 +101,10 @@ protected:
 	// the quality management here if you have B-frames.
 
 	int m_nKeyFramePeriod; // the largest observed interval between type 1 frames
-			       // 1 means every frame is type 1, 2 means every other.
+		// 1 means every frame is type 1, 2 means every other.
 
 	int m_nFramesSinceKeyFrame; // Used to count frames since the last type 1.
-				    // becomes the new m_nKeyFramePeriod if greater.
+		// becomes the new m_nKeyFramePeriod if greater.
 
 	BOOL m_bSkipping; // we are skipping to the next type 1 frame
 

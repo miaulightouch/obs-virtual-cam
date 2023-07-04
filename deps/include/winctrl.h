@@ -14,7 +14,8 @@
 #define NEGAT(x) (x > 0 ? -x : x)
 
 //  Helper
-BOOL WINAPI PossiblyEatMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+BOOL WINAPI PossiblyEatMessage(HWND hwnd, UINT uMsg, WPARAM wParam,
+			       LPARAM lParam);
 
 class CBaseControlWindow : public CBaseVideoWindow, public CBaseWindow {
 protected:
@@ -54,8 +55,8 @@ public:
 	CBaseControlWindow(__inout CBaseFilter *pFilter,  // Owning media filter
 			   __in CCritSec *pInterfaceLock, // Locking object
 			   __in_opt LPCTSTR pName,        // Object description
-			   __inout_opt LPUNKNOWN pUnk,    // Normal COM ownership
-			   __inout HRESULT *phr);         // OLE return code
+			   __inout_opt LPUNKNOWN pUnk, // Normal COM ownership
+			   __inout HRESULT *phr);      // OLE return code
 
 	// These are the properties we support
 
@@ -93,13 +94,18 @@ public:
 	// And these are the methods
 
 	STDMETHODIMP SetWindowForeground(long Focus);
-	STDMETHODIMP NotifyOwnerMessage(OAHWND hwnd, long uMsg, LONG_PTR wParam, LONG_PTR lParam);
-	STDMETHODIMP GetMinIdealImageSize(__out long *pWidth, __out long *pHeight);
-	STDMETHODIMP GetMaxIdealImageSize(__out long *pWidth, __out long *pHeight);
-	STDMETHODIMP SetWindowPosition(long Left, long Top, long Width, long Height);
-	STDMETHODIMP GetWindowPosition(__out long *pLeft, __out long *pTop, __out long *pWidth,
-				       __out long *pHeight);
-	STDMETHODIMP GetRestorePosition(__out long *pLeft, __out long *pTop, __out long *pWidth,
+	STDMETHODIMP NotifyOwnerMessage(OAHWND hwnd, long uMsg, LONG_PTR wParam,
+					LONG_PTR lParam);
+	STDMETHODIMP GetMinIdealImageSize(__out long *pWidth,
+					  __out long *pHeight);
+	STDMETHODIMP GetMaxIdealImageSize(__out long *pWidth,
+					  __out long *pHeight);
+	STDMETHODIMP SetWindowPosition(long Left, long Top, long Width,
+				       long Height);
+	STDMETHODIMP GetWindowPosition(__out long *pLeft, __out long *pTop,
+				       __out long *pWidth, __out long *pHeight);
+	STDMETHODIMP GetRestorePosition(__out long *pLeft, __out long *pTop,
+					__out long *pWidth,
 					__out long *pHeight);
 	STDMETHODIMP HideCursor(long HideCursor);
 	STDMETHODIMP IsCursorHidden(__out long *CursorHidden);
@@ -124,9 +130,10 @@ public:
 	virtual HRESULT SetDefaultSourceRect() PURE;
 	virtual HRESULT SetSourceRect(RECT *pSourceRect) PURE;
 	virtual HRESULT GetSourceRect(RECT *pSourceRect) PURE;
-	virtual HRESULT GetStaticImage(__inout long *pBufferSize,
-				       __out_bcount_part(*pBufferSize,
-							 *pBufferSize) long *pDIBImage) PURE;
+	virtual HRESULT
+	GetStaticImage(__inout long *pBufferSize,
+		       __out_bcount_part(*pBufferSize,
+					 *pBufferSize) long *pDIBImage) PURE;
 
 	// Derived classes must override this to return a VIDEOINFO representing
 	// the video format. We cannot call IPin ConnectionMediaType to get this
@@ -139,12 +146,14 @@ public:
 
 	// Helper functions for creating memory renderings of a DIB image
 
-	HRESULT GetImageSize(__in VIDEOINFOHEADER *pVideoInfo, __out LONG *pBufferSize,
-			     __in RECT *pSourceRect);
+	HRESULT GetImageSize(__in VIDEOINFOHEADER *pVideoInfo,
+			     __out LONG *pBufferSize, __in RECT *pSourceRect);
 
-	HRESULT CopyImage(IMediaSample *pMediaSample, __in VIDEOINFOHEADER *pVideoInfo,
+	HRESULT CopyImage(IMediaSample *pMediaSample,
+			  __in VIDEOINFOHEADER *pVideoInfo,
 			  __inout LONG *pBufferSize,
-			  __out_bcount_part(*pBufferSize, *pBufferSize) BYTE *pVideoImage,
+			  __out_bcount_part(*pBufferSize, *pBufferSize)
+				  BYTE *pVideoImage,
 			  __in RECT *pSourceRect);
 
 	// Override this if you want notifying when the rectangles change
@@ -197,21 +206,26 @@ public:
 	// And these are the methods
 
 	STDMETHODIMP GetVideoSize(__out long *pWidth, __out long *pHeight);
-	STDMETHODIMP SetSourcePosition(long Left, long Top, long Width, long Height);
-	STDMETHODIMP GetSourcePosition(__out long *pLeft, __out long *pTop, __out long *pWidth,
-				       __out long *pHeight);
-	STDMETHODIMP GetVideoPaletteEntries(long StartIndex, long Entries, __out long *pRetrieved,
-					    __out_ecount_part(Entries, *pRetrieved) long *pPalette);
+	STDMETHODIMP SetSourcePosition(long Left, long Top, long Width,
+				       long Height);
+	STDMETHODIMP GetSourcePosition(__out long *pLeft, __out long *pTop,
+				       __out long *pWidth, __out long *pHeight);
+	STDMETHODIMP GetVideoPaletteEntries(
+		long StartIndex, long Entries, __out long *pRetrieved,
+		__out_ecount_part(Entries, *pRetrieved) long *pPalette);
 	STDMETHODIMP SetDefaultSourcePosition();
 	STDMETHODIMP IsUsingDefaultSource();
-	STDMETHODIMP SetDestinationPosition(long Left, long Top, long Width, long Height);
-	STDMETHODIMP GetDestinationPosition(__out long *pLeft, __out long *pTop, __out long *pWidth,
+	STDMETHODIMP SetDestinationPosition(long Left, long Top, long Width,
+					    long Height);
+	STDMETHODIMP GetDestinationPosition(__out long *pLeft, __out long *pTop,
+					    __out long *pWidth,
 					    __out long *pHeight);
 	STDMETHODIMP SetDefaultDestinationPosition();
 	STDMETHODIMP IsUsingDefaultDestination();
-	STDMETHODIMP GetCurrentImage(__inout long *pBufferSize,
-				     __out_bcount_part(*pBufferSize,
-						       *pBufferSize) long *pVideoImage);
+	STDMETHODIMP
+	GetCurrentImage(__inout long *pBufferSize,
+			__out_bcount_part(*pBufferSize,
+					  *pBufferSize) long *pVideoImage);
 };
 
 #endif // __WINCTRL__

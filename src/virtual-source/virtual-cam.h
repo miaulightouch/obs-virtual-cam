@@ -49,7 +49,9 @@ protected:
 	CVCamStream *stream = nullptr;
 };
 
-class CVCamStream : public CSourceStream, public IAMStreamConfig, public IKsPropertySet {
+class CVCamStream : public CSourceStream,
+		    public IAMStreamConfig,
+		    public IKsPropertySet {
 public:
 	//////////////////////////////////////////////////////////////////////////
 	//  IUnknown
@@ -68,20 +70,25 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	HRESULT STDMETHODCALLTYPE SetFormat(AM_MEDIA_TYPE *pmt);
 	HRESULT STDMETHODCALLTYPE GetFormat(AM_MEDIA_TYPE **ppmt);
-	HRESULT STDMETHODCALLTYPE GetNumberOfCapabilities(int *piCount, int *piSize);
-	HRESULT STDMETHODCALLTYPE GetStreamCaps(int iIndex, AM_MEDIA_TYPE **pmt, BYTE *pSCC);
+	HRESULT STDMETHODCALLTYPE GetNumberOfCapabilities(int *piCount,
+							  int *piSize);
+	HRESULT STDMETHODCALLTYPE GetStreamCaps(int iIndex, AM_MEDIA_TYPE **pmt,
+						BYTE *pSCC);
 
 	//////////////////////////////////////////////////////////////////////////
 	//  IKsPropertySet
 	//////////////////////////////////////////////////////////////////////////
-	HRESULT STDMETHODCALLTYPE Set(REFGUID guidPropSet, DWORD dwID, void *pInstanceData,
-				      DWORD cbInstanceData, void *pPropData, DWORD cbPropData);
+	HRESULT STDMETHODCALLTYPE Set(REFGUID guidPropSet, DWORD dwID,
+				      void *pInstanceData, DWORD cbInstanceData,
+				      void *pPropData, DWORD cbPropData);
 
-	HRESULT STDMETHODCALLTYPE Get(REFGUID guidPropSet, DWORD dwPropID, void *pInstanceData,
-				      DWORD cbInstanceData, void *pPropData, DWORD cbPropData,
+	HRESULT STDMETHODCALLTYPE Get(REFGUID guidPropSet, DWORD dwPropID,
+				      void *pInstanceData, DWORD cbInstanceData,
+				      void *pPropData, DWORD cbPropData,
 				      DWORD *pcbReturned);
 
-	HRESULT STDMETHODCALLTYPE QuerySupported(REFGUID guidPropSet, DWORD dwPropID,
+	HRESULT STDMETHODCALLTYPE QuerySupported(REFGUID guidPropSet,
+						 DWORD dwPropID,
 						 DWORD *pTypeSupport);
 
 	//////////////////////////////////////////////////////////////////////////
@@ -91,7 +98,8 @@ public:
 	~CVCamStream();
 
 	HRESULT FillBuffer(IMediaSample *pms);
-	HRESULT DecideBufferSize(IMemAllocator *pIMemAlloc, ALLOCATOR_PROPERTIES *pProperties);
+	HRESULT DecideBufferSize(IMemAllocator *pIMemAlloc,
+				 ALLOCATOR_PROPERTIES *pProperties);
 	HRESULT CheckMediaType(const CMediaType *pMediaType);
 	HRESULT GetMediaType(int iPosition, CMediaType *pmt);
 	HRESULT SetMediaType(const CMediaType *pmt);

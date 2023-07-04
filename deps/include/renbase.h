@@ -23,8 +23,8 @@ protected:
 	CBaseRenderer *m_pRenderer;
 
 public:
-	CRendererInputPin(__inout CBaseRenderer *pRenderer, __inout HRESULT *phr,
-			  __in_opt LPCWSTR Name);
+	CRendererInputPin(__inout CBaseRenderer *pRenderer,
+			  __inout HRESULT *phr, __in_opt LPCWSTR Name);
 
 	// Overriden from the base pin classes
 
@@ -53,11 +53,12 @@ class CBaseRenderer : public CBaseFilter {
 protected:
 	friend class CRendererInputPin;
 
-	friend void CALLBACK EndOfStreamTimer(UINT uID,         // Timer identifier
-					      UINT uMsg,        // Not currently used
-					      DWORD_PTR dwUser, // User information
-					      DWORD_PTR dw1,    // Windows reserved
-					      DWORD_PTR dw2);   // Is also reserved
+	friend void CALLBACK
+	EndOfStreamTimer(UINT uID,         // Timer identifier
+			 UINT uMsg,        // Not currently used
+			 DWORD_PTR dwUser, // User information
+			 DWORD_PTR dw1,    // Windows reserved
+			 DWORD_PTR dw2);   // Is also reserved
 
 	CRendererPosPassThru *m_pPosition; // Media seeking pass by object
 	CAMEvent m_RenderEvent;            // Used to signal timer events
@@ -94,7 +95,8 @@ public:
 
 	// Overriden to say what interfaces we support and where
 
-	virtual HRESULT GetMediaPositionInterface(REFIID riid, __deref_out void **ppv);
+	virtual HRESULT GetMediaPositionInterface(REFIID riid,
+						  __deref_out void **ppv);
 	STDMETHODIMP NonDelegatingQueryInterface(REFIID, __deref_out void **);
 
 	virtual HRESULT SourceThreadCanWait(BOOL bCanWait);
@@ -149,16 +151,17 @@ public:
 
 #ifdef PERF
 	REFERENCE_TIME m_trRenderStart; // Just before we started drawing
-					// Set in OnRenderStart, Used in OnRenderEnd
-	int m_idBaseStamp;              // MSR_id for frame time stamp
-	int m_idBaseRenderTime;         // MSR_id for true wait time
-	int m_idBaseAccuracy;           // MSR_id for time frame is late (int)
+		// Set in OnRenderStart, Used in OnRenderEnd
+	int m_idBaseStamp;      // MSR_id for frame time stamp
+	int m_idBaseRenderTime; // MSR_id for true wait time
+	int m_idBaseAccuracy;   // MSR_id for time frame is late (int)
 #endif
 
 	// Quality management implementation for scheduling rendering
 
 	virtual BOOL ScheduleSample(IMediaSample *pMediaSample);
-	virtual HRESULT GetSampleTimes(IMediaSample *pMediaSample, __out REFERENCE_TIME *pStartTime,
+	virtual HRESULT GetSampleTimes(IMediaSample *pMediaSample,
+				       __out REFERENCE_TIME *pStartTime,
 				       __out REFERENCE_TIME *pEndTime);
 
 	virtual HRESULT ShouldDrawSampleNow(IMediaSample *pMediaSample,
@@ -231,7 +234,8 @@ public:
 // the number of frames that the sliding averages are averaged over.
 // the rule is (1024*NewObservation + (AVGPERIOD-1) * PreviousAverage)/AVGPERIOD
 #define AVGPERIOD 4
-#define DO_MOVING_AVG(avg, obs) (avg = (1024 * obs + (AVGPERIOD - 1) * avg) / AVGPERIOD)
+#define DO_MOVING_AVG(avg, obs) \
+	(avg = (1024 * obs + (AVGPERIOD - 1) * avg) / AVGPERIOD)
 // Spot the bug in this macro - I can't. but it doesn't work!
 
 class CBaseVideoRenderer : public CBaseRenderer,  // Base renderer class
@@ -267,9 +271,9 @@ protected:
 
 	BOOL m_bSupplierHandlingQuality; // The response to Quality messages says
 					 // our supplier is handling things.
-					 // We will allow things to go extra late
-					 // before dropping frames.  We will play
-					 // very early after he has dropped one.
+		// We will allow things to go extra late
+		// before dropping frames.  We will play
+		// very early after he has dropped one.
 
 	// Control of scheduling, frame dropping etc.
 	// We need to know where the time is being spent so as to tell whether
@@ -343,13 +347,14 @@ protected:
 	int m_idDecision;      // MSR_id for decision code
 	int m_idDuration;      // MSR_id for duration of a frame
 	int m_idThrottle;      // MSR_id for audio-video throttling
-			       //int m_idDebug;                  // MSR_id for trace style debugging
+		//int m_idDebug;                  // MSR_id for trace style debugging
 	//int m_idSendQuality;          // MSR_id for timing the notifications per se
 #endif                                           // PERF
 	REFERENCE_TIME m_trRememberStampForPerf; // original time stamp of frame
-						 // with no earliness fudges etc.
+		// with no earliness fudges etc.
 #ifdef PERF
-	REFERENCE_TIME m_trRememberFrameForPerf; // time when previous frame rendered
+	REFERENCE_TIME
+		m_trRememberFrameForPerf; // time when previous frame rendered
 
 	// debug...
 	int m_idFrameAvg;
@@ -369,8 +374,8 @@ protected:
 
 	// Next two allow jitter calculation.  Jitter is std deviation of frame time.
 	REFERENCE_TIME m_trLastDraw; // Time of prev frame (for inter-frame times)
-	LONGLONG m_iSumSqFrameTime;  // Sum of squares of (inter-frame time in mSec)
-	LONGLONG m_iSumFrameTime;    // Sum of inter-frame times in mSec
+	LONGLONG m_iSumSqFrameTime; // Sum of squares of (inter-frame time in mSec)
+	LONGLONG m_iSumFrameTime; // Sum of inter-frame times in mSec
 
 	// To get performance statistics on frame rate, jitter etc, we need
 	// to record the lateness and inter-frame time.  What we actually need are the
@@ -388,10 +393,10 @@ protected:
 #endif
 
 public:
-	CBaseVideoRenderer(REFCLSID RenderClass,       // CLSID for this renderer
-			   __in_opt LPCTSTR pName,     // Debug ONLY description
+	CBaseVideoRenderer(REFCLSID RenderClass,   // CLSID for this renderer
+			   __in_opt LPCTSTR pName, // Debug ONLY description
 			   __inout_opt LPUNKNOWN pUnk, // Aggregated owner object
-			   __inout HRESULT *phr);      // General OLE return code
+			   __inout HRESULT *phr); // General OLE return code
 
 	~CBaseVideoRenderer();
 
@@ -417,11 +422,14 @@ public:
 	virtual void OnDirectRender(IMediaSample *pMediaSample);
 	virtual HRESULT ResetStreamingTimes();
 	BOOL ScheduleSample(IMediaSample *pMediaSample);
-	HRESULT ShouldDrawSampleNow(IMediaSample *pMediaSample, __inout REFERENCE_TIME *ptrStart,
+	HRESULT ShouldDrawSampleNow(IMediaSample *pMediaSample,
+				    __inout REFERENCE_TIME *ptrStart,
 				    __inout REFERENCE_TIME *ptrEnd);
 
-	virtual HRESULT SendQuality(REFERENCE_TIME trLate, REFERENCE_TIME trRealStream);
-	STDMETHODIMP JoinFilterGraph(__inout_opt IFilterGraph *pGraph, __in_opt LPCWSTR pName);
+	virtual HRESULT SendQuality(REFERENCE_TIME trLate,
+				    REFERENCE_TIME trRealStream);
+	STDMETHODIMP JoinFilterGraph(__inout_opt IFilterGraph *pGraph,
+				     __in_opt LPCWSTR pName);
 
 	//
 	//  Do estimates for standard deviations for per-frame
@@ -431,7 +439,8 @@ public:
 	//                            (m_cFramesDrawn - 2)
 	//  or 0 if m_cFramesDrawn <= 3
 	//
-	HRESULT GetStdDev(int nSamples, __out int *piResult, LONGLONG llSumSq, LONGLONG iTot);
+	HRESULT GetStdDev(int nSamples, __out int *piResult, LONGLONG llSumSq,
+			  LONGLONG iTot);
 
 public:
 	// IQualProp property page support
@@ -446,7 +455,8 @@ public:
 	// Implement an IUnknown interface and expose IQualProp
 
 	DECLARE_IUNKNOWN
-	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, __deref_out VOID **ppv);
+	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid,
+						 __deref_out VOID **ppv);
 };
 
 #endif // __RENBASE__

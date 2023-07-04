@@ -53,7 +53,10 @@ protected:
 public:
 	// IPersistStream methods
 
-	STDMETHODIMP IsDirty() { return (mPS_fDirty ? S_OK : S_FALSE); } // note FALSE means clean
+	STDMETHODIMP IsDirty()
+	{
+		return (mPS_fDirty ? S_OK : S_FALSE);
+	} // note FALSE means clean
 	STDMETHODIMP Load(LPSTREAM pStm);
 	STDMETHODIMP Save(LPSTREAM pStm, BOOL fClearDirty);
 	STDMETHODIMP GetSizeMax(__out ULARGE_INTEGER *pcbSize)

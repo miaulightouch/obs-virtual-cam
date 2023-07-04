@@ -19,11 +19,13 @@
 
 class CRenderedInputPin : public CBaseInputPin {
 public:
-	CRenderedInputPin(__in_opt LPCTSTR pObjectName, __in CBaseFilter *pFilter,
-			  __in CCritSec *pLock, __inout HRESULT *phr, __in_opt LPCWSTR pName);
+	CRenderedInputPin(__in_opt LPCTSTR pObjectName,
+			  __in CBaseFilter *pFilter, __in CCritSec *pLock,
+			  __inout HRESULT *phr, __in_opt LPCWSTR pName);
 #ifdef UNICODE
-	CRenderedInputPin(__in_opt LPCSTR pObjectName, __in CBaseFilter *pFilter,
-			  __in CCritSec *pLock, __inout HRESULT *phr, __in_opt LPCWSTR pName);
+	CRenderedInputPin(__in_opt LPCSTR pObjectName,
+			  __in CBaseFilter *pFilter, __in CCritSec *pLock,
+			  __inout HRESULT *phr, __in_opt LPCWSTR pName);
 #endif
 
 	// Override methods to track end of stream state

@@ -19,8 +19,9 @@ public:
 	REFERENCE_TIME GetNextAdviseTime();
 
 	// We need a method for derived classes to add advise packets, we return the cookie
-	DWORD_PTR AddAdvisePacket(const REFERENCE_TIME &time1, const REFERENCE_TIME &time2,
-				  HANDLE h, BOOL periodic);
+	DWORD_PTR AddAdvisePacket(const REFERENCE_TIME &time1,
+				  const REFERENCE_TIME &time2, HANDLE h,
+				  BOOL periodic);
 	// And a way to cancel
 	HRESULT Unadvise(DWORD_PTR dwAdviseCookie);
 
@@ -58,7 +59,8 @@ private:
 			m_next = p;
 		}
 
-		int IsZ() const // That is, is it the node that represents the end of the list
+		int
+		IsZ() const // That is, is it the node that represents the end of the list
 		{
 			return m_next == 0;
 		}
@@ -111,7 +113,8 @@ private:
 	DWORD m_dwCacheCount;
 	enum { dwCacheMax = 5 }; // Don't bother caching more than five
 
-	void Delete(__inout CAdvisePacket *pLink); // This "Delete" will cache the Link
+	void Delete(__inout CAdvisePacket
+			    *pLink); // This "Delete" will cache the Link
 
 	// Attributes and methods for debugging
 public:
