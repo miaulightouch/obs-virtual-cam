@@ -34,15 +34,31 @@ if(ENABLE_QT)
                AUTORCC ON)
 endif()
 
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE src/dllmain.cpp src/virtual-cam.h src/virtual-cam.cpp src/virtual-audio.h src/virtual-audio.cpp src/clock.h src/clock.cpp
-src/virtual-source.def src/queue/share_queue_read.cpp src/queue/share_queue_read.h
-src/queue/share_queue.h)
+include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake" NO_POLICY_SCOPE)
 
-set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})
+find_package(FFmpeg REQUIRED COMPONENTS avfilter avutil)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE FFmpeg::avfilter FFmpeg::avutil)
 
-# add_subdirectory(src/virtual-source)
+# only build the 64bit version plugin
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  target_sources(
+    ${CMAKE_PROJECT_NAME}
+    PRIVATE src/virtual_main.cpp
+            src/virtual_output.h
+            src/virtual_output.cpp
+            src/virtual_properties.h
+            src/virtual_properties.cpp
+            src/virtual_filter.h
+            src/virtual_filter.cpp
+            src/hflip.h
+            src/hflip.cpp
+            src/queue/share_queue_write.h
+            src/queue/share_queue_write.cpp
+            src/get_format.h
+            src/queue/share_queue.h)
 
-# # Build virtual-output only on 64-bit systems
-# if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-#   add_subdirectory(src/virtual-output)
-# endif()
+  set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})
+endif()
+
+# build the dshow source(both 32bit/64bit)
+add_subdirectory(src/virtual-source)

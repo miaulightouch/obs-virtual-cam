@@ -7,6 +7,9 @@ include(buildspec_common)
 # _check_dependencies_windows: Set up Windows slice for _check_dependencies
 function(_check_dependencies_windows)
   set(arch ${CMAKE_GENERATOR_PLATFORM})
+  if(CMAKE_GENERATOR_PLATFORM STREQUAL "Win32")
+    set(arch "x86")
+  endif()
   set(platform windows-${arch})
 
   set(dependencies_dir "${CMAKE_CURRENT_SOURCE_DIR}/.deps")

@@ -4,7 +4,7 @@ extern "C" {
 #include "libswscale/swscale.h"
 };
 
-#include "queue/share_queue_read.h"
+#include "../queue/share_queue_read.h"
 #include <deque>
 
 #define DECLARE_PTR(type, ptr, expr) type *ptr = (type *)(expr);

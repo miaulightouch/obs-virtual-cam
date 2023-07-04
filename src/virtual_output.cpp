@@ -4,7 +4,7 @@
 #include "virtual_properties.h"
 #include "get_format.h"
 #include "hflip.h"
-#include "../plugin-support.h"
+#include "plugin-support.h"
 
 struct virtual_out_data {
 	obs_output_t *output = nullptr;

@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include "obs.h"
-#include "../queue/share_queue_write.h"
+#include "queue/share_queue_write.h"
 
 struct vcam_update_data {
 	bool horizontal_flip = false;

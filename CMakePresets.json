@@ -23,8 +23,8 @@
         "CMAKE_OSX_DEPLOYMENT_TARGET": "11.0",
         "CODESIGN_IDENTITY": "$penv{CODESIGN_IDENT}",
         "CODESIGN_TEAM": "$penv{CODESIGN_TEAM}",
-        "ENABLE_FRONTEND_API": false,
-        "ENABLE_QT": false
+        "ENABLE_FRONTEND_API": true,
+        "ENABLE_QT": true
       }
     },
     {
@@ -33,6 +33,35 @@
       "displayName": "macOS Universal CI build",
       "description": "Build for macOS 11.0+ (Universal binary) for CI",
       "generator": "Xcode",
+      "cacheVariables": {
+        "CMAKE_COMPILE_WARNING_AS_ERROR": true
+      }
+    },
+    {
+      "name": "windows-x86",
+      "displayName": "Windows x86",
+      "description": "Build for Windows x86",
+      "binaryDir": "${sourceDir}/build_x86",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "generator": "Visual Studio 17 2022",
+      "architecture": "Win32",
+      "warnings": {"dev": true, "deprecated": true},
+      "cacheVariables": {
+        "QT_VERSION": "6",
+        "CMAKE_SYSTEM_VERSION": "10.0.18363.657",
+        "ENABLE_FRONTEND_API": true,
+        "ENABLE_QT": true
+      }
+    },
+    {
+      "name": "windows-ci-x86",
+      "inherits": ["windows-x86"],
+      "displayName": "Windows x86 CI build",
+      "description": "Build for Windows x86 on CI",
       "cacheVariables": {
         "CMAKE_COMPILE_WARNING_AS_ERROR": true
       }
@@ -53,8 +82,8 @@
       "cacheVariables": {
         "QT_VERSION": "6",
         "CMAKE_SYSTEM_VERSION": "10.0.18363.657",
-        "ENABLE_FRONTEND_API": false,
-        "ENABLE_QT": false
+        "ENABLE_FRONTEND_API": true,
+        "ENABLE_QT": true
       }
     },
     {
@@ -81,8 +110,8 @@
       "cacheVariables": {
         "QT_VERSION": "6",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "ENABLE_FRONTEND_API": false,
-        "ENABLE_QT": false
+        "ENABLE_FRONTEND_API": true,
+        "ENABLE_QT": true
       }
     },
     {
@@ -110,8 +139,8 @@
       "cacheVariables": {
         "QT_VERSION": "6",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        "ENABLE_FRONTEND_API": false,
-        "ENABLE_QT": false
+        "ENABLE_FRONTEND_API": true,
+        "ENABLE_QT": true
       }
     },
     {
@@ -138,6 +167,20 @@
       "configurePreset": "macos-ci",
       "displayName": "macOS Universal CI",
       "description": "macOS CI build for Universal architectures",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "windows-x86",
+      "configurePreset": "windows-x86",
+      "displayName": "Windows x86",
+      "description": "Windows build for x86",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "windows-ci-x86",
+      "configurePreset": "windows-ci-x86",
+      "displayName": "Windows x64 CI",
+      "description": "Windows CI build for x86 (RelWithDebInfo configuration)",
       "configuration": "RelWithDebInfo"
     },
     {

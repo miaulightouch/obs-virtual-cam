@@ -1,8 +1,8 @@
 #include <obs-module.h>
 #include <media-io/video-io.h>
 #include <util/platform.h>
-#include "../queue/share_queue_write.h"
-#include "../plugin-support.h"
+#include "queue/share_queue_write.h"
+#include "plugin-support.h"
 
 #define S_DELAY "delay"
 #define S_START "start"

@@ -57,162 +57,162 @@ jobs:
           done
           echo "commitHash=${GITHUB_SHA:0:9}" >> $GITHUB_OUTPUT
 
-  macos-build:
-    name: Build for macOS 🍏
-    runs-on: macos-13
-    needs: check-event
-    defaults:
-      run:
-        shell: zsh --no-rcs --errexit --pipefail {0}
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          fetch-depth: 0
+  # macos-build:
+  #   name: Build for macOS 🍏
+  #   runs-on: macos-13
+  #   needs: check-event
+  #   defaults:
+  #     run:
+  #       shell: zsh --no-rcs --errexit --pipefail {0}
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         submodules: recursive
+  #         fetch-depth: 0
 
-      - name: Set Up Environment 🔧
-        id: setup
-        run: |
-          : Set Up Environment 🔧
-          if (( ${+RUNNER_DEBUG} )) setopt XTRACE
+  #     - name: Set Up Environment 🔧
+  #       id: setup
+  #       run: |
+  #         : Set Up Environment 🔧
+  #         if (( ${+RUNNER_DEBUG} )) setopt XTRACE
 
-          print '::group::Clean Homebrew Environment'
-          typeset -a to_remove=()
+  #         print '::group::Clean Homebrew Environment'
+  #         typeset -a to_remove=()
 
-          if (( #to_remove > 0 )) brew uninstall --ignore-dependencies ${to_remove}
-          print '::endgroup::'
+  #         if (( #to_remove > 0 )) brew uninstall --ignore-dependencies ${to_remove}
+  #         print '::endgroup::'
 
-          local product_name
-          local product_version
-          read -r product_name product_version <<< \
-            "$(jq -r '. | {name, version} | join(" ")' buildspec.json)"
+  #         local product_name
+  #         local product_version
+  #         read -r product_name product_version <<< \
+  #           "$(jq -r '. | {name, version} | join(" ")' buildspec.json)"
 
-          print "pluginName=${product_name}" >> $GITHUB_OUTPUT
-          print "pluginVersion=${product_version}" >> $GITHUB_OUTPUT
+  #         print "pluginName=${product_name}" >> $GITHUB_OUTPUT
+  #         print "pluginVersion=${product_version}" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
-        id: ccache-cache
-        with:
-          path: ${{ github.workspace }}/.ccache
-          key: ${{ runner.os }}-ccache-${{ needs.check-event.outputs.config }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-
+  #     - uses: actions/cache@v3
+  #       id: ccache-cache
+  #       with:
+  #         path: ${{ github.workspace }}/.ccache
+  #         key: ${{ runner.os }}-ccache-${{ needs.check-event.outputs.config }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-ccache-
 
-      - name: Set Up Codesigning 🔑
-        uses: ./.github/actions/setup-macos-codesigning
-        if: ${{ fromJSON(needs.check-event.outputs.codesign) }}
-        id: codesign
-        with:
-          codesignIdentity: ${{ secrets.MACOS_SIGNING_APPLICATION_IDENTITY }}
-          installerIdentity: ${{ secrets.MACOS_SIGNING_INSTALLER_IDENTITY }}
-          codesignCertificate: ${{ secrets.MACOS_SIGNING_CERT }}
-          certificatePassword: ${{ secrets.MACOS_SIGNING_CERT_PASSWORD }}
-          keychainPassword: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
-          provisioningProfile: ${{ secrets.MACOS_SIGNING_PROVISIONING_PROFILE }}
-          notarizationUser: ${{ secrets.MACOS_NOTARIZATION_USERNAME }}
-          notarizationPassword: ${{ secrets.MACOS_NOTARIZATION_PASSWORD }}
+  #     - name: Set Up Codesigning 🔑
+  #       uses: ./.github/actions/setup-macos-codesigning
+  #       if: ${{ fromJSON(needs.check-event.outputs.codesign) }}
+  #       id: codesign
+  #       with:
+  #         codesignIdentity: ${{ secrets.MACOS_SIGNING_APPLICATION_IDENTITY }}
+  #         installerIdentity: ${{ secrets.MACOS_SIGNING_INSTALLER_IDENTITY }}
+  #         codesignCertificate: ${{ secrets.MACOS_SIGNING_CERT }}
+  #         certificatePassword: ${{ secrets.MACOS_SIGNING_CERT_PASSWORD }}
+  #         keychainPassword: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
+  #         provisioningProfile: ${{ secrets.MACOS_SIGNING_PROVISIONING_PROFILE }}
+  #         notarizationUser: ${{ secrets.MACOS_NOTARIZATION_USERNAME }}
+  #         notarizationPassword: ${{ secrets.MACOS_NOTARIZATION_PASSWORD }}
 
-      - name: Build Plugin 🧱
-        uses: ./.github/actions/build-plugin
-        with:
-          target: macos-universal
-          config: ${{ needs.check-event.outputs.config }}
-          codesign: ${{ fromJSON(needs.check-event.outputs.codesign) }}
-          codesignIdent: ${{ steps.codesign.outputs.codesignIdent }}
+  #     - name: Build Plugin 🧱
+  #       uses: ./.github/actions/build-plugin
+  #       with:
+  #         target: macos-universal
+  #         config: ${{ needs.check-event.outputs.config }}
+  #         codesign: ${{ fromJSON(needs.check-event.outputs.codesign) }}
+  #         codesignIdent: ${{ steps.codesign.outputs.codesignIdent }}
 
-      - name: Package Plugin 📀
-        uses: ./.github/actions/package-plugin
-        with:
-          target: macos-universal
-          config: ${{ needs.check-event.outputs.config }}
-          package: ${{ fromJSON(needs.check-event.outputs.package) }}
-          codesign: ${{ fromJSON(needs.check-event.outputs.codesign) && fromJSON(steps.codesign.outputs.haveCodesignIdent) }}
-          codesignIdent: ${{ steps.codesign.outputs.codesignIdent }}
-          installerIdent: ${{ steps.codesign.outputs.installerIdent }}
-          notarize: ${{ fromJSON(needs.check-event.outputs.notarize) && fromJSON(steps.codesign.outputs.haveNotarizationUser) }}
-          codesignUser: ${{ secrets.MACOS_NOTARIZATION_USERNAME }}
-          codesignPass: ${{ secrets.MACOS_NOTARIZATION_PASSWORD }}
+  #     - name: Package Plugin 📀
+  #       uses: ./.github/actions/package-plugin
+  #       with:
+  #         target: macos-universal
+  #         config: ${{ needs.check-event.outputs.config }}
+  #         package: ${{ fromJSON(needs.check-event.outputs.package) }}
+  #         codesign: ${{ fromJSON(needs.check-event.outputs.codesign) && fromJSON(steps.codesign.outputs.haveCodesignIdent) }}
+  #         codesignIdent: ${{ steps.codesign.outputs.codesignIdent }}
+  #         installerIdent: ${{ steps.codesign.outputs.installerIdent }}
+  #         notarize: ${{ fromJSON(needs.check-event.outputs.notarize) && fromJSON(steps.codesign.outputs.haveNotarizationUser) }}
+  #         codesignUser: ${{ secrets.MACOS_NOTARIZATION_USERNAME }}
+  #         codesignPass: ${{ secrets.MACOS_NOTARIZATION_PASSWORD }}
 
-      - name: Upload Artifacts 📡
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-macos-universal-${{ needs.check-event.outputs.commitHash }}
-          path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-macos-universal.*
+  #     - name: Upload Artifacts 📡
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-macos-universal-${{ needs.check-event.outputs.commitHash }}
+  #         path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-macos-universal.*
 
-      - name: Upload Debug Symbol Artifacts 🪲
-        uses: actions/upload-artifact@v3
-        if: ${{ needs.check-event.outputs.config == 'Release' }}
-        with:
-          name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-macos-universal-${{ needs.check-event.outputs.commitHash }}-dSYMs
-          path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-macos-universal-dSYMs.*
+  #     - name: Upload Debug Symbol Artifacts 🪲
+  #       uses: actions/upload-artifact@v3
+  #       if: ${{ needs.check-event.outputs.config == 'Release' }}
+  #       with:
+  #         name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-macos-universal-${{ needs.check-event.outputs.commitHash }}-dSYMs
+  #         path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-macos-universal-dSYMs.*
 
-  ubuntu-build:
-    name: Build for Ubuntu 🐧
-    runs-on: ubuntu-22.04
-    needs: check-event
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          fetch-depth: 0
+  # ubuntu-build:
+  #   name: Build for Ubuntu 🐧
+  #   runs-on: ubuntu-22.04
+  #   needs: check-event
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         submodules: recursive
+  #         fetch-depth: 0
 
-      - name: Set Up Environment 🔧
-        id: setup
-        run: |
-          : Set Up Environment 🔧
-          if [[ "${RUNNER_DEBUG}" ]]; then set -x; fi
+  #     - name: Set Up Environment 🔧
+  #       id: setup
+  #       run: |
+  #         : Set Up Environment 🔧
+  #         if [[ "${RUNNER_DEBUG}" ]]; then set -x; fi
 
-          read -r product_name product_version <<< \
-            "$(jq -r '. | {name, version} | join(" ")' buildspec.json)"
+  #         read -r product_name product_version <<< \
+  #           "$(jq -r '. | {name, version} | join(" ")' buildspec.json)"
 
-          echo "pluginName=${product_name}" >> $GITHUB_OUTPUT
-          echo "pluginVersion=${product_version}" >> $GITHUB_OUTPUT
+  #         echo "pluginName=${product_name}" >> $GITHUB_OUTPUT
+  #         echo "pluginVersion=${product_version}" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
-        id: ccache-cache
-        with:
-          path: ${{ github.workspace }}/.ccache
-          key: ${{ runner.os }}-ccache-x86_64-${{ needs.check-event.outputs.config }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-x86_64-
+  #     - uses: actions/cache@v3
+  #       id: ccache-cache
+  #       with:
+  #         path: ${{ github.workspace }}/.ccache
+  #         key: ${{ runner.os }}-ccache-x86_64-${{ needs.check-event.outputs.config }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-ccache-x86_64-
 
-      - name: Set up Homebrew 🍺
-        uses: Homebrew/actions/setup-homebrew@master
+  #     - name: Set up Homebrew 🍺
+  #       uses: Homebrew/actions/setup-homebrew@master
 
-      - name: Build Plugin 🧱
-        uses: ./.github/actions/build-plugin
-        with:
-          target: x86_64
-          config: ${{ needs.check-event.outputs.config }}
+  #     - name: Build Plugin 🧱
+  #       uses: ./.github/actions/build-plugin
+  #       with:
+  #         target: x86_64
+  #         config: ${{ needs.check-event.outputs.config }}
 
-      - name: Package Plugin 📀
-        uses: ./.github/actions/package-plugin
-        with:
-          package: ${{ fromJSON(needs.check-event.outputs.package) }}
-          target: x86_64
-          config: ${{ needs.check-event.outputs.config }}
+  #     - name: Package Plugin 📀
+  #       uses: ./.github/actions/package-plugin
+  #       with:
+  #         package: ${{ fromJSON(needs.check-event.outputs.package) }}
+  #         target: x86_64
+  #         config: ${{ needs.check-event.outputs.config }}
 
-      - name: Upload Source Tarball 🗜️
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-sources-${{ needs.check-event.outputs.commitHash }}
-          path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-source.*
+  #     - name: Upload Source Tarball 🗜️
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-sources-${{ needs.check-event.outputs.commitHash }}
+  #         path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-source.*
 
-      - name: Upload Artifacts 📡
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-ubuntu-22.04-x86_64-${{ needs.check-event.outputs.commitHash }}
-          path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-x86_64*.*
+  #     - name: Upload Artifacts 📡
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-ubuntu-22.04-x86_64-${{ needs.check-event.outputs.commitHash }}
+  #         path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-x86_64*.*
 
-      - name: Upload debug symbol artifacts 🪲
-        uses: actions/upload-artifact@v3
-        if: ${{ fromJSON(needs.check-event.outputs.package) }}
-        with:
-          name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-ubuntu-22.04-x86_64-${{ needs.check-event.outputs.commitHash }}-dbgsym
-          path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-x86_64*-dbgsym.ddeb
+  #     - name: Upload debug symbol artifacts 🪲
+  #       uses: actions/upload-artifact@v3
+  #       if: ${{ fromJSON(needs.check-event.outputs.package) }}
+  #       with:
+  #         name: ${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-ubuntu-22.04-x86_64-${{ needs.check-event.outputs.commitHash }}-dbgsym
+  #         path: ${{ github.workspace }}/release/${{ steps.setup.outputs.pluginName }}-${{ steps.setup.outputs.pluginVersion }}-x86_64*-dbgsym.ddeb
 
   windows-build:
     name: Build for Windows 🪟
@@ -241,6 +241,12 @@ jobs:
 
           "pluginName=${ProductName}" >> $env:GITHUB_OUTPUT
           "pluginVersion=${ProductVersion}" >> $env:GITHUB_OUTPUT
+
+      - name: Build 32bit dshow filter 🧱
+        uses: ./.github/actions/build-plugin
+        with:
+          target: x86
+          config: ${{ needs.check-event.outputs.config }}
 
       - name: Build Plugin 🧱
         uses: ./.github/actions/build-plugin
