@@ -48,6 +48,7 @@ var
   Page: TOutputMsgMemoWizardPage;
   OptionPage: TInputQueryWizardPage;
   DevicesComboBox: TNewComboBox;
+  DeviceCount: Integer;
 
 procedure InitializeWizard;
 begin
@@ -59,9 +60,15 @@ begin
     String(GPLText)
   );
 
+  DeviceCount := StrToInt(ExpandConstant('{param:DEVICE|1}'));
+  if (DeviceCount < 1) then
+    DeviceCount := 1;
+  if (DeviceCount > 4) then
+    DeviceCount := 4;
+
   OptionPage := CreateInputQueryPage(Page.ID, 'Options', '', '');
   OptionPage.Add('Devices:', False);
-  OptionPage.Values[0] := '1';
+  OptionPage.Edits[0].Text := IntToStr(DeviceCount);
 
   DevicesComboBox := TNewComboBox.Create(OptionPage);
   DevicesComboBox.Parent := OptionPage.Edits[0].Parent;
@@ -71,11 +78,11 @@ begin
   DevicesComboBox.Height := OptionPage.Edits[0].Height;
   DevicesComboBox.TabOrder := OptionPage.Edits[0].TabOrder;
   DevicesComboBox.Style := csDropDownList;
-  DevicesComboBox.Text := '1';
   DevicesComboBox.Items.Add('1');
   DevicesComboBox.Items.Add('2');
   DevicesComboBox.Items.Add('3');
   DevicesComboBox.Items.Add('4');
+  DevicesComboBox.ItemIndex := DeviceCount - 1;
 
   OptionPage.PromptLabels[0].FocusControl := DevicesComboBox;
   OptionPage.Edits[0].Visible := False;
