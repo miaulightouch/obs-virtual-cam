@@ -3,15 +3,17 @@ cmake_minimum_required(VERSION 3.16...3.26)
 project(obs-virtualsource VERSION ${_version})
 add_library(${PROJECT_NAME} MODULE)
 
-find_package(FFmpeg REQUIRED COMPONENTS avutil avfilter swscale)
-target_link_libraries(${PROJECT_NAME} PRIVATE FFmpeg::avfilter FFmpeg::avutil FFmpeg::swscale)
+find_package(FFmpeg REQUIRED COMPONENTS avutil swscale)
+target_link_libraries(${PROJECT_NAME} PRIVATE FFmpeg::avutil FFmpeg::swscale)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
   set(_arch x64)
-  set(_output_suffix "64")
-else()
+  set(bit 64bit)
+  else()
   set(_arch x86)
-  set(_output_suffix "32")
+  set(bit 32bit)
+  add_file(${FFmpeg_avutil_LIBRARY} bit)
+  add_file(${FFmpeg_swscale_LIBRARY} bit)
 endif()
 
 # Setup dshowlib
@@ -38,18 +40,14 @@ target_sources(
           virtual-cam.cpp
           virtual-audio.h
           virtual-audio.cpp
+          virtual-source.def
           clock.h
           clock.cpp
           ../queue/share_queue_read.h
           ../queue/share_queue_read.cpp
           ../queue/share_queue.h)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/virtual-source.def.in ${CMAKE_CURRENT_BINARY_DIR}/virtualcam-module.def)
-target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/virtualcam-module.def)
-
 configure_file(${CMAKE_SOURCE_DIR}/cmake/windows/resources/resource.rc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.rc)
 target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.rc)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}${_output_suffix}")
-
-install_libarary(${PROJECT_NAME} ${_arch})
+install_libarary(${PROJECT_NAME} bit)

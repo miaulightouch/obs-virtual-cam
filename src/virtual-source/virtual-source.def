@@ -1,4 +1,4 @@
-LIBRARY     obs-virtualsource@_output_suffix@.dll
+LIBRARY     obs-virtualsource.dll
 EXPORTS
             DllMain                 PRIVATE
             DllGetClassObject       PRIVATE

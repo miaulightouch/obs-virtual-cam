@@ -16,6 +16,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={code:GetDirName}
 DefaultGroupName={#MyAppName}
+DisableProgramGroupPage=yes
 OutputBaseFilename={#MyAppName}-{#MyAppVersion}-Windows-Installer
 Compression=lzma
 SolidCompression=yes
@@ -33,11 +34,22 @@ Source: "..\LICENSE"; Flags: dontcopy
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
+[Run]
+Filename: "{sys}\regsvr32.exe"; Parameters: "/s /n /i:{code:GetDeviceNumber} ""{app}\bin\32bit\obs-virtualsource.dll"""; Flags: 32bit;
+Filename: "{sys}\regsvr32.exe"; Parameters: "/s /n /i:{code:GetDeviceNumber} ""{app}\bin\64bit\obs-virtualsource.dll"""; Flags: 64bit;
+
+[UninstallRun]
+Filename: "{sys}\regsvr32.exe"; Parameters: "/s /u ""{app}\bin\32bit\obs-virtualsource.dll"""; Flags: 32bit; RunOnceId: "Unregister32";
+Filename: "{sys}\regsvr32.exe"; Parameters: "/s /u ""{app}\bin\64bit\obs-virtualsource.dll"""; Flags: 64bit; RunOnceId: "Unregister64";
+
 [Code]
-procedure InitializeWizard();
 var
   GPLText: AnsiString;
   Page: TOutputMsgMemoWizardPage;
+  OptionPage: TInputQueryWizardPage;
+  DevicesComboBox: TNewComboBox;
+
+procedure InitializeWizard;
 begin
   ExtractTemporaryFile('LICENSE');
   LoadStringFromFile(ExpandConstant('{tmp}\LICENSE'), GPLText);
@@ -46,6 +58,32 @@ begin
     'Press Page Down to see the rest of the agreement. Once you are aware of your rights, click Next to continue.',
     String(GPLText)
   );
+
+  OptionPage := CreateInputQueryPage(Page.ID, 'Options', '', '');
+  OptionPage.Add('Devices:', False);
+  OptionPage.Values[0] := '1';
+
+  DevicesComboBox := TNewComboBox.Create(OptionPage);
+  DevicesComboBox.Parent := OptionPage.Edits[0].Parent;
+  DevicesComboBox.Left := OptionPage.Edits[0].Left;
+  DevicesComboBox.Top := OptionPage.Edits[0].Top;
+  DevicesComboBox.Width := OptionPage.Edits[0].Width;
+  DevicesComboBox.Height := OptionPage.Edits[0].Height;
+  DevicesComboBox.TabOrder := OptionPage.Edits[0].TabOrder;
+  DevicesComboBox.Style := csDropDownList;
+  DevicesComboBox.Text := '1';
+  DevicesComboBox.Items.Add('1');
+  DevicesComboBox.Items.Add('2');
+  DevicesComboBox.Items.Add('3');
+  DevicesComboBox.Items.Add('4');
+
+  OptionPage.PromptLabels[0].FocusControl := DevicesComboBox;
+  OptionPage.Edits[0].Visible := False;
+end;
+
+function GetDeviceNumber(Param: string): string;
+begin
+  Result := DevicesComboBox.Text;
 end;
 
 // credit where it's due :

@@ -1,3 +1,5 @@
+include_guard(GLOBAL)
+
 # Add cmake module directories from obs-studio
 file(READ "${CMAKE_CURRENT_SOURCE_DIR}/buildspec.json" buildspec)
 string(
@@ -11,15 +13,21 @@ string(
 find_path(DEPS_ROOT "obs-studio-${obs_version}" PATHS "${CMAKE_PREFIX_PATH}" REQUIRED)
 list(PREPEND CMAKE_MODULE_PATH "${DEPS_ROOT}/obs-studio-${obs_version}/cmake/finders")
 
-function(install_libarary target arch)
+function(install_libarary target bit)
   install(
     TARGETS ${target}
-    RUNTIME DESTINATION bin/${arch}
-    LIBRARY DESTINATION data/obs-plugins/${CMAKE_PROJECT_NAME})
+    RUNTIME DESTINATION bin/${bit}
+    LIBRARY DESTINATION bin/${bit})
 
   install(
     FILES "$<TARGET_PDB_FILE:${target}>"
     CONFIGURATIONS RelWithDebInfo Debug
-    DESTINATION data/obs-plugins/${CMAKE_PROJECT_NAME}
+    DESTINATION bin/${bit}
     OPTIONAL)
+endfunction()
+
+function(add_file target bit)
+  install(
+    FILES ${target}
+    DESTINATION bin/${bit})
 endfunction()
