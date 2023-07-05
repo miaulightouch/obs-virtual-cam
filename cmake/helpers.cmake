@@ -27,7 +27,5 @@ function(install_libarary target bit)
 endfunction()
 
 function(add_file target bit)
-  install(
-    FILES ${target}
-    DESTINATION bin/${bit})
+  install(FILES ${target} DESTINATION bin/${bit})
 endfunction()
