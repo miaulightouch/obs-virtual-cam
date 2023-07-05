@@ -49,10 +49,10 @@
         }
     },
     "name": "obs-virtualcam",
-    "version": "2.0.7",
+    "version": "2.0.9",
     "author": "Miau Lightouch",
     "email": "miau@example.com",
-    "website": "https://example.com",
+    "website": "https://github.com/miaulightouch/obs-virtual-cam",
     "uuids": {
         "macosPackage": "00000000-0000-0000-0000-000000000000",
         "macosInstaller": "00000000-0000-0000-0000-000000000000",
