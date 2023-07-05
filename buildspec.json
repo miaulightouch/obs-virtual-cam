@@ -54,8 +54,6 @@
     "email": "miau@example.com",
     "website": "https://example.com",
     "uuids": {
-        "macosPackage": "00000000-0000-0000-0000-000000000000",
-        "macosInstaller": "00000000-0000-0000-0000-000000000000",
-        "windowsApp": "00000000-0000-0000-0000-000000000000"
+        "windowsApp": "1DFBFA8F-CDD8-49B6-9E0F-475F693479A8"
     }
 }
