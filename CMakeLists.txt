@@ -34,6 +34,8 @@ if(ENABLE_QT)
                AUTORCC ON)
 endif()
 
+###### Custom rules below this line
+
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake" NO_POLICY_SCOPE)
 
 find_package(FFmpeg REQUIRED COMPONENTS avfilter avutil)
