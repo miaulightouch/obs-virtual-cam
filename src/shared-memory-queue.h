@@ -20,8 +20,8 @@ enum queue_state {
 };
 
 extern video_queue_t *video_queue_create(uint32_t cx, uint32_t cy,
-					 uint64_t interval);
-extern video_queue_t *video_queue_open();
+					 uint64_t interval, wchar_t *vcid);
+extern video_queue_t *video_queue_open(wchar_t *vcid);
 extern void video_queue_close(video_queue_t *vq);
 
 extern void video_queue_get_info(video_queue_t *vq, uint32_t *cx, uint32_t *cy,

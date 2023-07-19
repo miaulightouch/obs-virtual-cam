@@ -1,12 +1,15 @@
-#include <obs-module.h>
+#include <wchar.h>
 #include <util/platform.h>
 #include <util/threading-windows.h>
 #include "shared-memory-queue.h"
+#include "virtualcam-output.h"
+#include "virtualcam-guid.h"
 #include "plugin-support.h"
 
 struct virtualcam_data {
 	obs_output_t *output;
 	video_queue_t *vq;
+	wchar_t *vcid;
 	volatile bool active;
 	volatile bool stopping;
 };
@@ -14,7 +17,7 @@ struct virtualcam_data {
 static const char *virtualcam_name(void *unused)
 {
 	UNUSED_PARAMETER(unused);
-	return obs_module_text("VirtualOutput");
+	return obs_module_text("Basic.VCam.VirtualCamera");
 }
 
 static void virtualcam_destroy(void *data)
@@ -22,6 +25,8 @@ static void virtualcam_destroy(void *data)
 	struct virtualcam_data *vcam = (struct virtualcam_data *)data;
 	video_queue_close(vcam->vq);
 	bfree(data);
+
+	obs_log(LOG_INFO, "Virtual output destroyed");
 }
 
 static void *virtualcam_create(obs_data_t *settings, obs_output_t *output)
@@ -30,7 +35,9 @@ static void *virtualcam_create(obs_data_t *settings, obs_output_t *output)
 		(struct virtualcam_data *)bzalloc(sizeof(*vcam));
 	vcam->output = output;
 
-	UNUSED_PARAMETER(settings);
+	int64_t vcamIndex = obs_data_get_int(settings, "vcamIndex");
+	vcam->vcid = (wchar_t*)video_device_guid_wchar[vcamIndex];
+
 	return vcam;
 }
 
@@ -54,7 +61,7 @@ static bool virtualcam_start(void *data)
 				      NULL);
 	bfree(res_file);
 
-	vcam->vq = video_queue_create(width, height, interval);
+	vcam->vq = video_queue_create(width, height, interval, vcam->vcid);
 	if (!vcam->vq) {
 		obs_log(LOG_WARNING, "starting virtual-output failed");
 		return false;
@@ -99,11 +106,15 @@ static void virtual_video(void *param, struct video_data *frame)
 {
 	struct virtualcam_data *vcam = (struct virtualcam_data *)param;
 
-	if (!vcam->vq)
+	if (!vcam->vq) {
+		obs_log(LOG_WARNING, "virtualcam not initialized");
 		return;
+	}
 
-	if (!os_atomic_load_bool(&vcam->active))
+	if (!os_atomic_load_bool(&vcam->active)) {
+		obs_log(LOG_WARNING, "virtualcam not active");
 		return;
+	}
 
 	if (os_atomic_load_bool(&vcam->stopping)) {
 		virtualcam_deactive(vcam);
@@ -115,7 +126,7 @@ static void virtual_video(void *param, struct video_data *frame)
 }
 
 struct obs_output_info virtualcam_info = {
-	.id = "virtualcam-plugin_output",
+	.id = VCAM_OUTPUT_ID,
 	.flags = OBS_OUTPUT_VIDEO,
 	.get_name = virtualcam_name,
 	.create = virtualcam_create,

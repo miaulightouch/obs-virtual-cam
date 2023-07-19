@@ -1,4 +1,4 @@
-#include <virtualcam-guid.h>
+#include "virtualcam-guid.h"
 
 DEFINE_GUID(CLSID_OBS_VirtualVideo,
             0x@VirtualVideo_GUID_VAL01@,
@@ -103,3 +103,18 @@ DEFINE_GUID(CLSID_OBS_VirtualAudio4,
             0x@VirtualAudio4_GUID_VAL09@,
             0x@VirtualAudio4_GUID_VAL10@,
             0x@VirtualAudio4_GUID_VAL11@);
+
+const wchar_t *video_device_name[] = {L"OBS-Camera", L"OBS-Camera2",
+				      L"OBS-Camera3", L"OBS-Camera4"};
+
+const GUID *video_device_guid[] = {&CLSID_OBS_VirtualVideo,
+				   &CLSID_OBS_VirtualVideo2,
+				   &CLSID_OBS_VirtualVideo3,
+				   &CLSID_OBS_VirtualVideo4};
+
+const wchar_t *video_device_guid_wchar[] = {
+    L"{@VirtualVideo_GUID@}",
+    L"{@VirtualVideo2_GUID@}",
+    L"{@VirtualVideo3_GUID@}",
+    L"{@VirtualVideo4_GUID@}"
+};

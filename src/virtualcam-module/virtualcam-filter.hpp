@@ -35,6 +35,7 @@ class VCamFilter : public DShow::OutputFilter {
 	WinHandle thread_start;
 	WinHandle thread_stop;
 	volatile bool active = false;
+	wchar_t *vcid;
 
 	nv12_scale_t scaler = {};
 
@@ -56,7 +57,7 @@ protected:
 	const wchar_t *FilterName() const override;
 
 public:
-	VCamFilter();
+	VCamFilter(wchar_t *guid);
 	~VCamFilter() override;
 
 	STDMETHODIMP Pause() override;

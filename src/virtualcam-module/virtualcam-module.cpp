@@ -78,8 +78,13 @@ STDMETHODIMP VCamFactory::CreateInstance(LPUNKNOWN parent, REFIID, void **p_ptr)
 		return E_NOINTERFACE;
 	}
 
-	if (IsEqualCLSID(cls, CLSID_OBS_VirtualVideo)) {
-		*p_ptr = (void *)new VCamFilter();
+	if (IsEqualCLSID(cls, CLSID_OBS_VirtualVideo) ||
+	    IsEqualCLSID(cls, CLSID_OBS_VirtualVideo2) ||
+	    IsEqualCLSID(cls, CLSID_OBS_VirtualVideo3) ||
+	    IsEqualCLSID(cls, CLSID_OBS_VirtualVideo4)) {
+		wchar_t *cls_str;
+		StringFromCLSID(cls, &cls_str);
+		*p_ptr = (void *)new VCamFilter(cls_str);
 		return S_OK;
 	}
 
@@ -156,7 +161,7 @@ static bool UnregServer(const CLSID &cls)
 	return RegDeleteTreeW(HKEY_CLASSES_ROOT, temp) == ERROR_SUCCESS;
 }
 
-static bool RegServers(bool reg)
+static bool RegServers(bool reg, uint16_t camera_count = MAX_CAMERA)
 {
 	wchar_t file[MAX_PATH];
 
@@ -164,15 +169,28 @@ static bool RegServers(bool reg)
 		return false;
 	}
 
+	// register virtual camera device
 	if (reg) {
-		return RegServer(CLSID_OBS_VirtualVideo, L"OBS Virtual Camera",
-				 file);
-	} else {
-		return UnregServer(CLSID_OBS_VirtualVideo);
+		bool ret = true;
+
+		for (uint16_t i = 0; i < camera_count; i++) {
+			ret = ret && RegServer(*video_device_guid[i],
+					       video_device_name[i], file);
+		}
+
+		// TODO: add more audio devices
+		return ret;
 	}
+
+	// unregister virtual camera device
+	bool ret = true;
+	for (uint16_t i = 0; i < camera_count; i++) {
+		ret = ret && UnregServer(*video_device_guid[i]);
+	}
+	return ret;
 }
 
-static bool RegFilters(bool reg)
+static bool RegFilters(bool reg, uint16_t camera_count = MAX_CAMERA)
 {
 	ComPtr<IFilterMapper2> fm;
 	HRESULT hr;
@@ -184,6 +202,7 @@ static bool RegFilters(bool reg)
 		return false;
 	}
 
+	// register virtual camera filter
 	if (reg) {
 		ComPtr<IMoniker> moniker;
 		REGFILTER2 rf2;
@@ -192,36 +211,44 @@ static bool RegFilters(bool reg)
 		rf2.cPins = 1;
 		rf2.rgPins = &AMSPinVideo;
 
-		hr = fm->RegisterFilter(CLSID_OBS_VirtualVideo,
-					L"OBS Virtual Camera", &moniker,
-					&CLSID_VideoInputDeviceCategory,
-					nullptr, &rf2);
-		if (FAILED(hr)) {
-			return false;
+		bool ret = true;
+		for (uint16_t i = 0; i < camera_count; i++) {
+			hr = fm->RegisterFilter(*video_device_guid[i],
+						video_device_name[i], &moniker,
+						&CLSID_VideoInputDeviceCategory,
+						nullptr, &rf2);
+			ret = ret && SUCCEEDED(hr);
 		}
-	} else {
-		hr = fm->UnregisterFilter(&CLSID_VideoInputDeviceCategory, 0,
-					  CLSID_OBS_VirtualVideo);
-		if (FAILED(hr)) {
-			return false;
-		}
+
+		// TODO: add more audio devices
+		return ret;
 	}
 
-	return true;
+	// unregister virtual camera filter
+	bool ret = true;
+	for (uint16_t i = 0; i < camera_count; i++) {
+		hr = fm->UnregisterFilter(&CLSID_VideoInputDeviceCategory, 0,
+					  *video_device_guid[i]);
+		ret = ret && SUCCEEDED(hr);
+	}
+
+	return ret;
 }
 
 /* ========================================================================= */
 
-STDAPI DllRegisterServer()
+HRESULT register_common(uint16_t camera_count = 1)
 {
-	if (!RegServers(true)) {
+	// Unregister virtual camera device if registration fails
+	if (!RegServers(true, camera_count)) {
 		RegServers(false);
 		return E_FAIL;
 	}
 
 	CoInitialize(0);
 
-	if (!RegFilters(true)) {
+	// Unregister virtual camera filter if registration fails
+	if (!RegFilters(true, camera_count)) {
 		RegFilters(false);
 		RegServers(false);
 		CoUninitialize();
@@ -230,6 +257,11 @@ STDAPI DllRegisterServer()
 
 	CoUninitialize();
 	return S_OK;
+}
+
+STDAPI DllRegisterServer()
+{
+	return register_common();
 }
 
 STDAPI DllUnregisterServer()
@@ -241,13 +273,21 @@ STDAPI DllUnregisterServer()
 	return S_OK;
 }
 
-STDAPI DllInstall(BOOL install, LPCWSTR)
+STDAPI DllInstall(BOOL install, LPCWSTR cmd)
 {
-	if (!install) {
-		return DllUnregisterServer();
-	} else {
-		return DllRegisterServer();
+	if (install) {
+		uint16_t count = MAX_CAMERA;
+		if (lstrcmpW(cmd, L"1") == 0)
+			count = 1;
+		else if (lstrcmpW(cmd, L"2") == 0)
+			count = 2;
+		else if (lstrcmpW(cmd, L"3") == 0)
+			count = 3;
+
+		return register_common(count);
 	}
+
+	return DllUnregisterServer();
 }
 
 STDAPI DllCanUnloadNow()
@@ -266,7 +306,13 @@ STDAPI DllGetClassObject(REFCLSID cls, REFIID riid, void **p_ptr)
 	if (riid != IID_IClassFactory && riid != IID_IUnknown) {
 		return E_NOINTERFACE;
 	}
-	if (!IsEqualCLSID(cls, CLSID_OBS_VirtualVideo)) {
+
+	// TODO: add more audio devices
+	bool isValid = IsEqualCLSID(cls, CLSID_OBS_VirtualVideo) ||
+		       IsEqualCLSID(cls, CLSID_OBS_VirtualVideo2) ||
+		       IsEqualCLSID(cls, CLSID_OBS_VirtualVideo3) ||
+		       IsEqualCLSID(cls, CLSID_OBS_VirtualVideo4);
+	if (!isValid) {
 		return E_INVALIDARG;
 	}
 

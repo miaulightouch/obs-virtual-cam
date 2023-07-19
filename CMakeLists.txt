@@ -61,14 +61,21 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE virtualcam-guid)
 
 # only build the 64bit version plugin
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  # target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE setupapi winmm strmiids)
   target_sources(
     ${CMAKE_PROJECT_NAME}
-    PRIVATE src/dshow-plugin.cpp
-            src/tiny-nv12-scale.c
+    PRIVATE src/tiny-nv12-scale.c
             src/tiny-nv12-scale.h
             src/shared-memory-queue.c
             src/shared-memory-queue.h
-            src/virtualcam.c)
+            src/virtualcam-output.c
+            src/virtualcam-output.h
+            src/virtualcam.cpp
+            src/virtualcam.hpp
+            src/window-vcam-config.cpp
+            src/window-vcam-config.hpp
+            src/window-vcam.hpp
+            src/OBSBasicVCamConfig.ui)
 
   set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})
 endif()
