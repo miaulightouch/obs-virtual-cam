@@ -1,8 +1,7 @@
 #include "virtualcam-guid.h"
 #include "window-vcam-config.hpp"
 
-OBSBasicVCamConfig::OBSBasicVCamConfig(VCam *_vcam,
-				       QWidget *parent)
+OBSBasicVCamConfig::OBSBasicVCamConfig(VCam *_vcam, QWidget *parent)
 	: vcam(_vcam), QDialog(parent), ui(new Ui::OBSBasicVCamConfig)
 {
 	// copy config from parent
@@ -17,9 +16,9 @@ OBSBasicVCamConfig::OBSBasicVCamConfig(VCam *_vcam,
 	connect(ui->outputType, SIGNAL(currentIndexChanged(int)), this,
 		SLOT(OutputTypeChanged(int)));
 
-	for (size_t i = 0; i < MAX_CAMERA; i++)
-	{
-		ui->vcamSelection->addItem(QString::fromStdWString(video_device_name[i]));
+	for (size_t i = 0; i < MAX_CAMERA; i++) {
+		ui->vcamSelection->addItem(
+			QString::fromStdWString(video_device_name[i]));
 	}
 	ui->vcamSelection->setCurrentIndex(config.vcamIndex);
 
@@ -156,7 +155,9 @@ void OBSBasicVCamConfig::StopVirtualCam()
 void OBSBasicVCamConfig::UpdateUIActive(bool active)
 {
 	ui->streamButton->setChecked(!active);
-	ui->streamButton->setText(obs_module_text(active ? "Basic.Main.StopVirtualCam" : "Basic.Main.StartVirtualCam"));
+	ui->streamButton->setText(
+		obs_module_text(active ? "Basic.Main.StopVirtualCam"
+				       : "Basic.Main.StartVirtualCam"));
 	ui->autoStart->setEnabled(!active);
 	ui->vcamSelection->setEnabled(!active);
 	ui->outputType->setEnabled(!active);

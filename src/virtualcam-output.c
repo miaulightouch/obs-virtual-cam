@@ -36,7 +36,7 @@ static void *virtualcam_create(obs_data_t *settings, obs_output_t *output)
 	vcam->output = output;
 
 	int64_t vcamIndex = obs_data_get_int(settings, "vcamIndex");
-	vcam->vcid = (wchar_t*)video_device_guid_wchar[vcamIndex];
+	vcam->vcid = (wchar_t *)video_device_guid_wchar[vcamIndex];
 
 	return vcam;
 }

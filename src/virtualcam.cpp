@@ -102,8 +102,7 @@ void VCam::UpdateVirtualCamOutputSource()
 		break;
 	case VCamOutputType::SourceOutput:
 		// FIXME: it may need release
-		obs_source_t *s =
-			obs_get_source_by_name(config.source.c_str());
+		obs_source_t *s = obs_get_source_by_name(config.source.c_str());
 
 		if (!vCamSourceScene)
 			vCamSourceScene =
@@ -162,8 +161,10 @@ void VCam::SaveConfig(VCamConfig _config)
 	config_set_uint(profile, VCAM_OUTPUT_ID, "vcamIndex", config.vcamIndex);
 	config_set_uint(profile, VCAM_OUTPUT_ID, "type", config.type);
 	config_set_uint(profile, VCAM_OUTPUT_ID, "internal", config.internal);
-	config_set_string(profile, VCAM_OUTPUT_ID, "scene", config.scene.c_str());
-	config_set_string(profile, VCAM_OUTPUT_ID, "source", config.source.c_str());
+	config_set_string(profile, VCAM_OUTPUT_ID, "scene",
+			  config.scene.c_str());
+	config_set_string(profile, VCAM_OUTPUT_ID, "source",
+			  config.source.c_str());
 
 	config_save(profile);
 }
@@ -178,10 +179,14 @@ void VCam::LoadConfig()
 {
 	config_t *profile = obs_frontend_get_profile_config();
 
-	config.autoStart = config_get_bool(profile, VCAM_OUTPUT_ID, "autoStart");
-	config.vcamIndex = config_get_uint(profile, VCAM_OUTPUT_ID, "vcamIndex");
-	config.type = (VCamOutputType)config_get_uint(profile, VCAM_OUTPUT_ID, "type");
-	config.internal = (VCamInternalType)config_get_uint(profile, VCAM_OUTPUT_ID, "internal");
+	config.autoStart =
+		config_get_bool(profile, VCAM_OUTPUT_ID, "autoStart");
+	config.vcamIndex =
+		config_get_uint(profile, VCAM_OUTPUT_ID, "vcamIndex");
+	config.type = (VCamOutputType)config_get_uint(profile, VCAM_OUTPUT_ID,
+						      "type");
+	config.internal = (VCamInternalType)config_get_uint(
+		profile, VCAM_OUTPUT_ID, "internal");
 	config.scene = config_get_string(profile, VCAM_OUTPUT_ID, "scene");
 	config.source = config_get_string(profile, VCAM_OUTPUT_ID, "source");
 
@@ -199,8 +204,8 @@ bool VCam::StartVirtualCam()
 	obs_data_t *option = obs_data_create();
 	obs_data_set_int(option, "vcamIndex", config.vcamIndex);
 
-	output = obs_output_create(VCAM_OUTPUT_ID, VCAM_OUTPUT_NAME,
-				option, nullptr);
+	output = obs_output_create(VCAM_OUTPUT_ID, VCAM_OUTPUT_NAME, option,
+				   nullptr);
 	signal_handler_t *handler = obs_output_get_signal_handler(output);
 	signal_handler_connect(handler, "start", OnStart, nullptr);
 	signal_handler_connect(handler, "stop", OnStop, this);
