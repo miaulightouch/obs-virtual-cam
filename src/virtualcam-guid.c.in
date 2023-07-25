@@ -1,0 +1,120 @@
+#include "virtualcam-guid.h"
+
+DEFINE_GUID(CLSID_OBS_VirtualVideo,
+            0x@VirtualVideo_GUID_VAL01@,
+            0x@VirtualVideo_GUID_VAL02@,
+            0x@VirtualVideo_GUID_VAL03@,
+            0x@VirtualVideo_GUID_VAL04@,
+            0x@VirtualVideo_GUID_VAL05@,
+            0x@VirtualVideo_GUID_VAL06@,
+            0x@VirtualVideo_GUID_VAL07@,
+            0x@VirtualVideo_GUID_VAL08@,
+            0x@VirtualVideo_GUID_VAL09@,
+            0x@VirtualVideo_GUID_VAL10@,
+            0x@VirtualVideo_GUID_VAL11@);
+
+DEFINE_GUID(CLSID_OBS_VirtualVideo2,
+            0x@VirtualVideo2_GUID_VAL01@,
+            0x@VirtualVideo2_GUID_VAL02@,
+            0x@VirtualVideo2_GUID_VAL03@,
+            0x@VirtualVideo2_GUID_VAL04@,
+            0x@VirtualVideo2_GUID_VAL05@,
+            0x@VirtualVideo2_GUID_VAL06@,
+            0x@VirtualVideo2_GUID_VAL07@,
+            0x@VirtualVideo2_GUID_VAL08@,
+            0x@VirtualVideo2_GUID_VAL09@,
+            0x@VirtualVideo2_GUID_VAL10@,
+            0x@VirtualVideo2_GUID_VAL11@);
+
+DEFINE_GUID(CLSID_OBS_VirtualVideo3,
+            0x@VirtualVideo3_GUID_VAL01@,
+            0x@VirtualVideo3_GUID_VAL02@,
+            0x@VirtualVideo3_GUID_VAL03@,
+            0x@VirtualVideo3_GUID_VAL04@,
+            0x@VirtualVideo3_GUID_VAL05@,
+            0x@VirtualVideo3_GUID_VAL06@,
+            0x@VirtualVideo3_GUID_VAL07@,
+            0x@VirtualVideo3_GUID_VAL08@,
+            0x@VirtualVideo3_GUID_VAL09@,
+            0x@VirtualVideo3_GUID_VAL10@,
+            0x@VirtualVideo3_GUID_VAL11@);
+
+DEFINE_GUID(CLSID_OBS_VirtualVideo4,
+            0x@VirtualVideo4_GUID_VAL01@,
+            0x@VirtualVideo4_GUID_VAL02@,
+            0x@VirtualVideo4_GUID_VAL03@,
+            0x@VirtualVideo4_GUID_VAL04@,
+            0x@VirtualVideo4_GUID_VAL05@,
+            0x@VirtualVideo4_GUID_VAL06@,
+            0x@VirtualVideo4_GUID_VAL07@,
+            0x@VirtualVideo4_GUID_VAL08@,
+            0x@VirtualVideo4_GUID_VAL09@,
+            0x@VirtualVideo4_GUID_VAL10@,
+            0x@VirtualVideo4_GUID_VAL11@);
+
+DEFINE_GUID(CLSID_OBS_VirtualAudio,
+            0x@VirtualAudio_GUID_VAL01@,
+            0x@VirtualAudio_GUID_VAL02@,
+            0x@VirtualAudio_GUID_VAL03@,
+            0x@VirtualAudio_GUID_VAL04@,
+            0x@VirtualAudio_GUID_VAL05@,
+            0x@VirtualAudio_GUID_VAL06@,
+            0x@VirtualAudio_GUID_VAL07@,
+            0x@VirtualAudio_GUID_VAL08@,
+            0x@VirtualAudio_GUID_VAL09@,
+            0x@VirtualAudio_GUID_VAL10@,
+            0x@VirtualAudio_GUID_VAL11@);
+
+DEFINE_GUID(CLSID_OBS_VirtualAudio2,
+            0x@VirtualAudio2_GUID_VAL01@,
+            0x@VirtualAudio2_GUID_VAL02@,
+            0x@VirtualAudio2_GUID_VAL03@,
+            0x@VirtualAudio2_GUID_VAL04@,
+            0x@VirtualAudio2_GUID_VAL05@,
+            0x@VirtualAudio2_GUID_VAL06@,
+            0x@VirtualAudio2_GUID_VAL07@,
+            0x@VirtualAudio2_GUID_VAL08@,
+            0x@VirtualAudio2_GUID_VAL09@,
+            0x@VirtualAudio2_GUID_VAL10@,
+            0x@VirtualAudio2_GUID_VAL11@);
+
+DEFINE_GUID(CLSID_OBS_VirtualAudio3,
+            0x@VirtualAudio_GUID_VAL01@,
+            0x@VirtualAudio_GUID_VAL02@,
+            0x@VirtualAudio_GUID_VAL03@,
+            0x@VirtualAudio_GUID_VAL04@,
+            0x@VirtualAudio_GUID_VAL05@,
+            0x@VirtualAudio_GUID_VAL06@,
+            0x@VirtualAudio_GUID_VAL07@,
+            0x@VirtualAudio_GUID_VAL08@,
+            0x@VirtualAudio_GUID_VAL09@,
+            0x@VirtualAudio_GUID_VAL10@,
+            0x@VirtualAudio_GUID_VAL11@);
+
+DEFINE_GUID(CLSID_OBS_VirtualAudio4,
+            0x@VirtualAudio4_GUID_VAL01@,
+            0x@VirtualAudio4_GUID_VAL02@,
+            0x@VirtualAudio4_GUID_VAL03@,
+            0x@VirtualAudio4_GUID_VAL04@,
+            0x@VirtualAudio4_GUID_VAL05@,
+            0x@VirtualAudio4_GUID_VAL06@,
+            0x@VirtualAudio4_GUID_VAL07@,
+            0x@VirtualAudio4_GUID_VAL08@,
+            0x@VirtualAudio4_GUID_VAL09@,
+            0x@VirtualAudio4_GUID_VAL10@,
+            0x@VirtualAudio4_GUID_VAL11@);
+
+const wchar_t *video_device_name[] = {L"OBS-Camera", L"OBS-Camera2",
+				      L"OBS-Camera3", L"OBS-Camera4"};
+
+const GUID *video_device_guid[] = {&CLSID_OBS_VirtualVideo,
+				   &CLSID_OBS_VirtualVideo2,
+				   &CLSID_OBS_VirtualVideo3,
+				   &CLSID_OBS_VirtualVideo4};
+
+const wchar_t *video_device_guid_wchar[] = {
+    L"{@VirtualVideo_GUID@}",
+    L"{@VirtualVideo2_GUID@}",
+    L"{@VirtualVideo3_GUID@}",
+    L"{@VirtualVideo4_GUID@}"
+};

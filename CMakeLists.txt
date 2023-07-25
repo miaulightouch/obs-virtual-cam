@@ -40,29 +40,45 @@ endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake" NO_POLICY_SCOPE)
 
-find_package(FFmpeg REQUIRED COMPONENTS avfilter avutil)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE FFmpeg::avfilter FFmpeg::avutil)
+# Setup camera GUID
+parse_guid(VirtualAudio "B750E5CD-5E7E-4ED3-B675-A5003C439997")
+parse_guid(VirtualAudio2 "B750E5CD-5E7E-4ED3-B675-A5003C439998")
+parse_guid(VirtualAudio3 "B750E5CD-5E7E-4ED3-B675-A5003C439999")
+parse_guid(VirtualAudio4 "B750E5CD-5E7E-4ED3-B675-A5003C4399A0")
+parse_guid(VirtualVideo "27B05C2D-93DC-474A-A5DA-9BBA34CB2A9C")
+parse_guid(VirtualVideo2 "27B05C2D-93DC-474A-A5DA-9BBA34CB2A9D")
+parse_guid(VirtualVideo3 "27B05C2D-93DC-474A-A5DA-9BBA34CB2A9E")
+parse_guid(VirtualVideo4 "27B05C2D-93DC-474A-A5DA-9BBA34CB2A9F")
+configure_file(${CMAKE_SOURCE_DIR}/src/virtualcam-guid.c.in ${CMAKE_CURRENT_BINARY_DIR}/virtualcam-guid.c @ONLY)
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/virtualcam-guid.c)
+add_library(virtualcam-guid STATIC)
+target_sources(
+  virtualcam-guid
+  PRIVATE virtualcam-guid.c
+  PUBLIC src/virtualcam-guid.h)
+target_include_directories(virtualcam-guid PUBLIC "${CMAKE_SOURCE_DIR}/src")
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE virtualcam-guid)
 
 # only build the 64bit version plugin
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  # target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE setupapi winmm strmiids)
   target_sources(
     ${CMAKE_PROJECT_NAME}
-    PRIVATE src/virtual_main.cpp
-            src/virtual_output.h
-            src/virtual_output.cpp
-            src/virtual_properties.h
-            src/virtual_properties.cpp
-            src/virtual_filter.h
-            src/virtual_filter.cpp
-            src/hflip.h
-            src/hflip.cpp
-            src/queue/share_queue_write.h
-            src/queue/share_queue_write.cpp
-            src/get_format.h
-            src/queue/share_queue.h)
+    PRIVATE src/tiny-nv12-scale.c
+            src/tiny-nv12-scale.h
+            src/shared-memory-queue.c
+            src/shared-memory-queue.h
+            src/virtualcam-output.c
+            src/virtualcam-output.h
+            src/virtualcam.cpp
+            src/virtualcam.hpp
+            src/window-vcam-config.cpp
+            src/window-vcam-config.hpp
+            src/window-vcam.hpp
+            src/OBSBasicVCamConfig.ui)
 
   set_target_properties_plugin(${CMAKE_PROJECT_NAME} PROPERTIES OUTPUT_NAME ${_name})
 endif()
 
 # build the dshow source(both 32bit/64bit)
-add_subdirectory(src/virtual-source)
+add_subdirectory(src/virtualcam-module)

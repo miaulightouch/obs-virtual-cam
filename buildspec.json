@@ -33,6 +33,15 @@
                 "windows-x64": "f34ee5067be19ed370268b15c53684b7b8aaa867dc800b68931df905d679e31f",
                 "windows-x86": "70f2c23fb937a94cc38cc3716e8b34f3710e233626da9439e9077d3dac0ebd0d"
             }
+        },
+        "libdshowcapture": {
+            "version": "bac23f2ca01b712b9740c6a3822d32c134ab6325",
+            "baseUrl": "https://github.com/obsproject/libdshowcapture/archive",
+            "label": "libdshowcapture sources",
+            "hashes": {
+                "windows-x64": "4bc5e5d371fbfe380a0528067fe1de92c80e669e71edccbfed7b64cd01ad4c25",
+                "windows-x86": "4bc5e5d371fbfe380a0528067fe1de92c80e669e71edccbfed7b64cd01ad4c25"
+            }
         }
     },
     "tools": {
@@ -49,7 +58,7 @@
         }
     },
     "name": "obs-virtualcam",
-    "version": "2.0.9",
+    "version": "3.0.0",
     "author": "Miau Lightouch",
     "email": "miau@example.com",
     "website": "https://github.com/miaulightouch/obs-virtual-cam",

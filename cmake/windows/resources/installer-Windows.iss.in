@@ -2,6 +2,7 @@
 #define MyAppVersion "@CMAKE_PROJECT_VERSION@"
 #define MyAppPublisher "@PLUGIN_AUTHOR@"
 #define MyAppURL "@PLUGIN_WEBSITE@"
+#define MyAppModule "@CMAKE_PROJECT_NAME@-module"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -35,12 +36,12 @@ Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 
 [Run]
-Filename: "{sys}\regsvr32.exe"; Parameters: "/s /n /i:{code:GetDeviceNumber} ""{app}\bin\32bit\obs-virtualsource.dll"""; Flags: 32bit;
-Filename: "{sys}\regsvr32.exe"; Parameters: "/s /n /i:{code:GetDeviceNumber} ""{app}\bin\64bit\obs-virtualsource.dll"""; Flags: 64bit;
+Filename: "{sys}\regsvr32.exe"; Parameters: "/s /n /i:{code:GetDeviceNumber} ""{app}\data\obs-plugins\{#MyAppName}\{#MyAppModule}32.dll"""; Flags: 32bit;
+Filename: "{sys}\regsvr32.exe"; Parameters: "/s /n /i:{code:GetDeviceNumber} ""{app}\data\obs-plugins\{#MyAppName}\{#MyAppModule}64.dll"""; Flags: 64bit;
 
 [UninstallRun]
-Filename: "{sys}\regsvr32.exe"; Parameters: "/s /u ""{app}\bin\32bit\obs-virtualsource.dll"""; Flags: 32bit; RunOnceId: "Unregister32";
-Filename: "{sys}\regsvr32.exe"; Parameters: "/s /u ""{app}\bin\64bit\obs-virtualsource.dll"""; Flags: 64bit; RunOnceId: "Unregister64";
+Filename: "{sys}\regsvr32.exe"; Parameters: "/s /u ""{app}\data\obs-plugins\{#MyAppName}\{#MyAppModule}32.dll"""; Flags: 32bit; RunOnceId: "Unregister32";
+Filename: "{sys}\regsvr32.exe"; Parameters: "/s /u ""{app}\data\obs-plugins\{#MyAppName}\{#MyAppModule}64.dll"""; Flags: 64bit; RunOnceId: "Unregister64";
 
 [Code]
 var

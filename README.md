@@ -4,18 +4,17 @@
 
 obs-virutalcam is a plugin for obs-studio , transforming the output video to a virtual directshow device.
 
-source from [Fenrirthviti/obs-virtual-cam](https://github.com/Fenrirthviti/obs-virtual-cam)
+It's modified from official win-dshow plugin, but with up to 4 cameras for multiple obs instance.
+
+The audio is not supported yet.
 
 **Supported Platforms** : Windows 10, Windows 11
 
 **Supported OBS Studio version** : 29.0.0+
 
-**Note: output to 32bit application is not tested.**
-
 ## Features
 
-* **virtual output** : A output plugin sink raw video & audio to directshow interface.
-* **virtual filter output** : A filter plugin sink obs source video to directshow interface.
+* **virtual output** : A output plugin sink raw video to directshow interface.
 * **virtual source** : Four directshow Interfaces which can use in 3rd party software.
 
 ## Install
