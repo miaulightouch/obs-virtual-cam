@@ -12,8 +12,8 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 else()
   set(_arch x86)
   set(bit 32bit)
-  add_file(${FFmpeg_avutil_LIBRARY} bit)
-  add_file(${FFmpeg_swscale_LIBRARY} bit)
+  add_file(${FFmpeg_avutil_LIBRARY} ${bit})
+  add_file(${FFmpeg_swscale_LIBRARY} ${bit})
 endif()
 
 # Setup dshowlib
@@ -50,4 +50,4 @@ target_sources(
 configure_file(${CMAKE_SOURCE_DIR}/cmake/windows/resources/resource.rc.in ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.rc)
 target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.rc)
 
-install_libarary(${PROJECT_NAME} bit)
+install_libarary(${PROJECT_NAME} ${bit})
