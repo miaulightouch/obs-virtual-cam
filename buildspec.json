@@ -49,7 +49,7 @@
         }
     },
     "name": "obs-virtualcam",
-    "version": "2.0.10",
+    "version": "2.0.11",
     "author": "Miau Lightouch",
     "email": "miau@example.com",
     "website": "https://github.com/miaulightouch/obs-virtual-cam",
