@@ -8,7 +8,7 @@ source from [Fenrirthviti/obs-virtual-cam](https://github.com/Fenrirthviti/obs-v
 
 **Supported Platforms** : Windows 10, Windows 11
 
-**Supported OBS Studio version** : 29.0.0+
+**Supported OBS Studio version** : 30.0.0+
 
 **Note: output to 32bit application is not tested.**
 
