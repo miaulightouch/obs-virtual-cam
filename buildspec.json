@@ -1,46 +1,38 @@
 {
     "dependencies": {
         "obs-studio": {
-            "version": "29.1.2",
+            "version": "30.0.2",
             "baseUrl": "https://github.com/obsproject/obs-studio/archive/refs/tags",
             "label": "OBS sources",
             "hashes": {
-                "macos": "215f1fa5772c5dd9f3d6e35b0cb573912b00320149666a77864f9d305525504b",
-                "windows-x64": "46d451f3f42b9d2c59339ec268165849c7b7904cdf1cc2a8d44c015815a9e37d",
-                "windows-x86": "46d451f3f42b9d2c59339ec268165849c7b7904cdf1cc2a8d44c015815a9e37d"
+                "macos": "be12c3ad0a85713750d8325e4b1db75086223402d7080d0e3c2833d7c5e83c27",
+                "windows-x64": "970058c49322cfa9cd6d620abb393fed89743ba7e74bd9dbb6ebe0ea8141d9c7",
+                "windows-x86": "970058c49322cfa9cd6d620abb393fed89743ba7e74bd9dbb6ebe0ea8141d9c7"
             }
         },
         "prebuilt": {
-            "version": "2023-04-12",
+            "version": "2023-11-03",
             "baseUrl": "https://github.com/obsproject/obs-deps/releases/download",
             "label": "Pre-Built obs-deps",
             "hashes": {
-                "macos": "9535c6e1ad96f7d49960251e85a245774088d48da1d602bb82f734b10219125a",
-                "windows-x64": "c13a14a1acc4224b21304d97b63da4121de1ed6981297e50496fbc474abc0503",
-                "windows-x86": "21d05bab23dabe8dcf21519e31eead64b24e4b5d087c0e766f75adafa9276a09"
+                "macos": "90c2fc069847ec2768dcc867c1c63b112c615ed845a907dc44acab7a97181974",
+                "windows-x64": "d0825a6fb65822c993a3059edfba70d72d2e632ef74893588cf12b1f0d329ce6",
+                "windows-x86": "b69c864275189464483c240ef3f25ea16fba3050b136fe6c3db6e9ee63036683"
             }
         },
         "qt6": {
-            "version": "2023-04-12",
+            "version": "2023-11-03",
             "baseUrl": "https://github.com/obsproject/obs-deps/releases/download",
             "label": "Pre-Built Qt6",
             "hashes": {
-                "macos": "eb7614544ab4f3d2c6052c797635602280ca5b028a6b987523d8484222ce45d1",
-                "windows-x64": "4d39364b8a8dee5aa24fcebd8440d5c22bb4551c6b440ffeacce7d61f2ed1add",
-                "windows-x86": "e67494698f2e6ac284a5640b64a687c971e868de7223cc06cabe794c57d632e2"
+                "macos": "ba4a7152848da0053f63427a2a2cb0a199af3992997c0db08564df6f48c9db98",
+                "windows-x64": "bc57dedf76b47119a6dce0435a2f21b35b08c8f2948b1cb34a157320f77732d1",
+                "windows-x86": "50129f9836ef987c23db2e0535085fa2d52474ef0de44bc11c9df6cfa602b785"
             },
             "debugSymbols": {
-                "windows-x64": "f34ee5067be19ed370268b15c53684b7b8aaa867dc800b68931df905d679e31f",
-                "windows-x86": "70f2c23fb937a94cc38cc3716e8b34f3710e233626da9439e9077d3dac0ebd0d"
+                "windows-x64": "fd8ecd1d8cd2ef049d9f4d7fb5c134f784836d6020758094855dfa98bd025036",
+                "windows-x86": "eb33bbca91b76fa0f302b5dc997e775779ed03989aa8e1d2e88ccdf6c34aecc7"
             }
-        }
-    },
-    "tools": {
-        "packages": {
-            "version": "1.2.10",
-            "baseUrl": "http://s.sudre.free.fr/Software/files",
-            "label": "Packages.app",
-            "hash": "6afdd25386295974dad8f078b8f1e41cabebd08e72d970bf92f707c7e48b16c9"
         }
     },
     "platformConfig": {
@@ -49,13 +41,12 @@
         }
     },
     "name": "obs-virtualcam",
-    "version": "2.0.11",
+    "displayName": "OBS virtual camera",
+    "version": "2.0.12",
     "author": "Miau Lightouch",
+    "website": "https://example.com",
     "email": "miau@example.com",
-    "website": "https://github.com/miaulightouch/obs-virtual-cam",
     "uuids": {
-        "macosPackage": "00000000-0000-0000-0000-000000000000",
-        "macosInstaller": "00000000-0000-0000-0000-000000000000",
         "windowsApp": "1DFBFA8F-CDD8-49B6-9E0F-475F693479A8"
     }
 }
