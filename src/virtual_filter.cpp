@@ -1,4 +1,5 @@
 #include <obs-module.h>
+#include <obs-frontend-api.h>
 #include <media-io/video-io.h>
 #include <util/platform.h>
 #include "queue/share_queue_write.h"
@@ -10,6 +11,8 @@
 #define S_TARGET "target"
 #define S_FLIP "flip"
 #define S_RATIO "keep-ratio"
+#define S_AUTOSTART "auto-start"
+#define S_FOLLOWSTART "follow-start"
 
 #define T_(v) obs_module_text(v)
 #define T_DELAY T_("DelayFrame")
@@ -18,6 +21,8 @@
 #define T_TARGET T_("Target")
 #define T_FLIP T_("HorizontalFlip")
 #define T_RATIO T_("KeepAspectRatio")
+#define T_AUTOSTART T_("AutoStart")
+#define T_FOLLOWSTART T_("FollowStart")
 
 struct virtual_filter_data {
 	obs_source_t *context = nullptr;
@@ -32,12 +37,28 @@ struct virtual_filter_data {
 	uint32_t base_height = 0;
 	int mode = 0;
 	int delay = 0;
+	int autostart = false;
+	int followstart = false;
 };
 
 static const char *virtual_filter_get_name(void *unused)
 {
 	UNUSED_PARAMETER(unused);
 	return obs_module_text("VirtualCam");
+}
+
+static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p, void *data);
+static bool virtual_filter_stop(obs_properties_t *props, obs_property_t *p, void *data);
+
+static void frontend_event(enum obs_frontend_event event, void *data)
+{
+	virtual_filter_data *filter = (virtual_filter_data *)data;
+	if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING && filter && filter->autostart)
+		virtual_filter_start(NULL, NULL, data);
+	else if (event == OBS_FRONTEND_EVENT_VIRTUALCAM_STARTED && filter && filter->followstart)
+		virtual_filter_start(NULL, NULL, data);
+	else if (event == OBS_FRONTEND_EVENT_VIRTUALCAM_STOPPED && filter && filter->followstart)
+		virtual_filter_stop(NULL, NULL, data);
 }
 
 static void *virtual_filter_create(obs_data_t *settings, obs_source_t *context)
@@ -50,6 +71,7 @@ static void *virtual_filter_create(obs_data_t *settings, obs_source_t *context)
 	data->texrender = gs_texrender_create(GS_BGRA, GS_ZS_NONE);
 	obs_source_update(context, settings);
 	UNUSED_PARAMETER(settings);
+	obs_frontend_add_event_callback(frontend_event, data);
 	return data;
 }
 
@@ -143,6 +165,8 @@ static void virtual_filter_update(void *data, obs_data_t *settings)
 	filter->delay = (int)obs_data_get_int(settings, S_DELAY);
 	filter->mode = (int)obs_data_get_int(settings, S_TARGET);
 	filter->flip = obs_data_get_bool(settings, S_FLIP);
+	filter->autostart = obs_data_get_bool(settings, S_AUTOSTART);
+	filter->followstart = obs_data_get_bool(settings, S_FOLLOWSTART);
 	shared_queue_set_keep_ratio(&filter->video_queue, keep_ratio);
 }
 
@@ -157,6 +181,8 @@ static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p,
 				 void *data)
 {
 	virtual_filter_data *filter = (virtual_filter_data *)data;
+	if (filter->active)
+		return true;
 	obs_source_t *target = obs_filter_get_target(filter->context);
 	struct obs_video_info ovi = {0};
 	uint32_t base_width, base_height;
@@ -183,9 +209,11 @@ static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p,
 	}
 
 	if (filter->active) {
-		obs_property_t *stop = obs_properties_get(props, S_STOP);
-		obs_property_set_visible(p, false);
-		obs_property_set_visible(stop, true);
+		if (props != NULL) {
+			obs_property_t *stop = obs_properties_get(props, S_STOP);
+			obs_property_set_visible(p, false);
+			obs_property_set_visible(stop, true);
+	        }
 		shared_queue_set_delay(&filter->video_queue, filter->delay);
 		obs_add_tick_callback(virtual_filter_video, data);
 		obs_log(LOG_INFO, "starting virtual-filter on VirtualCam'%d'",
@@ -229,6 +257,8 @@ static obs_properties_t *virtual_filter_properties(void *data)
 
 	obs_properties_add_bool(props, S_FLIP, T_FLIP);
 	obs_properties_add_bool(props, S_RATIO, T_RATIO);
+	obs_properties_add_bool(props, S_AUTOSTART, T_AUTOSTART);
+	obs_properties_add_bool(props, S_FOLLOWSTART, T_FOLLOWSTART);
 
 	start = obs_properties_add_button(props, S_START, T_START,
 					  virtual_filter_start);
