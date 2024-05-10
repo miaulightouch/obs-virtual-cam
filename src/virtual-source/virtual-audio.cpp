@@ -36,7 +36,8 @@ HRESULT CVAudio::NonDelegatingQueryInterface(REFIID riid, void **ppv)
 }
 
 CVAudioStream::CVAudioStream(HRESULT *phr, CVAudio *pParent, LPCWSTR pPinName)
-	: CSourceStream(NAME("Audio"), phr, pParent, pPinName), parent(pParent)
+	: CSourceStream(NAME("Audio"), phr, pParent, pPinName),
+	  parent(pParent)
 {
 
 	alloc_prop.cBuffers = alloc_prop.cbBuffer = -1;

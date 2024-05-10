@@ -6,7 +6,8 @@
 #include <util/config-file.h>
 
 VirtualProperties::VirtualProperties(QWidget *parent)
-	: QDialog(parent), ui(new Ui::VirtualProperties)
+	: QDialog(parent),
+	  ui(new Ui::VirtualProperties)
 {
 	ui->setupUi(this);
 	connect(ui->pushButtonStart, SIGNAL(clicked()), this, SLOT(onStart()));

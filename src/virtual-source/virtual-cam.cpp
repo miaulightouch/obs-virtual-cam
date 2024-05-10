@@ -62,7 +62,8 @@ HRESULT CVCam::NonDelegatingQueryInterface(REFIID riid, void **ppv)
 
 CVCamStream::CVCamStream(HRESULT *phr, CVCam *pParent, LPCWSTR pPinName,
 			 int mode)
-	: CSourceStream(NAME("Video"), phr, pParent, pPinName), parent(pParent)
+	: CSourceStream(NAME("Video"), phr, pParent, pPinName),
+	  parent(pParent)
 {
 	queue_mode = mode;
 	ListSupportFormat();
