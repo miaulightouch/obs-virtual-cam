@@ -39,6 +39,9 @@ struct virtual_filter_data {
 	int delay = 0;
 	int autostart = false;
 	int followstart = false;
+	bool pending_event_finished_loading = false;
+	bool pending_event_virtualcam_started = false;
+	bool pending_event_virtualcam_stopped = false;
 };
 
 static const char *virtual_filter_get_name(void *unused)
@@ -55,15 +58,26 @@ static bool virtual_filter_stop(obs_properties_t *props, obs_property_t *p,
 static void frontend_event(enum obs_frontend_event event, void *data)
 {
 	virtual_filter_data *filter = (virtual_filter_data *)data;
-	if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING && filter &&
-	    filter->autostart)
-		virtual_filter_start(NULL, NULL, data);
-	else if (event == OBS_FRONTEND_EVENT_VIRTUALCAM_STARTED && filter &&
-		 filter->followstart)
-		virtual_filter_start(NULL, NULL, data);
-	else if (event == OBS_FRONTEND_EVENT_VIRTUALCAM_STOPPED && filter &&
-		 filter->followstart)
-		virtual_filter_stop(NULL, NULL, data);
+	if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
+		if (filter && filter->autostart)
+			virtual_filter_start(nullptr, nullptr, data);
+		else
+			filter->pending_event_finished_loading = true;
+	} else if (event == OBS_FRONTEND_EVENT_VIRTUALCAM_STARTED) {
+		if (filter && filter->followstart)
+			virtual_filter_start(nullptr, nullptr, data);
+		else {
+			filter->pending_event_virtualcam_started = true;
+			filter->pending_event_virtualcam_stopped = false;
+		}
+	} else if (event == OBS_FRONTEND_EVENT_VIRTUALCAM_STOPPED) {
+		if (filter && filter->followstart)
+			virtual_filter_stop(nullptr, nullptr, data);
+		else {
+			filter->pending_event_virtualcam_started = false;
+			filter->pending_event_virtualcam_stopped = true;
+		}
+	}
 }
 
 static void *virtual_filter_create(obs_data_t *settings, obs_source_t *context)
@@ -173,6 +187,18 @@ static void virtual_filter_update(void *data, obs_data_t *settings)
 	filter->autostart = obs_data_get_bool(settings, S_AUTOSTART);
 	filter->followstart = obs_data_get_bool(settings, S_FOLLOWSTART);
 	shared_queue_set_keep_ratio(&filter->video_queue, keep_ratio);
+	if (filter->autostart && filter->pending_event_finished_loading) {
+		filter->pending_event_finished_loading = false;
+		virtual_filter_start(nullptr, nullptr, data);
+	}
+	if (filter->followstart && filter->pending_event_virtualcam_started) {
+		filter->pending_event_virtualcam_started = false;
+		virtual_filter_start(nullptr, nullptr, data);
+	}
+	if (filter->followstart && filter->pending_event_virtualcam_stopped) {
+		filter->pending_event_virtualcam_stopped = false;
+		virtual_filter_stop(nullptr, nullptr, data);
+	}
 }
 
 static void virtual_filter_render(void *data, gs_effect_t *effect)
@@ -185,6 +211,7 @@ static void virtual_filter_render(void *data, gs_effect_t *effect)
 static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p,
 				 void *data)
 {
+	UNUSED_PARAMETER(p);
 	virtual_filter_data *filter = (virtual_filter_data *)data;
 	if (filter->active)
 		return true;
@@ -214,11 +241,13 @@ static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p,
 	}
 
 	if (filter->active) {
-		if (props != NULL) {
+		if (props != nullptr) {
 			obs_property_t *stop =
 				obs_properties_get(props, S_STOP);
-			obs_property_set_visible(p, false);
 			obs_property_set_visible(stop, true);
+			obs_property_t *start =
+				obs_properties_get(props, S_START);
+			obs_property_set_visible(start, false);
 		}
 		shared_queue_set_delay(&filter->video_queue, filter->delay);
 		obs_add_tick_callback(virtual_filter_video, data);
@@ -236,13 +265,17 @@ static bool virtual_filter_start(obs_properties_t *props, obs_property_t *p,
 static bool virtual_filter_stop(obs_properties_t *props, obs_property_t *p,
 				void *data)
 {
+	UNUSED_PARAMETER(p);
 	virtual_filter_data *filter = (virtual_filter_data *)data;
 	obs_remove_tick_callback(virtual_filter_video, data);
 	shared_queue_write_close(&filter->video_queue);
-	obs_property_t *start = obs_properties_get(props, S_START);
+	if (props != nullptr) {
+		obs_property_t *stop = obs_properties_get(props, S_STOP);
+		obs_property_set_visible(stop, false);
+		obs_property_t *start = obs_properties_get(props, S_START);
+		obs_property_set_visible(start, true);
+	}
 	filter->active = false;
-	obs_property_set_visible(p, false);
-	obs_property_set_visible(start, true);
 	obs_log(LOG_INFO, "virtual-filter stop");
 	return true;
 }
@@ -280,6 +313,11 @@ static obs_properties_t *virtual_filter_properties(void *data)
 static void virtual_filter_defaults(obs_data_t *settings)
 {
 	obs_data_set_default_int(settings, S_DELAY, 1);
+	obs_data_set_default_int(settings, S_TARGET, 0);
+	obs_data_set_default_bool(settings, S_FLIP, false);
+	obs_data_set_default_bool(settings, S_RATIO, false);
+	obs_data_set_default_bool(settings, S_AUTOSTART, false);
+	obs_data_set_default_bool(settings, S_FOLLOWSTART, false);
 }
 
 struct obs_source_info create_filter_info()
