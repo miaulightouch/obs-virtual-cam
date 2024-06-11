@@ -42,13 +42,14 @@ Filename: "{sys}\regsvr32.exe"; Parameters: "/s /u ""{app}\bin\32bit\obs-virtual
 Filename: "{sys}\regsvr32.exe"; Parameters: "/s /u ""{app}\bin\64bit\obs-virtualsource.dll"""; Flags: 64bit; RunOnceId: "Unregister64";
 
 [Code]
-procedure InitializeWizard();
 var
   GPLText: AnsiString;
   Page: TOutputMsgMemoWizardPage;
   OptionPage: TInputQueryWizardPage;
   DevicesComboBox: TNewComboBox;
   DeviceCount: Integer;
+
+procedure InitializeWizard();
 begin
   ExtractTemporaryFile('LICENSE');
   LoadStringFromFile(ExpandConstant('{tmp}\LICENSE'), GPLText);
