@@ -21,12 +21,15 @@ inline void VCam::OnStop(void *data, calldata_t * /* params */)
 	vcam->DestroyVirtualCamView();
 }
 
-inline void VCam::OnHostShutdown(obs_frontend_event event, void *private_data)
+inline void VCam::OnFrontendEvent(obs_frontend_event event, void *private_data)
 {
+	VCam *vcam = static_cast<VCam *>(private_data);
 	if (event == OBS_FRONTEND_EVENT_SCRIPTING_SHUTDOWN) {
-		VCam *vcam = static_cast<VCam *>(private_data);
 		if (vcam->VirtualCamActive())
 			vcam->StopVirtualCam();
+	} else if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
+		if (vcam->config.autoStart)
+			vcam->StartVirtualCam();
 	}
 }
 
@@ -60,10 +63,7 @@ bool VCam::init()
 		LoadConfig();
 	}
 
-	if (config.autoStart)
-		StartVirtualCam();
-
-	obs_frontend_add_event_callback(OnHostShutdown, this);
+	obs_frontend_add_event_callback(OnFrontendEvent, this);
 
 	return UIinit();
 }
