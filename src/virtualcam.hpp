@@ -32,5 +32,5 @@ private:
 	static inline void OnStart(void *, calldata_t * /* params */);
 	static inline void OnStop(void *, calldata_t * /* params */);
 	static inline void OnFrontendEvent(obs_frontend_event event,
-					  void *private_data);
+					   void *private_data);
 };
