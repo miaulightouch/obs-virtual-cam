@@ -10,12 +10,11 @@ The audio is not supported yet.
 
 **Supported Platforms** : Windows 10, Windows 11
 
-**Supported OBS Studio version** : 29.0.0+
+**Supported OBS Studio version** : 30.0.0+
 
 ## Features
 
 * **virtual output** : A output plugin sink raw video to directshow interface.
-* **virtual source** : Four directshow Interfaces which can use in 3rd party software.
 
 ## Install
 
@@ -25,19 +24,20 @@ The installer and compressed file can be found in [Release Page](https://github.
 2. Run CMD as Administrator and register 32bit directshow source
 
 ```batch
-regsvr32 "C:\Program Files\obs-studio\bin\32bit\obs-virtualsource.dll"
+regsvr32 "C:\Program Files\obs-studio\data\obs-plugins\obs-virtualcam\obs-virtualcam-module32.dll"
 ```
 
 3. Do it again to register 64bit directshow source
 
 ```batch
-regsvr32 "C:\Program Files\obs-studio\bin\64bit\obs-virtualsource.dll"
+regsvr32 "C:\Program Files\obs-studio\data\obs-plugins\obs-virtualcam\obs-virtualcam-module64.dll"
 ```
 
 - If you want to Remove the directshow filter , you can also use regsvr32 to do this
 
 ```batch
-regsvr32 /u "C:\Program Files\obs-studio\bin\32bit\obs-virtualsource.dll"
+regsvr32 /u "C:\Program Files\obs-studio\data\obs-plugins\obs-virtualcam\obs-virtualcam-module32.dll"
+regsvr32 /u "C:\Program Files\obs-studio\data\obs-plugins\obs-virtualcam\obs-virtualcam-module64.dll"
 ```
 
 ## Register specific number of virtual cameras
@@ -45,14 +45,10 @@ regsvr32 /u "C:\Program Files\obs-studio\bin\32bit\obs-virtualsource.dll"
 Unregister then register 2 directshow camera (up to 4)
 
 ```batch
-regsvr32 /u "C:\Program Files\obs-studio\bin\64bit\obs-virtualsource.dll"
-regsvr32 /n /i:"2" "C:\Program Files\obs-studio\bin\64bit\obs-virtualsource.dll"
+regsvr32 /u "C:\Program Files\obs-studio\data\obs-plugins\obs-virtualcam\obs-virtualcam-module64.dll"
+regsvr32 /n /i:"2" "C:\Program Files\obs-studio\data\obs-plugins\obs-virtualcam\obs-virtualcam-module64.dll"
 ```
 
 ## Build
 
 this repo is updated to the latest OBS Plugin Template, please follow [the guide](https://github.com/obsproject/obs-plugintemplate).
-
-## Donate
-
-Please consider donating to CatxFish, the original author of this plugin. [Paypal.me](https://www.paypal.me/obsvirtualcam)
