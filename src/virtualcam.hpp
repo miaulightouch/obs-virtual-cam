@@ -31,6 +31,6 @@ private:
 	void UpdateVirtualCamOutputSource();
 	static inline void OnStart(void *, calldata_t * /* params */);
 	static inline void OnStop(void *, calldata_t * /* params */);
-	static inline void OnHostShutdown(obs_frontend_event event,
-					  void *private_data);
+	static inline void OnFrontendEvent(obs_frontend_event event,
+					   void *private_data);
 };
