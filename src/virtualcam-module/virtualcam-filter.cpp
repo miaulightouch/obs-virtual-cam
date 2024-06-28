@@ -62,10 +62,16 @@ VCamFilter::VCamFilter(wchar_t *guid) : OutputFilter()
 		wchar_t res_file[MAX_PATH];
 		SHGetFolderPathW(nullptr, CSIDL_APPDATA, nullptr,
 				 SHGFP_TYPE_CURRENT, res_file);
-		StringCbCat(res_file, sizeof(res_file),
-			    L"\\obs-virtualcam.txt");
 
-		HANDLE file = CreateFileW(res_file, GENERIC_READ, 0, nullptr,
+		wchar_t stripped_vcid[CHARS_IN_GUID];
+		size_t vcidLen = wcslen(vcid);
+		wcsncpy(stripped_vcid, vcid + 1, vcidLen - 2);
+		stripped_vcid[vcidLen - 2] = L'\0';
+
+		wchar_t final_path[MAX_PATH];
+		_swprintf(final_path, L"%s\\%s.txt", res_file, vcid);
+
+		HANDLE file = CreateFileW(final_path, GENERIC_READ, 0, nullptr,
 					  OPEN_EXISTING, 0, nullptr);
 		if (file) {
 			char res[128];

@@ -56,7 +56,20 @@ static bool virtualcam_start(void *data)
 	snprintf(res, sizeof(res), "%dx%dx%lld", (int)width, (int)height,
 		 (long long)interval);
 
-	char *res_file = os_get_config_path_ptr("obs-virtualcam.txt");
+	obs_log(LOG_INFO, "Virtual output starting");
+
+	char narrow_vcid[CHARS_IN_GUID];
+	char stripped_vcid[CHARS_IN_GUID];
+	wcstombs(narrow_vcid, vcam->vcid, sizeof(narrow_vcid));
+	size_t vcidLen = strlen(narrow_vcid);
+	strncpy(stripped_vcid, narrow_vcid + 1, vcidLen - 2);
+	stripped_vcid[vcidLen - 2] = '\0';
+
+	size_t filenameLen = strlen(stripped_vcid) + strlen(".txt") + 1;
+	char *filename = (char *)malloc(filenameLen);
+	snprintf(filename, filenameLen, "%s.txt", stripped_vcid);
+
+	char *res_file = os_get_config_path_ptr(filename);
 	os_quick_write_utf8_file_safe(res_file, res, strlen(res), false, "tmp",
 				      NULL);
 	bfree(res_file);
