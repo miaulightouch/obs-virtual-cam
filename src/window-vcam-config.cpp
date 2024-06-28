@@ -2,7 +2,9 @@
 #include "window-vcam-config.hpp"
 
 OBSBasicVCamConfig::OBSBasicVCamConfig(VCam *_vcam, QWidget *parent)
-	: vcam(_vcam), QDialog(parent), ui(new Ui::OBSBasicVCamConfig)
+	: vcam(_vcam),
+	  QDialog(parent),
+	  ui(new Ui::OBSBasicVCamConfig)
 {
 	// copy config from parent
 	memcpy(&config, &vcam->config, sizeof(VCamConfig));
