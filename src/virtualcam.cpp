@@ -277,5 +277,13 @@ bool obs_module_load(void)
 {
 	VCam *vcam = new VCam();
 
+	obs_log(LOG_INFO, "plugin loaded successfully (version %s)",
+		PLUGIN_VERSION);
+
 	return vcam->init();
+}
+
+void obs_module_unload(void)
+{
+	obs_log(LOG_INFO, "plugin unloaded");
 }
