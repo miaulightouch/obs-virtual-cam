@@ -3,18 +3,22 @@ cmake_minimum_required(VERSION 3.16...3.26)
 project(obs-virtualsource VERSION ${_version})
 add_library(${PROJECT_NAME} MODULE)
 
-find_package(FFmpeg REQUIRED COMPONENTS avutil swscale)
+find_package(FFmpeg REQUIRED COMPONENTS avutil swscale avcodec avformat swresample)
 target_link_libraries(${PROJECT_NAME} PRIVATE FFmpeg::avutil FFmpeg::swscale)
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
   set(_arch x64)
   set(bit 64bit)
+  add_file(${FFmpeg_avcodec_LIBRARY} ${bit})
+  add_file(${FFmpeg_avformat_LIBRARY} ${bit})
+  add_file(${FFmpeg_swresample_LIBRARY} ${bit})
 else()
   set(_arch x86)
   set(bit 32bit)
-  add_file(${FFmpeg_avutil_LIBRARY} ${bit})
-  add_file(${FFmpeg_swscale_LIBRARY} ${bit})
 endif()
+
+add_file(${FFmpeg_avutil_LIBRARY} ${bit})
+add_file(${FFmpeg_swscale_LIBRARY} ${bit})
 
 # Setup dshowlib
 include_directories("${CMAKE_SOURCE_DIR}/deps/include")
