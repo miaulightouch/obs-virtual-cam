@@ -101,7 +101,8 @@ void VCam::UpdateVirtualCamOutputSource()
 		source = obs_get_source_by_name(config.scene.c_str());
 		break;
 	case VCamOutputType::SourceOutput:
-		OBSSourceAutoRelease s = obs_get_source_by_name(config.source.c_str());
+		OBSSourceAutoRelease s =
+			obs_get_source_by_name(config.source.c_str());
 
 		if (!vCamSourceScene)
 			vCamSourceScene =
