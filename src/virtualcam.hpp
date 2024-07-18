@@ -2,6 +2,7 @@
 
 #include <QMainWindow>
 #include <QAction>
+#include <obs.hpp>
 #include <obs-module.h>
 #include <obs-frontend-api.h>
 #include "window-vcam.hpp"
@@ -31,6 +32,7 @@ private:
 	void UpdateVirtualCamOutputSource();
 	static inline void OnStart(void *, calldata_t * /* params */);
 	static inline void OnStop(void *, calldata_t * /* params */);
+	static inline void OnDeactivate(void *, calldata_t * /* params */);
 	static inline void OnFrontendEvent(obs_frontend_event event,
 					   void *private_data);
 };
