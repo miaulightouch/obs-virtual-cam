@@ -10,14 +10,15 @@ inline void VCam::OnStart(void *, calldata_t * /* params */)
 		dialog->UpdateUIActive(true);
 }
 
-inline void VCam::OnStop(void *data, calldata_t * /* params */)
+inline void VCam::OnStop(void *, calldata_t * /* params */)
 {
-	VCam *vcam = static_cast<VCam *>(data);
-
 	if (dialog)
 		dialog->UpdateUIActive(false);
+}
 
-	// obs_output_set_media(vcam->output, nullptr, nullptr);
+inline void VCam::OnDeactivate(void *data, calldata_t *)
+{
+	VCam *vcam = static_cast<VCam *>(data);
 	vcam->DestroyVirtualCamView();
 }
 
@@ -27,6 +28,9 @@ inline void VCam::OnFrontendEvent(obs_frontend_event event, void *private_data)
 	if (event == OBS_FRONTEND_EVENT_FINISHED_LOADING) {
 		if (vcam->config.autoStart)
 			vcam->StartVirtualCam();
+	} else if (event == OBS_FRONTEND_EVENT_EXIT) {
+		obs_frontend_remove_event_callback(OnFrontendEvent, vcam);
+		vcam->StopVirtualCam();
 	}
 }
 
@@ -78,8 +82,7 @@ void VCam::UpdateVirtualCamOutputSource()
 	if (!virtualCamView)
 		return;
 
-	// FIXME: it may need release
-	obs_source_t *source;
+	OBSSourceAutoRelease source;
 
 	switch (config.type) {
 	case VCamOutputType::InternalOutput:
@@ -98,8 +101,8 @@ void VCam::UpdateVirtualCamOutputSource()
 		source = obs_get_source_by_name(config.scene.c_str());
 		break;
 	case VCamOutputType::SourceOutput:
-		// FIXME: it may need release
-		obs_source_t *s = obs_get_source_by_name(config.source.c_str());
+		OBSSourceAutoRelease s =
+			obs_get_source_by_name(config.source.c_str());
 
 		if (!vCamSourceScene)
 			vCamSourceScene =
@@ -127,17 +130,12 @@ void VCam::UpdateVirtualCamOutputSource()
 			};
 			obs_sceneitem_set_bounds(vCamSourceSceneItem, &size);
 		}
-		// obs_source_release(s);
 		break;
 	}
 
-	// FIXME: it may need release
-	obs_source_t *current = obs_view_get_source(virtualCamView, 0);
+	OBSSourceAutoRelease current = obs_view_get_source(virtualCamView, 0);
 	if (source != current)
 		obs_view_set_source(virtualCamView, 0, source);
-
-	// obs_source_release(source);
-	// obs_source_release(current);
 }
 
 void VCam::Stream()
@@ -195,8 +193,8 @@ void VCam::LoadConfig()
 
 bool VCam::StartVirtualCam()
 {
-	if (output)
-		StopVirtualCam();
+	if (VirtualCamActive())
+		return true;
 
 	obs_data_t *option = obs_data_create();
 	obs_data_set_int(option, "vcamIndex", config.vcamIndex);
@@ -206,6 +204,7 @@ bool VCam::StartVirtualCam()
 	signal_handler_t *handler = obs_output_get_signal_handler(output);
 	signal_handler_connect(handler, "start", OnStart, nullptr);
 	signal_handler_connect(handler, "stop", OnStop, this);
+	signal_handler_connect(handler, "deactivate", OnDeactivate, this);
 	obs_data_release(option);
 
 	if (!virtualCamView)
@@ -230,16 +229,19 @@ bool VCam::StartVirtualCam()
 }
 void VCam::StopVirtualCam()
 {
-	if (!output)
+	if (!VirtualCamActive())
 		return;
 
-	obs_output_stop(output);
 	obs_output_release(output);
 	output = nullptr;
 }
 
 void VCam::DestroyVirtualCamView()
 {
+	if (config.type == VCamOutputType::InternalOutput) {
+		virtualCamVideo = nullptr;
+		return;
+	}
 	obs_view_remove(virtualCamView);
 	obs_view_set_source(virtualCamView, 0, nullptr);
 	virtualCamVideo = nullptr;

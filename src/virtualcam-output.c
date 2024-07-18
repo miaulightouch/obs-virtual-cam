@@ -108,6 +108,10 @@ static void virtualcam_deactive(struct virtualcam_data *vcam)
 static void virtualcam_stop(void *data, uint64_t ts)
 {
 	struct virtualcam_data *vcam = (struct virtualcam_data *)data;
+
+	if (os_atomic_load_bool(&vcam->stopping))
+		return;
+
 	os_atomic_set_bool(&vcam->stopping, true);
 
 	obs_log(LOG_INFO, "Virtual output stopping");
