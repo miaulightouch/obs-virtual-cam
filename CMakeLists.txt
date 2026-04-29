@@ -13,6 +13,10 @@ include(helpers)
 
 add_library(${CMAKE_PROJECT_NAME} MODULE)
 
+if(OBS_CMAKE_FINDERS_DIR)
+  list(APPEND CMAKE_MODULE_PATH "${OBS_CMAKE_FINDERS_DIR}")
+endif()
+
 find_package(libobs REQUIRED)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE OBS::libobs)
 
