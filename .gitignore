@@ -16,6 +16,7 @@
 !CMakePresets.json
 !LICENSE
 !README.md
+!build-installer.ps1
 
 # Exclude lock files
 *.lock.json

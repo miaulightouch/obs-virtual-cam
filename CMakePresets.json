@@ -44,33 +44,6 @@
       }
     },
     {
-      "name": "windows-x86",
-      "displayName": "Windows x86",
-      "description": "Build for Windows x86",
-      "inherits": ["template"],
-      "binaryDir": "${sourceDir}/build_x86",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      },
-      "generator": "Visual Studio 17 2022",
-      "architecture": "Win32",
-      "warnings": {"dev": true, "deprecated": true},
-      "cacheVariables": {
-        "CMAKE_SYSTEM_VERSION": "10.0.18363.657"
-      }
-    },
-    {
-      "name": "windows-ci-x86",
-      "inherits": ["windows-x86"],
-      "displayName": "Windows x86 CI build",
-      "description": "Build for Windows x86 on CI",
-      "cacheVariables": {
-        "CMAKE_COMPILE_WARNING_AS_ERROR": true
-      }
-    },
-    {
       "name": "windows-x64",
       "displayName": "Windows x64",
       "description": "Build for Windows x64",
@@ -165,20 +138,6 @@
       "configurePreset": "macos-ci",
       "displayName": "macOS Universal CI",
       "description": "macOS CI build for Universal architectures",
-      "configuration": "RelWithDebInfo"
-    },
-    {
-      "name": "windows-x86",
-      "configurePreset": "windows-x86",
-      "displayName": "Windows x86",
-      "description": "Windows build for x86",
-      "configuration": "RelWithDebInfo"
-    },
-    {
-      "name": "windows-ci-x86",
-      "configurePreset": "windows-ci-x86",
-      "displayName": "Windows x64 CI",
-      "description": "Windows CI build for x86 (RelWithDebInfo configuration)",
       "configuration": "RelWithDebInfo"
     },
     {

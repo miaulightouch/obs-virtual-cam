@@ -21,17 +21,24 @@ VirtualProperties::VirtualProperties(QWidget *parent)
 	connect(ui->checkBox_keepratio, SIGNAL(stateChanged(int)), this,
 		SLOT(onClickKeepAspectRatio()));
 
-	config_t *config = obs_frontend_get_global_config();
-	config_set_default_bool(config, "VirtualOutput", "AutoStart", false);
-	config_set_default_bool(config, "VirtualOutput", "HoriFlip", false);
-	config_set_default_bool(config, "VirtualOutput", "KeepRatio", false);
-	config_set_default_int(config, "VirtualOutput", "OutDelay", 3);
-	config_set_default_int(config, "VirtualOutput", "Target", 0);
-	bool autostart = config_get_bool(config, "VirtualOutput", "AutoStart");
-	bool hori_flip = config_get_bool(config, "VirtualOutput", "HoriFlip");
-	bool keep_ratio = config_get_bool(config, "VirtualOutput", "KeepRatio");
-	int delay = config_get_int(config, "VirtualOutput", "OutDelay");
-	int target = config_get_int(config, "VirtualOutput", "Target");
+	config_t *config = obs_frontend_get_profile_config();
+	bool autostart = false;
+	bool hori_flip = false;
+	bool keep_ratio = false;
+	int delay = 3;
+	int target = 0;
+	if (config) {
+		config_set_default_bool(config, "VirtualOutput", "AutoStart", false);
+		config_set_default_bool(config, "VirtualOutput", "HoriFlip", false);
+		config_set_default_bool(config, "VirtualOutput", "KeepRatio", false);
+		config_set_default_int(config, "VirtualOutput", "OutDelay", 3);
+		config_set_default_int(config, "VirtualOutput", "Target", 0);
+		autostart = config_get_bool(config, "VirtualOutput", "AutoStart");
+		hori_flip = config_get_bool(config, "VirtualOutput", "HoriFlip");
+		keep_ratio = config_get_bool(config, "VirtualOutput", "KeepRatio");
+		delay = config_get_int(config, "VirtualOutput", "OutDelay");
+		target = config_get_int(config, "VirtualOutput", "Target");
+	}
 
 	ui->checkBox_auto->setChecked(autostart);
 	ui->checkBox_horiflip->setChecked(hori_flip);
@@ -140,7 +147,7 @@ void VirtualProperties::closeEvent(QCloseEvent *event)
 
 void VirtualProperties::SaveSetting()
 {
-	config_t *config = obs_frontend_get_global_config();
+	config_t *config = obs_frontend_get_profile_config();
 	if (config) {
 		bool autostart = ui->checkBox_auto->isChecked();
 		bool hori_flip = ui->checkBox_horiflip->isChecked();

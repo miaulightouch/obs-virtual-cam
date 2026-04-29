@@ -89,11 +89,15 @@ function(_setup_obs_studio)
   message(STATUS "Configure ${label} (${arch}) - done")
 
   message(STATUS "Build ${label} (${arch})")
-  execute_process(
-    COMMAND "${CMAKE_COMMAND}" --build build_${arch} --target obs-frontend-api --config Debug --parallel
-    WORKING_DIRECTORY "${dependencies_dir}/${_obs_destination}"
-    RESULT_VARIABLE _process_result COMMAND_ERROR_IS_FATAL ANY
-    OUTPUT_QUIET)
+  # libobs is built as a dependency of obs-frontend-api; produce configs the plugin may use
+  foreach(_obs_build_config IN ITEMS Debug Release RelWithDebInfo)
+    execute_process(
+      COMMAND "${CMAKE_COMMAND}" --build build_${arch} --target obs-frontend-api --config
+              ${_obs_build_config} --parallel
+      WORKING_DIRECTORY "${dependencies_dir}/${_obs_destination}"
+      RESULT_VARIABLE _process_result COMMAND_ERROR_IS_FATAL ANY
+      OUTPUT_QUIET)
+  endforeach()
   message(STATUS "Build ${label} (${arch}) - done")
 
   message(STATUS "Install ${label} (${arch})")
@@ -103,7 +107,7 @@ function(_setup_obs_studio)
     set(_cmake_extra "")
   endif()
   execute_process(
-    COMMAND "${CMAKE_COMMAND}" --install build_${arch} --component Development --config Debug --prefix
+    COMMAND "${CMAKE_COMMAND}" --install build_${arch} --component Development --config RelWithDebInfo --prefix
             "${dependencies_dir}" ${_cmake_extra}
     WORKING_DIRECTORY "${dependencies_dir}/${_obs_destination}"
     RESULT_VARIABLE _process_result COMMAND_ERROR_IS_FATAL ANY
@@ -215,4 +219,15 @@ function(_check_dependencies)
   # cmake-format: on
 
   _setup_obs_studio()
+
+  # OBS 30+ leaves package config under the build tree; add it so find_package(libobs) succeeds
+  set(OBS_CMAKE_FINDERS_DIR "${_obs_src}/cmake/finders" CACHE PATH "OBS upstream Find*.cmake directory" FORCE)
+  list(APPEND CMAKE_PREFIX_PATH "${_obs_build}/libobs" "${_obs_build}/frontend/api")
+  if(WIN32)
+    list(APPEND CMAKE_PREFIX_PATH "${_obs_build}/deps/w32-pthreads")
+  endif()
+  list(REMOVE_DUPLICATES CMAKE_PREFIX_PATH)
+  set(CMAKE_PREFIX_PATH
+      ${CMAKE_PREFIX_PATH}
+      CACHE PATH "CMake prefix search path" FORCE)
 endfunction()

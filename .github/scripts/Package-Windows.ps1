@@ -82,13 +82,59 @@ function Package {
             throw 'InnoSetup install script not found. Run the build script or the CMake build and install procedures first.'
         }
 
-        Log-Information 'Creating InnoSetup installer...'
+        $IsccExe = $null
+        $InnoRoots = @(
+            (Join-Path ([Environment]::GetFolderPath('ProgramFilesX86')) 'Inno Setup 6'),
+            (Join-Path ([Environment]::GetFolderPath('ProgramFiles')) 'Inno Setup 6'),
+            (Join-Path $env:LocalAppData 'Programs\Inno Setup 6')
+        )
+        foreach ( $Root in $InnoRoots ) {
+            $Candidate = Join-Path $Root 'ISCC.exe'
+            if ( Test-Path -LiteralPath $Candidate ) {
+                $IsccExe = $Candidate
+                break
+            }
+        }
+        if ( -not $IsccExe ) {
+            $cmd = Get-Command iscc -ErrorAction SilentlyContinue
+            if ( $cmd ) { $IsccExe = $cmd.Source }
+        }
+        if ( -not $IsccExe ) {
+            foreach ( $UninstallKey in @(
+                    'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*',
+                    'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*'
+                ) ) {
+                $Entries = Get-ItemProperty $UninstallKey -ErrorAction SilentlyContinue |
+                    Where-Object { $_.DisplayName -like 'Inno Setup*' }
+                foreach ( $Entry in $Entries ) {
+                    if ( $Entry.InstallLocation ) {
+                        $Candidate = Join-Path $Entry.InstallLocation.TrimEnd('\') 'ISCC.exe'
+                        if ( Test-Path -LiteralPath $Candidate ) {
+                            $IsccExe = $Candidate
+                            break
+                        }
+                    }
+                }
+                if ( $IsccExe ) { break }
+            }
+        }
+        if ( -not $IsccExe ) {
+            throw 'Inno Setup 6 compiler (ISCC.exe) not found. Install Inno Setup 6 or add it to PATH: winget install JRSoftware.InnoSetup'
+        }
+
+        Log-Information "Creating InnoSetup installer using ${IsccExe}..."
         Push-Location -Stack BuildTemp
-        Ensure-Location -Path "${ProjectRoot}/release"
-        Copy-Item -Path ${Configuration} -Destination Package -Recurse
-        Invoke-External iscc ${IsccFile} /O"${ProjectRoot}/release" /F"${OutputName}-Installer"
-        Remove-Item -Path Package -Recurse
-        Pop-Location -Stack BuildTemp
+        try {
+            $StageDir = Join-Path $ProjectRoot 'release/Package'
+            $SourceDir = Join-Path $ProjectRoot "release/${Configuration}"
+            Remove-Item -LiteralPath $StageDir -Recurse -Force -ErrorAction SilentlyContinue
+            New-Item -ItemType Directory -Path $StageDir -Force | Out-Null
+            Copy-Item -Path (Join-Path $SourceDir '*') -Destination $StageDir -Recurse -Force
+            Invoke-External $IsccExe ${IsccFile} /O"${ProjectRoot}/release" /F"${OutputName}-Installer"
+        } finally {
+            Remove-Item -LiteralPath $StageDir -Recurse -Force -ErrorAction SilentlyContinue
+            Pop-Location -Stack BuildTemp
+        }
 
         Log-Group
     }
