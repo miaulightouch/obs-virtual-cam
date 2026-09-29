@@ -1,68 +1,86 @@
+#include <stdlib.h>
+#include <string.h>
 #include "hflip.h"
+
+extern "C" {
+#include "libavutil/pixfmt.h"
+};
+
+struct plane_layout {
+	int count;       // elements per row
+	int rows;        // rows in the plane
+	int elem_size;   // bytes per element
+	bool packed_422; // element is a Y0/C/Y1/C macropixel
+};
+
+static int get_planes(int format, int width, int height, plane_layout *planes)
+{
+	int cw = (width + 1) / 2;
+	int ch = (height + 1) / 2;
+
+	switch (format) {
+	case AV_PIX_FMT_YUV420P:
+		planes[0] = {width, height, 1, false};
+		planes[1] = {cw, ch, 1, false};
+		planes[2] = {cw, ch, 1, false};
+		return 3;
+	case AV_PIX_FMT_NV12:
+		planes[0] = {width, height, 1, false};
+		planes[1] = {cw, ch, 2, false};
+		return 2;
+	case AV_PIX_FMT_YUV444P:
+		planes[0] = {width, height, 1, false};
+		planes[1] = {width, height, 1, false};
+		planes[2] = {width, height, 1, false};
+		return 3;
+	case AV_PIX_FMT_GRAY8:
+		planes[0] = {width, height, 1, false};
+		return 1;
+	case AV_PIX_FMT_YUYV422:
+	case AV_PIX_FMT_UYVY422:
+		planes[0] = {cw, height, 4, true};
+		return 1;
+	case AV_PIX_FMT_RGBA:
+	case AV_PIX_FMT_BGRA:
+		planes[0] = {width, height, 4, false};
+		return 1;
+	}
+	return 0;
+}
 
 bool init_flip_filter(FlipContext *ctx, int width, int height, int format)
 {
-	char args[512];
-	int ret = -1;
-
-	if (ctx->init)
+	if (ctx->init || width <= 0 || height <= 0)
 		return false;
 
-	const AVFilter *buffersrc = avfilter_get_by_name("buffer");
-	const AVFilter *buffersink = avfilter_get_by_name("buffersink");
-	AVFilterInOut *outputs = avfilter_inout_alloc();
-	AVFilterInOut *inputs = avfilter_inout_alloc();
-
-	ctx->filter_graph = avfilter_graph_alloc();
-	sprintf(args,
-		"video_size=%dx%d:pix_fmt=%d:time_base=%d/%d:pixel_aspect=%d/%d",
-		width, height, format, 1, 30, 1, 1);
-
-	ret = avfilter_graph_create_filter(&ctx->buffersrc_ctx, buffersrc, "in",
-					   args, NULL, ctx->filter_graph);
-
-	if (ret < 0) {
-		avfilter_graph_free(&ctx->filter_graph);
+	plane_layout planes[4];
+	int count = get_planes(format, width, height, planes);
+	if (!count)
 		return false;
+
+	size_t total = 0;
+	for (int i = 0; i < count; i++)
+		total += (size_t)planes[i].count * planes[i].elem_size *
+			 planes[i].rows;
+
+	ctx->buffer = (uint8_t *)malloc(total);
+	if (!ctx->buffer)
+		return false;
+
+	uint8_t *dst = ctx->buffer;
+	for (int i = 0; i < 4; i++) {
+		ctx->data[i] = nullptr;
+		ctx->linesize[i] = 0;
+	}
+	for (int i = 0; i < count; i++) {
+		ctx->data[i] = dst;
+		ctx->linesize[i] = planes[i].count * planes[i].elem_size;
+		dst += (size_t)ctx->linesize[i] * planes[i].rows;
 	}
 
-	ret = avfilter_graph_create_filter(&ctx->buffersink_ctx, buffersink,
-					   "out", NULL, NULL,
-					   ctx->filter_graph);
-
-	if (ret < 0) {
-		avfilter_graph_free(&ctx->filter_graph);
-		return false;
-	}
-
-	outputs->name = av_strdup("in");
-	outputs->filter_ctx = ctx->buffersrc_ctx;
-	outputs->pad_idx = 0;
-	outputs->next = NULL;
-
-	inputs->name = av_strdup("out");
-	inputs->filter_ctx = ctx->buffersink_ctx;
-	inputs->pad_idx = 0;
-	inputs->next = NULL;
-
-	if ((ret = avfilter_graph_parse_ptr(ctx->filter_graph, "hflip", &inputs,
-					    &outputs, NULL)) < 0)
-		return false;
-
-	if ((ret = avfilter_graph_config(ctx->filter_graph, NULL)) < 0)
-		return false;
-
-	ctx->frame_in = av_frame_alloc();
-	ctx->frame_out = av_frame_alloc();
-	ctx->frame_buffer_out = (unsigned char *)av_malloc(
-		av_image_get_buffer_size((AVPixelFormat)format, width, height,
-					 1));
-	av_image_fill_arrays(ctx->frame_out->data, ctx->frame_out->linesize,
-			     ctx->frame_buffer_out, (AVPixelFormat)format,
-			     width, height, 1);
-	ctx->frame_in->width = width;
-	ctx->frame_in->height = height;
-	ctx->frame_in->format = format;
+	ctx->width = width;
+	ctx->height = height;
+	ctx->format = format;
 	ctx->init = true;
 	return true;
 }
@@ -72,11 +90,53 @@ bool release_flip_filter(FlipContext *ctx)
 	if (!ctx->init)
 		return false;
 
-	av_frame_free(&ctx->frame_out);
-	av_frame_free(&ctx->frame_in);
-	avfilter_graph_free(&ctx->filter_graph);
+	free(ctx->buffer);
+	ctx->buffer = nullptr;
+	for (int i = 0; i < 4; i++) {
+		ctx->data[i] = nullptr;
+		ctx->linesize[i] = 0;
+	}
 	ctx->init = false;
 	return true;
+}
+
+static void flip_row(uint8_t *dst, const uint8_t *src, int count, int elem_size,
+		     bool packed_422, bool y_first)
+{
+	const uint8_t *s = src + (size_t)(count - 1) * elem_size;
+
+	switch (elem_size) {
+	case 1:
+		for (int x = 0; x < count; x++)
+			dst[x] = src[count - 1 - x];
+		break;
+	case 2:
+		for (int x = 0; x < count; x++, dst += 2, s -= 2)
+			memcpy(dst, s, 2);
+		break;
+	case 4:
+		if (!packed_422) {
+			for (int x = 0; x < count; x++, dst += 4, s -= 4)
+				memcpy(dst, s, 4);
+			break;
+		}
+		// A macropixel holds two pixels; mirroring it also swaps the
+		// two luma samples, while the shared chroma stays in place.
+		for (int x = 0; x < count; x++, dst += 4, s -= 4) {
+			if (y_first) { // Y0 U Y1 V
+				dst[0] = s[2];
+				dst[1] = s[1];
+				dst[2] = s[0];
+				dst[3] = s[3];
+			} else { // U Y0 V Y1
+				dst[0] = s[0];
+				dst[1] = s[3];
+				dst[2] = s[2];
+				dst[3] = s[1];
+			}
+		}
+		break;
+	}
 }
 
 void flip_frame(FlipContext *ctx, uint8_t **src, uint32_t *linesize)
@@ -84,23 +144,16 @@ void flip_frame(FlipContext *ctx, uint8_t **src, uint32_t *linesize)
 	if (!ctx->init)
 		return;
 
-	for (int i = 0; i < 8; i++) {
-		ctx->frame_in->data[i] = src[i];
-		ctx->frame_in->linesize[i] = linesize[i];
+	plane_layout planes[4];
+	int count = get_planes(ctx->format, ctx->width, ctx->height, planes);
+	bool y_first = ctx->format == AV_PIX_FMT_YUYV422;
+
+	for (int i = 0; i < count; i++) {
+		const plane_layout &p = planes[i];
+		for (int y = 0; y < p.rows; y++) {
+			flip_row(ctx->data[i] + (size_t)ctx->linesize[i] * y,
+				 src[i] + (size_t)linesize[i] * y, p.count,
+				 p.elem_size, p.packed_422, y_first);
+		}
 	}
-
-	av_buffersrc_add_frame(ctx->buffersrc_ctx, ctx->frame_in);
-	av_buffersink_get_frame(ctx->buffersink_ctx, ctx->frame_out);
-}
-
-void unref_flip_frame(FlipContext *ctx)
-{
-	if (!ctx->init)
-		return;
-
-	for (int i = 0; i < 8; i++) {
-		ctx->frame_in->data[i] = NULL;
-		ctx->frame_in->linesize[i] = 0;
-	}
-	av_frame_unref(ctx->frame_out);
 }

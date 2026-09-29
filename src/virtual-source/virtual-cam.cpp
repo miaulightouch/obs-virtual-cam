@@ -5,6 +5,7 @@
 #include <commctrl.h>
 #include "virtual-cam.h"
 #include "clock.h"
+#include "ffmpeg-loader.h"
 
 #define MIN_WIDTH 320
 #define MIN_HEIGHT 240
@@ -17,6 +18,10 @@
 CUnknown *WINAPI CreateInstance(LPUNKNOWN lpunk, HRESULT *phr)
 {
 	ASSERT(phr);
+	if (!ffmpeg_loaded()) {
+		*phr = HRESULT_FROM_WIN32(ERROR_MOD_NOT_FOUND);
+		return NULL;
+	}
 	CUnknown *punk = new CVCam(lpunk, phr, CLSID_OBS_VirtualV, ModeVideo);
 	return punk;
 }
@@ -24,6 +29,10 @@ CUnknown *WINAPI CreateInstance(LPUNKNOWN lpunk, HRESULT *phr)
 CUnknown *WINAPI CreateInstance2(LPUNKNOWN lpunk, HRESULT *phr)
 {
 	ASSERT(phr);
+	if (!ffmpeg_loaded()) {
+		*phr = HRESULT_FROM_WIN32(ERROR_MOD_NOT_FOUND);
+		return NULL;
+	}
 	CUnknown *punk = new CVCam(lpunk, phr, CLSID_OBS_VirtualV2, ModeVideo2);
 	return punk;
 }
@@ -31,6 +40,10 @@ CUnknown *WINAPI CreateInstance2(LPUNKNOWN lpunk, HRESULT *phr)
 CUnknown *WINAPI CreateInstance3(LPUNKNOWN lpunk, HRESULT *phr)
 {
 	ASSERT(phr);
+	if (!ffmpeg_loaded()) {
+		*phr = HRESULT_FROM_WIN32(ERROR_MOD_NOT_FOUND);
+		return NULL;
+	}
 	CUnknown *punk = new CVCam(lpunk, phr, CLSID_OBS_VirtualV3, ModeVideo3);
 	return punk;
 }
@@ -38,6 +51,10 @@ CUnknown *WINAPI CreateInstance3(LPUNKNOWN lpunk, HRESULT *phr)
 CUnknown *WINAPI CreateInstance4(LPUNKNOWN lpunk, HRESULT *phr)
 {
 	ASSERT(phr);
+	if (!ffmpeg_loaded()) {
+		*phr = HRESULT_FROM_WIN32(ERROR_MOD_NOT_FOUND);
+		return NULL;
+	}
 	CUnknown *punk = new CVCam(lpunk, phr, CLSID_OBS_VirtualV4, ModeVideo4);
 	return punk;
 }

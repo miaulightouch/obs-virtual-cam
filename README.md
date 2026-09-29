@@ -8,7 +8,7 @@ source from [Fenrirthviti/obs-virtual-cam](https://github.com/Fenrirthviti/obs-v
 
 **Supported Platforms** : Windows 10, Windows 11
 
-**Supported OBS Studio version** : 30.0.0+
+**Supported OBS Studio version** : 30.1.0+ (tested with 32.2.2 and 33.0 beta)
 
 **Note: output to 32bit application is not tested.**
 
@@ -23,6 +23,7 @@ source from [Fenrirthviti/obs-virtual-cam](https://github.com/Fenrirthviti/obs-v
 The installer and compressed file can be found in [Release Page](https://github.com/miaulightouch/obs-virtual-cam/releases). Using installer is recommended, but if you want to use compressed file to install manually , please follow these instructions.
 
 1. Unzip obs-virtualcam-*-windows-x64.zip and put it to your obs-studio install folder.
+   Keep the `bin\64bit\obs-virtualcam` and `bin\32bit\obs-virtualcam` folders: they hold the FFmpeg libraries the virtual camera uses, kept apart from OBS's own so OBS updates cannot remove them.
 2. Run CMD as Administrator and register 32bit directshow source
 
 ```batch

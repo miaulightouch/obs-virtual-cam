@@ -110,7 +110,7 @@ static bool virtual_output_start(void *data)
 
 		if (!init_flip_filter(&out_data->flip_ctx, out_data->width,
 				      out_data->height, fmt)) {
-			obs_log(LOG_WARNING, "avfilter hflip init failed");
+			obs_log(LOG_WARNING, "hflip init failed");
 		}
 
 		output_running = true;
@@ -172,12 +172,11 @@ static void virtual_video(void *param, struct video_data *frame)
 	pthread_mutex_lock(&out_data->mutex);
 	if (out_data->hori_flip && out_data->flip_ctx.init) {
 		flip_frame(&out_data->flip_ctx, frame->data, frame->linesize);
-		shared_queue_push_video(
-			&out_data->video_queue,
-			(uint32_t *)out_data->flip_ctx.frame_out->linesize,
-			out_data->width, out_data->height,
-			out_data->flip_ctx.frame_out->data, frame->timestamp);
-		unref_flip_frame(&out_data->flip_ctx);
+		shared_queue_push_video(&out_data->video_queue,
+					out_data->flip_ctx.linesize,
+					out_data->width, out_data->height,
+					out_data->flip_ctx.data,
+					frame->timestamp);
 	} else {
 		shared_queue_push_video(&out_data->video_queue, frame->linesize,
 					out_data->width, out_data->height,
