@@ -40,8 +40,11 @@ endif()
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake" NO_POLICY_SCOPE)
 
-find_package(FFmpeg REQUIRED COMPONENTS avfilter avutil)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE FFmpeg::avfilter FFmpeg::avutil)
+# Only FFmpeg's pixel format enum is used here; nothing is linked, so the plugin keeps loading when OBS ships a
+# different FFmpeg version.
+find_package(FFmpeg REQUIRED COMPONENTS avutil)
+target_include_directories(${CMAKE_PROJECT_NAME}
+                           PRIVATE $<TARGET_PROPERTY:FFmpeg::avutil,INTERFACE_INCLUDE_DIRECTORIES>)
 
 # only build the 64bit version plugin
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
